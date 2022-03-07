@@ -10,8 +10,7 @@ The `disqualified-officers-delta-consumer` is responsible for transforming offic
 
 ## Build
 
-Common commands used for development and running locally can be found in the Makefile, each make target has a
-description which can be listed by running `make help`.
+Common commands used for development and running locally can be found in the Makefile.
 
 ```text
 Target               Description

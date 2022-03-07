@@ -30,5 +30,5 @@ test-unit            Run unit tests
 ## Endpoints
 | URL | Description |
 | --- | ----------- |
-| /healthcheck | Health check URL returns 200 if service is running |
+| /disqualified-officers-delta-consumer/healthcheck | Health check URL returns 200 if service is running |
 

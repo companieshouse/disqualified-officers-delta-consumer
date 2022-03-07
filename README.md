@@ -10,8 +10,7 @@ The `disqualified-officers-delta-consumer` is responsible for transforming offic
 
 ## Build
 
-Common commands used for development and running locally can be found in the Makefile, each make target has a
-description which can be listed by running `make help`.
+Common commands used for development and running locally can be found in the Makefile.
 
 ```text
 Target               Description
@@ -30,5 +29,5 @@ test-unit            Run unit tests
 ## Endpoints
 | URL | Description |
 | --- | ----------- |
-| /healthcheck | Health check URL returns 200 if service is running |
+| /disqualified-officers-delta-consumer/healthcheck | Health check URL returns 200 if service is running |
 

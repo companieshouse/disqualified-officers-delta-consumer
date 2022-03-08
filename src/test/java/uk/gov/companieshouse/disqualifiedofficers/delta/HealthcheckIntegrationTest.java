@@ -20,7 +20,7 @@ public class HealthcheckIntegrationTest {
     @Test
     @DisplayName("Successfully returns health status")
     public void returnsHealthStatusSuccessfully() throws Exception {
-        mockMvc.perform(get("/healthcheck")).andExpect(status().isOk());
+        mockMvc.perform(get("/disqualified-officers-delta-consumer/healthcheck")).andExpect(status().isOk());
     }
 
 }

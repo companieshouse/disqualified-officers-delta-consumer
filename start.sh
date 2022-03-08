@@ -9,7 +9,7 @@ if [[ -z "${MESOS_SLAVE_PID}" ]]; then
     source ~/.chs_env/global_env
     source ~/.chs_env/disqualified-officers-delta-consumer/env
 
-    PORT="${DISQUALIFIED_OFFICERS_DATA_API_PORT}"
+    PORT="${DISQUALIFIED_OFFICERS_DELTA_CONSUMER_PORT}"
 else
     PORT="$1"
     CONFIG_URL="$2"

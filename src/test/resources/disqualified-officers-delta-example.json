@@ -1,0 +1,29 @@
+{
+  "disqualified_officer": [{
+    "officer_disq_id": "3000035941",
+    "external_number": "168544120001",
+    "officer_id": "3002276133",
+    "officer_detail_id": "3002842206",
+    "date_of_birth": "19770718",
+    "forename": "Jason",
+    "middle_name": "John",
+    "surname": "PISTOLAS",
+    "nationality": "British",
+    "disqualifications": [{
+        "disq_eff_date": "20150813",
+        "disq_end_date": "20300812",
+        "disq_type": "ORDER",
+        "hearing_date": "20150723",
+        "section_of_the_act": "CDDA 1986 S6",
+        "court_ref": "1396 OF 2015",
+        "court_name": "Companies Court - London",
+        "address": {
+          "premise": "39",
+          "address_line_1": "Arnold Gardens",
+          "locality": "London",
+          "postal_code": "N13 5JE"
+        },
+        "company_names": ["EARNSHAW EQUITIES LIMITED"]
+      }]
+  }]
+  }

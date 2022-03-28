@@ -24,6 +24,8 @@ public class ChsDeltaDeserializerTest {
 
     private byte[] encodedData(ChsDelta chsDelta){
         ChsDeltaSerializer serializer = new ChsDeltaSerializer();
-        return serializer.serialize("", chsDelta);
+        byte[] serialisedData = serializer.serialize("", chsDelta);
+        serializer.close();
+        return serialisedData;
     }
 }

@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+springfox:
+  documentation:
+    auto-startup: false
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKER_ADDR:localhost:9092}
+
+disqualified-officers:
+  delta:
+    group-id: disqualified-officers-delta-consumer
+    main-id: disqualified-officers-main-consumer
+    retry-id: disqualified-officers-retry-consumer
+    topic:
+      main: disqualified-officers-delta
+      retry: disqualified-officers-topic-retry
+      error: disqualified-officers-topic-error
+
+logger:
+  namespace: disqualified-officers-delta-consumer

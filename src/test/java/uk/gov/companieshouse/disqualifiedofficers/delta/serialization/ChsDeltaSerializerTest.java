@@ -13,7 +13,7 @@ public class ChsDeltaSerializerTest {
     private ChsDeltaSerializer serializer = new ChsDeltaSerializer();
 
     @Test
-    void When_serialize_Expect_ValidChsDeltaObject() {
+    void When_serialize_Expect_ValidByteArray() {
         ChsDelta chsDelta = new ChsDelta("data", 1, "context_id");
         byte[] data = { 0x08, 0x64, 0x61, 0x74, 0x61, 0x02, 0x14, 0x63, 0x6F, 0x6E, 0x74, 0x65, 0x78, 0x74, 0x5F, 0x69, 0x64 };
 

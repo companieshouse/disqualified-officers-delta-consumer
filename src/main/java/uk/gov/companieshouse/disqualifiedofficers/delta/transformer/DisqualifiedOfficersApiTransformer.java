@@ -81,7 +81,7 @@ public class DisqualifiedOfficersApiTransformer {
 
     /**
     * Maps the delta at which is not passed into the mapper.
-    * @param apiObject the InternalNaturalDisqualificationApi object from the mapper.
+    * @param apiObject the InternalCorporateDisqualificationApi object from the mapper.
     * @param disqualificationDelta the delta from CHIPS containing the delta_at
     * @return the original api object with the delta_at parsed.
     */

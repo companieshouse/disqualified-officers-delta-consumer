@@ -20,6 +20,7 @@ import org.springframework.util.FileCopyUtils;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.Disqualification;
+import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.LastVariation;
 import uk.gov.companieshouse.api.disqualification.NaturalDisqualificationApi;
@@ -62,6 +63,8 @@ class InternalNaturalDisqualificationMapperTest {
         InternalNaturalDisqualificationApi disqualificationTarget =
         disqualificationMapper.disqualificationDeltaToApi(disqualificationOfficer);
         NaturalDisqualificationApi externalDisqualificationTarget = disqualificationTarget.getExternalData();
+        InternalDisqualificationApiInternalData internalDisqualificationTarget = disqualificationTarget
+                .getInternalData();
 
         PermissionToAct permissionToAct = new PermissionToAct();
         List<String> companyNames = new ArrayList<>();
@@ -79,8 +82,10 @@ class InternalNaturalDisqualificationMapperTest {
         assertEquals(externalDisqualificationTarget.getSurname(), "KINDNESSLIQUOR");
         assertTrue(externalDisqualificationTarget.getHonours().isEmpty());
         assertEquals(externalDisqualificationTarget.getNationality(), "British");
-        assertEquals(externalDisqualificationTarget.getOfficerDetailId(), "3002560732");
-        assertEquals(externalDisqualificationTarget.getOfficerDisqId(), "3000034602");
+        assertEquals(internalDisqualificationTarget.getOfficerDetailId(), "3002560732");
+        assertEquals(internalDisqualificationTarget.getOfficerDisqId(), "3000034602");
+        assertEquals(internalDisqualificationTarget.getOfficerId(), "1kETe9SJWIp9OlvZgO1xmjyt5_s");
+        assertEquals(internalDisqualificationTarget.getOfficerIdRaw(), "1234567890");
         assertEquals(externalDisqualificationTarget.getTitle(), "Mr");
         assertEquals(externalDisqualificationTarget.getPersonNumber(), "166284060001");
         assertEquals(externalDisqualificationTarget.getOtherForenames(), "Condition Reserve");

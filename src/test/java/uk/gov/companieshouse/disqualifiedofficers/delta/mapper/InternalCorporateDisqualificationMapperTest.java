@@ -21,6 +21,7 @@ import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.Disqualification;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
+import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.LastVariation;
 import uk.gov.companieshouse.api.disqualification.CorporateDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.PermissionToAct;
@@ -60,6 +61,8 @@ class InternalCorporateDisqualificationMapperTest {
         InternalCorporateDisqualificationApi disqualificationTarget =
         disqualificationMapper.disqualificationDeltaToApi(disqualificationOfficer);
         CorporateDisqualificationApi externalDisqualificationTarget = disqualificationTarget.getExternalData();
+        InternalDisqualificationApiInternalData internalDisqualificationTarget = disqualificationTarget
+                .getInternalData();
 
         PermissionToAct permissionToAct = new PermissionToAct();
         List<String> companyNames = new ArrayList<>();
@@ -73,10 +76,16 @@ class InternalCorporateDisqualificationMapperTest {
         assertThat(disqualificationDelta).isNotNull();
         assertThat(disqualificationTarget).isNotNull();
         assertEquals(externalDisqualificationTarget.getName(), "BOOMSHACK LTD.");
-        assertEquals(externalDisqualificationTarget.getOfficerDetailId(), null);
-        assertEquals(externalDisqualificationTarget.getOfficerDisqId(), null);
+        assertEquals(internalDisqualificationTarget.getOfficerDetailId(), null);
+        assertEquals(internalDisqualificationTarget.getOfficerDisqId(), null);
+        assertEquals(internalDisqualificationTarget.getOfficerId(), "D7WbjxLxswJPHWaLzilZ98PoaZU");
+        assertEquals(internalDisqualificationTarget.getOfficerIdRaw(), "1234554321");
         assertEquals(externalDisqualificationTarget.getPersonNumber(), null);
         assertEquals(externalDisqualificationTarget.getPermissionsToAct().get(0), permissionToAct);
+        assertEquals(externalDisqualificationTarget.getLinks(), 
+                "/disqualifiedofficer/corporate/D7WbjxLxswJPHWaLzilZ98PoaZU");
+        assertEquals(externalDisqualificationTarget.getCompanyNumber(), "0000000012");
+        assertEquals(externalDisqualificationTarget.getCountryOfRegistration(), "England");
 
         Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().get(0);
         System.out.println(externalDisqualificationTarget);

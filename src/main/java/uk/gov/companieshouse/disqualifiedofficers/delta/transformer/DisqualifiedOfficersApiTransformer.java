@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
-import uk.gov.companieshouse.api.disqualification.InternalData;
+import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
-import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApiInternalData;
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.InternalCorporateDisqualificationMapper;
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.InternalNaturalDisqualificationMapper;
 
@@ -70,8 +69,7 @@ public class DisqualifiedOfficersApiTransformer {
     private InternalNaturalDisqualificationApi parseNaturalDeltaAt(
             InternalNaturalDisqualificationApi apiObject,
             DisqualificationDelta disqualificationDelta) {
-        InternalNaturalDisqualificationApiInternalData internalData = new
-                InternalNaturalDisqualificationApiInternalData();
+        InternalDisqualificationApiInternalData internalData = apiObject.getInternalData();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")
                 .withZone(ZoneId.of("Z"));
         ZonedDateTime datetime = ZonedDateTime.parse(disqualificationDelta.getDeltaAt(), formatter);
@@ -90,7 +88,7 @@ public class DisqualifiedOfficersApiTransformer {
     private InternalCorporateDisqualificationApi parseCorporateDeltaAt(
             InternalCorporateDisqualificationApi apiObject,
             DisqualificationDelta disqualificationDelta) {
-        InternalData internalData = new InternalData();
+        InternalDisqualificationApiInternalData internalData = apiObject.getInternalData();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")
                 .withZone(ZoneId.of("Z"));
         ZonedDateTime datetime = ZonedDateTime.parse(disqualificationDelta.getDeltaAt(), formatter);

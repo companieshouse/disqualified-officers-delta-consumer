@@ -1,0 +1,56 @@
+{
+    "disqualified_officer": [
+      {
+        "officer_disq_id": "3000034602",
+        "external_number": "166284060001",
+        "officer_id": "3002047713",
+        "officer_detail_id": "3002560732",
+        "date_of_birth": "19760206",
+        "title": "Mr",
+        "forename": "Dust",
+        "middle_name": "Condition Reserve",
+        "surname": "KINDNESSLIQUOR",
+        "honours": "",
+        "nationality": "British",
+        "registered_number": "",
+        "registered_location": "",
+        "disqualifications": [
+          {
+            "disq_eff_date": "20150218",
+            "disq_end_date": "20250217",
+            "disq_type": "UNDERTAKING",
+            "hearing_date": "20150214",
+            "section_of_the_act": "CDDA 1986 S7",
+            "court_ref": "INV3975227",
+            "court_name": "Insolvency Service",
+            "address": {
+              "premise": "30",
+              "address_line_1": "Lucy Road",
+              "address_line_2": "Skewen",
+              "locality": "Neath",
+              "region": "",
+              "country": "Wales",
+              "postal_code": "SA10 6RR"
+            },
+            "variation_court": "Judys",
+            "variation_court_ref_no": "1",
+            "var_instrument_start_date": "20210217",
+            "company_names": [
+              "CONSORTIUM TECHNOLOGY LIMITED"
+            ]
+          }
+        ],
+        "exemptions": [{
+          "court_name": "rinder",
+          "granted_on": "20140203",
+          "expires_on": "20160412",
+          "company_names": [
+              "123 LTD",
+              "321 LTD"
+          ]
+      }]
+      }
+    ],
+    "CreatedTime": "16-FEB-22 14.40.57.000000",
+    "delta_at": "20211008152823383176"
+  }

@@ -7,11 +7,16 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
+
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
+import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
+import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
+import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.producer.DisqualifiedOfficersDeltaProducer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
+import uk.gov.companieshouse.logging.Logger;
 
 
 @Component
@@ -19,12 +24,20 @@ public class DisqualifiedOfficersDeltaProcessor {
 
     private final DisqualifiedOfficersDeltaProducer deltaProducer;
     private final DisqualifiedOfficersApiTransformer transformer;
+    private final Logger logger;
 
+    /**
+     * Constructor for the delta processor.
+     * @param deltaProducer uses the chKafkaProducer to send a message
+     * @param transformer transforms the data from delta to api object through mapstruct
+     * @param logger logs out messages to the app logs
+     */
     @Autowired
     public DisqualifiedOfficersDeltaProcessor(DisqualifiedOfficersDeltaProducer deltaProducer,
-            DisqualifiedOfficersApiTransformer transformer) {
+            DisqualifiedOfficersApiTransformer transformer, Logger logger) {
         this.deltaProducer = deltaProducer;
         this.transformer = transformer;
+        this.logger = logger;
     }
 
     /**
@@ -41,7 +54,21 @@ public class DisqualifiedOfficersDeltaProcessor {
             DisqualificationDelta disqualifiedOfficersDelta = mapper.readValue(payload.getData(),
                     DisqualificationDelta.class);
 
-            transformer.transform(disqualifiedOfficersDelta);
+            DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
+                    .getDisqualifiedOfficer()
+                    .get(0);
+
+            if (Boolean.valueOf(disqualificationOfficer.getCorporateInd())) {
+                InternalCorporateDisqualificationApi apiObject = transformer
+                        .transformCorporateDisqualification(disqualifiedOfficersDelta);
+                logger.info("InternalCorporateDisqualificationApi object" + apiObject);
+                //invoke disqualified officers API with Corporate method
+            } else {
+                InternalNaturalDisqualificationApi apiObject = transformer
+                        .transformNaturalDisqualification(disqualifiedOfficersDelta);
+                logger.info("InternalNaturalDisqualificationApi object" + apiObject);
+                //invoke disqualified officers API with Natural method
+            }
         } catch (RetryableErrorException ex) {
             retryDeltaMessage(chsDelta);
         } catch (Exception ex) {

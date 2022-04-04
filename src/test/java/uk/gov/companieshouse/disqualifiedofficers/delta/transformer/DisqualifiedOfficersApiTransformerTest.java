@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
+import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.InternalCorporateDisqualificationMapper;
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.InternalNaturalDisqualificationMapper;
@@ -47,6 +48,7 @@ public class DisqualifiedOfficersApiTransformerTest {
         InternalNaturalDisqualificationApi mock = mock(InternalNaturalDisqualificationApi.class);
 
         when(naturalMapper.disqualificationDeltaToApi(disqualificationOfficer)).thenReturn(mock);
+        when(mock.getInternalData()).thenReturn(new InternalDisqualificationApiInternalData());
 
         InternalNaturalDisqualificationApi actual = transformer.transformNaturalDisqualification(input);
         assertThat(actual).isEqualTo(mock);
@@ -64,6 +66,7 @@ public class DisqualifiedOfficersApiTransformerTest {
         InternalCorporateDisqualificationApi mock = mock(InternalCorporateDisqualificationApi.class);
 
         when(corporateMapper.disqualificationDeltaToApi(disqualificationOfficer)).thenReturn(mock);
+        when(mock.getInternalData()).thenReturn(new InternalDisqualificationApiInternalData());
 
         InternalCorporateDisqualificationApi actual = transformer.transformCorporateDisqualification(input);
         assertThat(actual).isEqualTo(mock);

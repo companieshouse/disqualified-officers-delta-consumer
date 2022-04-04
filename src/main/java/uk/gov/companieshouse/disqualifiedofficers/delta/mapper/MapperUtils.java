@@ -21,6 +21,10 @@ public final class MapperUtils {
         return encodedOfficerId;
     }
     
+    /**
+     * Create a map of values to lookup using description identifier.
+     * @return the hashmap of description identifiers to descriptions
+     */
     public static HashMap<String, String> createIdentifierHashMap() {
 
         HashMap<String, String> descriptionIdentifier = new HashMap<>();

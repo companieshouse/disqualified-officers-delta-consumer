@@ -88,7 +88,6 @@ class InternalCorporateDisqualificationMapperTest {
         assertEquals(externalDisqualificationTarget.getCountryOfRegistration(), "England");
 
         Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().get(0);
-        System.out.println(externalDisqualificationTarget);
         assertEquals(disqualification.getCaseIdentifier(), "IME3707935");
         List<String> list = new ArrayList<>();
         list.add("TEEHEE LIMITED");

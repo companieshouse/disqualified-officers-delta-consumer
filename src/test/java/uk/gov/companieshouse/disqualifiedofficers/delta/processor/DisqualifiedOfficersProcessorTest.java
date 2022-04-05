@@ -10,10 +10,14 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
-import uk.gov.companieshouse.api.delta.*;
+import uk.gov.companieshouse.api.delta.Disqualification;
+import uk.gov.companieshouse.api.delta.DisqualificationAddress;
+import uk.gov.companieshouse.api.delta.DisqualificationDelta;
+import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.producer.DisqualifiedOfficersDeltaProducer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
+import uk.gov.companieshouse.logging.Logger;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,13 +32,18 @@ public class DisqualifiedOfficersProcessorTest {
 
     @Mock
     private DisqualifiedOfficersDeltaProducer disqualifiedOfficersDeltaProducer;
-
     @Mock
     private DisqualifiedOfficersApiTransformer transformer;
+    @Mock
+    private Logger logger;
 
     @BeforeEach
     void setUp() {
-        deltaProcessor = new DisqualifiedOfficersDeltaProcessor(disqualifiedOfficersDeltaProducer, transformer);
+        deltaProcessor = new DisqualifiedOfficersDeltaProcessor(
+                disqualifiedOfficersDeltaProducer,
+                transformer,
+                logger
+        );
     }
 
     @Test
@@ -42,11 +51,11 @@ public class DisqualifiedOfficersProcessorTest {
     void When_ValidChsDeltaMessage_Expect_ValidDisqualificationDeltaMapping() throws IOException {
         Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage();
         DisqualificationDelta expectedDelta = createDisqualificationDelta();
-        when(transformer.transform(expectedDelta)).thenCallRealMethod();
+        when(transformer.transformNaturalDisqualification(expectedDelta)).thenCallRealMethod();
 
         deltaProcessor.processDelta(mockChsDeltaMessage);
 
-        verify(transformer).transform(expectedDelta);
+        verify(transformer).transformNaturalDisqualification(expectedDelta);
     }
 
     private Message<ChsDelta> createChsDeltaMessage() throws IOException {

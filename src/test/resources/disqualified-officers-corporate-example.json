@@ -1,0 +1,81 @@
+{
+  "delta_at": "20151118154448000000",
+  "disqualified_officer": [
+    {
+      "officer_id": "1234554321",
+      "corporate_ind": "1",
+      "registered_location": "England",
+      "registered_number": "0000000012",
+      "surname": "BOOMSHACK LTD.",
+      "disqualifications": [
+        {
+          "address": {
+            "address_line_1": "Crown Way",
+            "address_line_2": "Maindy",
+            "country": "Wales",
+            "locality": "Cardiff",
+            "postal_code": "CF14 3UZ",
+            "premise": "Companies House",
+            "region": "South Glamorgan"
+          },
+          "court_ref": "IME3707935",
+          "court_name": "UNDERTAKING",
+          "company_names": [
+            "TEEHEE LIMITED",
+            "HOOHAH LIMITED"
+          ],
+          "disq_eff_date": "20130624",
+          "disq_end_date": "20180623",
+          "disq_type": "ORDER",
+          "hearing_date": "20130101",
+          "section_of_the_act": "CDDO 1986 S4",
+          "variation_court": "CHDBALDWIN",
+          "variation_court_ref_no": "VARY DQ01 EFF DATE TO CURRENT",
+          "var_instrument_start_date": "20151117"
+        },
+        {
+          "address": {
+            "address_line_1": "34 Tudor Mews",
+            "address_line_2": "Miskin",
+            "country": "Wales",
+            "locality": "Cardiff",
+            "postal_code": "CF72 8SL",
+            "premise": "Companies House",
+            "region": "Rhonda Cynon Taff"
+          },
+          "court_ref": "ABC123",
+          "court_name": "Cardiff",
+          "company_names": [
+            "JAMIE LTD",
+            "CHELLO LTD"
+          ],
+          "disq_eff_date": "20110621",
+          "disq_end_date": "20160123",
+          "disq_type": "ORDER",
+          "hearing_date": "20110501",
+          "section_of_the_act": "CDDA 1986 S9"
+        }
+      ],
+      "exemptions": [
+        {
+          "court_name": "CARDIFF",
+          "expires_on": "20150223",
+          "granted_on": "20130515",
+          "company_names": [
+            "TEST1 LTD",
+            "TEST LTD"
+          ]
+        },
+        {
+          "court_name": "CHDB",
+          "expires_on": "20130101",
+          "granted_on": "20080819",
+          "company_names": [
+            "Test Company LTD",
+            "Another Test Company LTD"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -92,7 +92,7 @@ class InternalNaturalDisqualificationMapperTest {
         assertEquals(externalDisqualificationTarget.getOtherForenames(), "Condition Reserve");
         assertEquals(externalDisqualificationTarget.getPermissionsToAct().get(0), permissionToAct);
         DisqualificationLinks links = new DisqualificationLinks();
-        links.setSelf("/disqualifiedofficer/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s");
+        links.setSelf("/disqualified-officers/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s");
         assertEquals(externalDisqualificationTarget.getLinks(), links);
 
         Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().get(0);

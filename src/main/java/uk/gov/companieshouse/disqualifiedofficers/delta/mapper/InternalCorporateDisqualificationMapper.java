@@ -37,7 +37,7 @@ public interface InternalCorporateDisqualificationMapper {
                                   DisqualificationOfficer sourceCase) {
         
         String encodedOfficerId = MapperUtils.encode(sourceCase.getOfficerId());
-        String link = String.format("/disqualifiedofficer/corporate/%s", encodedOfficerId);
+        String link = String.format("/disqualified-officers/corporate/%s", encodedOfficerId);
         CorporateDisqualificationApi externalTarget = target.getExternalData();
         InternalDisqualificationApiInternalData internalData = target.getInternalData();
         DisqualificationLinks links = new DisqualificationLinks();

@@ -84,7 +84,7 @@ class InternalCorporateDisqualificationMapperTest {
         assertEquals(externalDisqualificationTarget.getPersonNumber(), null);
         assertEquals(externalDisqualificationTarget.getPermissionsToAct().get(0), permissionToAct);
         DisqualificationLinks links = new DisqualificationLinks();
-        links.setSelf("/disqualifiedofficer/corporate/D7WbjxLxswJPHWaLzilZ98PoaZU");
+        links.setSelf("/disqualified-officers/corporate/D7WbjxLxswJPHWaLzilZ98PoaZU");
         assertEquals(externalDisqualificationTarget.getLinks(), links);
         assertEquals(externalDisqualificationTarget.getCompanyNumber(), "0000000012");
         assertEquals(externalDisqualificationTarget.getCountryOfRegistration(), "England");

@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
+import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.NaturalDisqualificationApi;
@@ -43,7 +44,9 @@ public interface InternalNaturalDisqualificationMapper {
         String link = String.format("/disqualifiedofficer/natural/%s", encodedOfficerId);
         NaturalDisqualificationApi externalTarget = target.getExternalData();
         InternalDisqualificationApiInternalData internalData = target.getInternalData();
-        externalTarget.setLinks(link);
+        DisqualificationLinks links = new DisqualificationLinks();
+        links.setSelf(link);
+        externalTarget.setLinks(links);
         internalData.setOfficerId(encodedOfficerId);
     }
 

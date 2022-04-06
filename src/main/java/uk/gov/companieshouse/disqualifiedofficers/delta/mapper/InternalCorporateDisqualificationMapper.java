@@ -7,9 +7,9 @@ import org.mapstruct.MappingTarget;
 
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.CorporateDisqualificationApi;
+import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
-
 
 @Mapper(componentModel = "spring", uses = {DisqualificationMapper.class, 
         PermissionToActMapper.class})
@@ -40,7 +40,9 @@ public interface InternalCorporateDisqualificationMapper {
         String link = String.format("/disqualifiedofficer/corporate/%s", encodedOfficerId);
         CorporateDisqualificationApi externalTarget = target.getExternalData();
         InternalDisqualificationApiInternalData internalData = target.getInternalData();
-        externalTarget.setLinks(link);
+        DisqualificationLinks links = new DisqualificationLinks();
+        links.setSelf(link);
+        externalTarget.setLinks(links);
         internalData.setOfficerId(encodedOfficerId);
     }
 

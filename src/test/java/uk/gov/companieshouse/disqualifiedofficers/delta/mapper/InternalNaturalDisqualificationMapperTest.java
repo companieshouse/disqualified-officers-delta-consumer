@@ -20,6 +20,7 @@ import org.springframework.util.FileCopyUtils;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.Disqualification;
+import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.LastVariation;
@@ -90,6 +91,9 @@ class InternalNaturalDisqualificationMapperTest {
         assertEquals(externalDisqualificationTarget.getPersonNumber(), "166284060001");
         assertEquals(externalDisqualificationTarget.getOtherForenames(), "Condition Reserve");
         assertEquals(externalDisqualificationTarget.getPermissionsToAct().get(0), permissionToAct);
+        DisqualificationLinks links = new DisqualificationLinks();
+        links.setSelf("/disqualifiedofficer/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s");
+        assertEquals(externalDisqualificationTarget.getLinks(), links);
 
         Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().get(0);
         assertEquals(disqualification.getCaseIdentifier(), "INV3975227");

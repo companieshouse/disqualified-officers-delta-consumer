@@ -20,6 +20,7 @@ import org.springframework.util.FileCopyUtils;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.Disqualification;
+import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.LastVariation;
@@ -82,8 +83,9 @@ class InternalCorporateDisqualificationMapperTest {
         assertEquals(internalDisqualificationTarget.getOfficerIdRaw(), "1234554321");
         assertEquals(externalDisqualificationTarget.getPersonNumber(), null);
         assertEquals(externalDisqualificationTarget.getPermissionsToAct().get(0), permissionToAct);
-        assertEquals(externalDisqualificationTarget.getLinks(), 
-                "/disqualifiedofficer/corporate/D7WbjxLxswJPHWaLzilZ98PoaZU");
+        DisqualificationLinks links = new DisqualificationLinks();
+        links.setSelf("/disqualifiedofficer/corporate/D7WbjxLxswJPHWaLzilZ98PoaZU");
+        assertEquals(externalDisqualificationTarget.getLinks(), links);
         assertEquals(externalDisqualificationTarget.getCompanyNumber(), "0000000012");
         assertEquals(externalDisqualificationTarget.getCountryOfRegistration(), "England");
 

@@ -52,9 +52,7 @@ public interface DisqualificationMapper {
         lastVariation.setCaseIdentifier(sourceDisq.getVariationCourtRefNo());
         lastVariation.setCourtName(sourceDisq.getVariationCourt());
         
-        List<LastVariation> lastVarList = new ArrayList<>();
-        lastVarList.add(lastVariation);
-        target.setLastVariation(lastVarList);
+        target.setLastVariation(lastVariation);
     }
 
     /**

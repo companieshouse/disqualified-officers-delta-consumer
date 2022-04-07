@@ -100,7 +100,7 @@ class InternalCorporateDisqualificationMapperTest {
         var.setVariedOn(LocalDate.of(2015, 11, 17));
         var.setCaseIdentifier("VARY DQ01 EFF DATE TO CURRENT");
         var.setCourtName("CHDBALDWIN");
-        assertEquals(var, disqualification.getLastVariation().get(0));
+        assertEquals(var, disqualification.getLastVariation());
         assertEquals(disqualification.getDisqualificationType(), "court-order");
         HashMap<String, String> reason = new HashMap<>();
         reason.put("act", "company-directors-disqualification-northern-ireland-order-2002");

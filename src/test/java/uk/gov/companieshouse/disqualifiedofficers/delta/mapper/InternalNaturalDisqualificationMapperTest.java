@@ -105,7 +105,7 @@ class InternalNaturalDisqualificationMapperTest {
         var.setVariedOn(LocalDate.of(2021, 02, 17));
         var.setCaseIdentifier("1");
         var.setCourtName("Judys");
-        assertEquals(var, disqualification.getLastVariation().get(0));
+        assertEquals(var, disqualification.getLastVariation());
         assertEquals(disqualification.getDisqualificationType(), "undertaking");
         HashMap<String, String> reason = new HashMap<>();
         reason.put("act", "company-directors-disqualification-act-1986");

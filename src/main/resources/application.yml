@@ -21,3 +21,7 @@ disqualified-officers:
 
 logger:
   namespace: disqualified-officers-delta-consumer
+
+api:
+  disqualified-officers-data-api-key: ${DISQUALIFIED_OFFICERS_DATA_API_KEY:localhost}
+  api-url: ${API_URL:localhost}

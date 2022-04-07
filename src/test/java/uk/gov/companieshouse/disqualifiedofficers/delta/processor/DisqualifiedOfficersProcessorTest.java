@@ -16,6 +16,7 @@ import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.producer.DisqualifiedOfficersDeltaProducer;
+import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.logging.Logger;
 
@@ -36,13 +37,17 @@ public class DisqualifiedOfficersProcessorTest {
     private DisqualifiedOfficersApiTransformer transformer;
     @Mock
     private Logger logger;
+    @Mock
+    private ApiClientService apiClientService;
+
 
     @BeforeEach
     void setUp() {
         deltaProcessor = new DisqualifiedOfficersDeltaProcessor(
                 disqualifiedOfficersDeltaProducer,
                 transformer,
-                logger
+                logger,
+                apiClientService
         );
     }
 

@@ -12,15 +12,14 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.disqualifiedofficers.delta.handler.ApiResponseHandler;
 import uk.gov.companieshouse.disqualifiedofficers.delta.producer.DisqualifiedOfficersDeltaProducer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
@@ -73,14 +72,12 @@ public class DisqualifiedOfficersDeltaProcessor {
             if (Boolean.valueOf(disqualificationOfficer.getCorporateInd())) {
                 InternalCorporateDisqualificationApi apiObject = transformer
                         .transformCorporateDisqualification(disqualifiedOfficersDelta);
-                logger.info("InternalCorporateDisqualificationApi object" + apiObject);
                 //invoke disqualified officers API with Corporate method
                 invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
                         apiObject, logMap);
             } else {
                 InternalNaturalDisqualificationApi apiObject = transformer
                         .transformNaturalDisqualification(disqualifiedOfficersDelta);
-                logger.info("InternalNaturalDisqualificationApi object" + apiObject);
                 //invoke disqualified officers API with Natural method
                 invokeDisqualificationsDataApi(logContext, disqualificationOfficer, 
                         apiObject, logMap);
@@ -109,8 +106,9 @@ public class DisqualifiedOfficersDeltaProcessor {
                 apiClientService.putDisqualification(logContext,
                         disqualification.getOfficerId(),
                         internalDisqualificationApi);
-        handleResponse(null, HttpStatus.valueOf(response.getStatusCode()), logContext,
-                "Response received from disqualified officers data api", logMap);
+        ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
+        apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),
+                logContext,"Response received from disqualified officers data api", logMap, logger);
     }
 
     private void invokeDisqualificationsDataApi(final String logContext,
@@ -126,29 +124,9 @@ public class DisqualifiedOfficersDeltaProcessor {
                 apiClientService.putDisqualification(logContext,
                         disqualification.getOfficerId(),
                         internalDisqualificationApi);
-        handleResponse(null, HttpStatus.valueOf(response.getStatusCode()), logContext,
-                "Response received from disqualified officers data api", logMap);
-    }
-
-    private void handleResponse(
-            final ResponseStatusException ex,
-            final HttpStatus httpStatus,
-            final String logContext,
-            final String msg,
-            final Map<String, Object> logMap)
-            throws NonRetryableErrorException, RetryableErrorException {
-        logMap.put("status", httpStatus.toString());
-        if (HttpStatus.BAD_REQUEST == httpStatus) {
-            // 400 BAD REQUEST status cannot be retried
-            logger.errorContext(logContext, msg, null, logMap);
-            throw new NonRetryableErrorException(msg);
-        } else if (httpStatus.is4xxClientError() || httpStatus.is5xxServerError()) {
-            // any other client or server status can be retried
-            logger.errorContext(logContext, msg + ", retry", null, logMap);
-            throw new RetryableErrorException(msg);
-        } else {
-            logger.debugContext(logContext, msg, logMap);
-        }
+        ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
+        apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),
+                logContext,"Response received from disqualified officers data api", logMap, logger);
     }
 
     public void retryDeltaMessage(Message<ChsDelta> chsDelta) {

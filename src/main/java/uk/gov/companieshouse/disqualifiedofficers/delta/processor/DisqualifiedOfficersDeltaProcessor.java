@@ -67,23 +67,23 @@ public class DisqualifiedOfficersDeltaProcessor {
             ObjectMapper mapper = new ObjectMapper();
             DisqualificationDelta disqualifiedOfficersDelta = mapper.readValue(payload.getData(),
                     DisqualificationDelta.class);
-
             DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                     .getDisqualifiedOfficer()
                     .get(0);
-
             if (Boolean.valueOf(disqualificationOfficer.getCorporateInd())) {
                 InternalCorporateDisqualificationApi apiObject = transformer
                         .transformCorporateDisqualification(disqualifiedOfficersDelta);
                 logger.info("InternalCorporateDisqualificationApi object" + apiObject);
                 //invoke disqualified officers API with Corporate method
-                invokeDisqualificationsDataApi(logContext, disqualificationOfficer, apiObject, logMap);
+                invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
+                        apiObject, logMap);
             } else {
                 InternalNaturalDisqualificationApi apiObject = transformer
                         .transformNaturalDisqualification(disqualifiedOfficersDelta);
                 logger.info("InternalNaturalDisqualificationApi object" + apiObject);
                 //invoke disqualified officers API with Natural method
-                invokeDisqualificationsDataApi(logContext, disqualificationOfficer, apiObject, logMap);
+                invokeDisqualificationsDataApi(logContext, disqualificationOfficer, 
+                        apiObject, logMap);
             }
         } catch (RetryableErrorException ex) {
             retryDeltaMessage(chsDelta);
@@ -96,9 +96,10 @@ public class DisqualifiedOfficersDeltaProcessor {
     /**
      * Invoke Disqualifications Data API.
      */
-    private void invokeDisqualificationsDataApi(final String logContext, DisqualificationOfficer disqualification,
-                                      InternalNaturalDisqualificationApi internalDisqualificationApi,
-                                      final Map<String, Object> logMap) {
+    private void invokeDisqualificationsDataApi(final String logContext, 
+                        DisqualificationOfficer disqualification,
+                        InternalNaturalDisqualificationApi internalDisqualificationApi,
+                        final Map<String, Object> logMap) {
         logger.infoContext(
                 logContext,
                 String.format("Process disqualification for officer with id [%s]",
@@ -112,9 +113,10 @@ public class DisqualifiedOfficersDeltaProcessor {
                 "Response received from disqualified officers data api", logMap);
     }
 
-    private void invokeDisqualificationsDataApi(final String logContext, DisqualificationOfficer disqualification,
-                                        InternalCorporateDisqualificationApi internalDisqualificationApi,
-                                        final Map<String, Object> logMap) {
+    private void invokeDisqualificationsDataApi(final String logContext,
+                        DisqualificationOfficer disqualification,
+                        InternalCorporateDisqualificationApi internalDisqualificationApi,
+                        final Map<String, Object> logMap) {
         logger.infoContext(
                 logContext,
                 String.format("Process disqualification for officer with id [%s]",

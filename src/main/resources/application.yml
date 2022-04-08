@@ -25,3 +25,4 @@ logger:
 api:
   disqualified-officers-data-api-key: ${DISQUALIFIED_OFFICERS_DATA_API_KEY:localhost}
   api-url: ${API_URL:localhost}
+  internal-api-url: ${INTERNAL_API_URL:localhost}

@@ -29,6 +29,9 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     @Value("${api.api-url}")
     private String apiUrl;
 
+    @Value("${api.internal-api-url}")
+    private String internalApiUrl;
+
     /**
      * Construct an {@link ApiClientServiceImpl}.
      *
@@ -43,6 +46,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     public InternalApiClient getApiClient(String contextId) {
         InternalApiClient internalApiClient = new InternalApiClient(getHttpClient(contextId));
         internalApiClient.setBasePath(apiUrl);
+        internalApiClient.setInternalBasePath(internalApiUrl);
         return internalApiClient;
     }
 
@@ -54,8 +58,8 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
 
     @Override
     public ApiResponse<Void> putDisqualification(final String log, final String officerId,
-                                       InternalNaturalDisqualificationApi internalDisqualificationApi) {
-        final String uri = String.format("/disqualified-officers/natural/%s/internal",  officerId);
+                            InternalNaturalDisqualificationApi internalDisqualificationApi) {
+        final String uri = String.format("/disqualified-officers/natural/%s/internal", officerId);
 
         Map<String, Object> logMap = createLogMap(officerId, "PUT", uri);
         logger.infoContext(log, String.format("PUT %s", uri), logMap);
@@ -68,8 +72,8 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
 
     @Override
     public ApiResponse<Void> putDisqualification(final String log, final String officerId,
-                                                 InternalCorporateDisqualificationApi internalDisqualificationApi) {
-        final String uri = String.format("/disqualified-officers/corporate/%s/internal",  officerId);
+                            InternalCorporateDisqualificationApi internalDisqualificationApi) {
+        final String uri = String.format("/disqualified-officers/corporate/%s/internal", officerId);
 
         Map<String, Object> logMap = createLogMap(officerId, "PUT", uri);
         logger.infoContext(log, String.format("PUT %s", uri), logMap);

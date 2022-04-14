@@ -23,12 +23,14 @@
         <maven-build-helper-plugin.version>3.2.0</maven-build-helper-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
         <docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
+        <io-cucumber.version>7.2.3</io-cucumber.version>
         <ch-kafka.version>1.4.2</ch-kafka.version>
         <structured-logging.version>1.9.12</structured-logging.version>
         <kafka-models.version>1.0.25</kafka-models.version>
         <private-api-sdk-java.version>2.0.146</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>1.0.4</api-sdk-manager-java-library.version>
         <jib-maven-plugin.version>3.1.1</jib-maven-plugin.version>
+        <wiremock.standalone.version>2.32.0</wiremock.standalone.version>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
 
@@ -123,6 +125,51 @@
             <artifactId>junit-jupiter</artifactId>
             <version>${test-containers.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-core</artifactId>
+            <version>${io-cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${io-cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${io-cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${io-cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>${wiremock.standalone.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.conscrypt</groupId>
+                    <artifactId>conscrypt-openjdk-uber</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.jknack</groupId>
+                    <artifactId>handlebars</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.jknack</groupId>
+                    <artifactId>handlebars-helpers</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>

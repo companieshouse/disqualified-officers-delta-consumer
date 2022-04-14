@@ -1,0 +1,68 @@
+{
+  "external_data" : {
+    "date_of_birth": [1976,2,6],
+    "person_number" : "166284060001",
+    "etag" : null,
+    "forename" : "Dust",
+    "honours" : "",
+    "nationality" : "British",
+    "other_forenames" : "Condition Reserve",
+    "surname" : "KINDNESSLIQUOR",
+    "title" : "Mr",
+    "links" : {
+      "self" : "/disqualified-officers/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s"
+    },
+    "disqualifications" : [
+      {
+        "case_identifier" : "INV3975227",
+        "address" : {
+          "premise" : "30",
+          "address_line_1" : "Lucy Road",
+          "address_line_2" : "Skewen",
+          "locality" : "Neath",
+          "region" : "",
+          "country" : "Wales",
+          "postal_code" : "SA10 6RR"
+        },
+        "company_names" : [
+          "CONSORTIUM TECHNOLOGY LIMITED"
+        ],
+        "court_name" : null,
+        "disqualification_type": "undertaking",
+        "disqualified_from" : [2015,2,18],
+        "disqualified_until" : [2025,2,17],
+        "heard_on" : null,
+        "undertaken_on" : [2015,2,14],
+        "last_variation" : {
+          "varied_on" : [2021,2,17],
+          "case_identifier" : "1",
+          "court_name" : "Judys"
+        },
+        "reason" : {
+          "act" : "company-directors-disqualification-act-1986",
+          "section" : "7",
+          "description_identifier" : "order-or-undertaking-and-reporting-provisions"
+        }
+      }
+    ],
+    "permissions_to_act": [
+      {
+        "company_names" : [
+          "123 LTD",
+          "321 LTD"
+        ],
+        "court_name" : "rinder",
+        "expires_on" : [2016,4,12],
+        "granted_on" : [2014,2,3],
+        "purpose" : null
+      }
+    ]
+  },
+  "internal_data" : {
+    "delta_at" : 1.633706903383176E9,
+    "officer_id" : "1kETe9SJWIp9OlvZgO1xmjyt5_s",
+    "officer_id_raw" : "1234567890",
+    "officer_disq_id" : "3000034602",
+    "officer_detail_id" : "3002560732"
+  }
+}

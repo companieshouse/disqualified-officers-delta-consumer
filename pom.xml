@@ -169,6 +169,10 @@
                     <groupId>com.github.jknack</groupId>
                     <artifactId>handlebars-helpers</artifactId>
                 </exclusion>
+                <exclusion>
+					<groupId>net.javacrumbs.json-unit</groupId>
+					<artifactId>json-unit-core</artifactId>
+				</exclusion>
             </exclusions>
         </dependency>
     </dependencies>

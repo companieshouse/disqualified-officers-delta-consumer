@@ -1,0 +1,59 @@
+{
+    "external_data" : {
+        "person_number" : "person_number_123",
+        "date_of_birth" : "2022-03-05",
+        "etag" : "",
+        "title" : "string title",
+        "forename" : "string forename",
+        "other_forename" : "string other forename",
+        "surname" : "string surname",
+        "honours" : "string honours",
+        "nationality" : "string nationality",
+        "company_number" : "00000000",
+        "country_of_registration" : "string country",
+        "disqualifications" : [
+            {
+                "address" : {
+                    "address_line_1" : "123 String Road",
+                    "address_line_2" : "123 string line 2",
+                    "locality" : "123 string locality",
+                    "postal_code" : "123 string postcode",
+                    "premises" : "123 string premise",
+                    "region" : "123 string region",
+                    "country" : "string country"
+                },
+                "case_identifier" : "123 string caseid",
+                "company_names" : [
+                    "123 COMPANY NAME TEST"
+                ],
+                "court_name" : "123 string court name",
+                "disqualification_type" : "123 string disqualification type",
+                "disqualified_from" : "2022-03-03T12:51:00.767Z",
+                "disqualified_until" : "2022-03-04T12:51:00.767Z",
+                "heard_on" : null,
+                "undertaken_on" : "2022-03-02T12:51:00.767Z",
+                "reason" : {
+                    "description_identifier" : "123 string description identifier",
+                    "section" : "123 string section",
+                    "act" : "123 string act",
+                    "article" : "123 string article"
+                },
+                "last_variation" : {
+                    "court_name" : "string last variation court name",
+                    "case_identifier" : "string last variation caseid",
+                    "varied_on" : "2022-03-01"
+                }
+            }
+        ],
+        "links" : {
+            "self" : "123 link self"
+        }
+    },
+    "internal_data" : {
+        "delta_at" : "2022-04-11T11:18:00.768Z",
+        "officer_id" : "123 test officer id",
+        "officer_id_raw" : "123 test officer id raw",
+        "officer_disq_id" : "123 test officer disq id",
+        "officer_detail_id" : "123 test"
+    }
+}

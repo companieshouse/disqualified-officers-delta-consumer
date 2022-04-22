@@ -1,0 +1,58 @@
+{
+    "disqualified_officer": [ 
+      {"corporate_ind":"true",
+        "officer_disq_id": "3000034602",
+        "external_number": "166284060001",
+        "officer_id": "rqaa9E",
+        "officer_detail_id": "3002560732",
+        "date_of_birth": "19760206",
+        "title": "",
+        "forename": "",
+        "middle_name": "",
+        "surname": "BABYLON INCORPORATION LIMITED",
+        "honours": "",
+        "nationality": "",
+        "registered_number": "00053723",
+        "registered_location": "SCOTLAND",
+        "disqualifications": [
+          {
+            "disq_eff_date": "20150218",
+            "disq_end_date": "20250217",
+            "disq_type": "ORDER",
+            "hearing_date": "20180214",
+            "section_of_the_act": "CDDO 1986 A11A",
+            "court_ref": "INV3975227",
+            "court_name": "Insolvency Service",
+            "address": {
+              "premise": "3000",
+              "address_line_1": "SYLVESTERucy AVENUE",
+              "address_line_2": "Skewen",
+              "locality": "Neath",
+              "region": "",
+              "country": "Wales",
+              "postal_code": "SA10 6RR"
+            },
+            "variation_court": "SWINDLERS",
+            "variation_court_ref_no": "1",
+            "var_instrument_start_date": "20210217",
+            "company_names": [
+              "CONSORTIUM TECHNOLOGY LIMITED"
+            ]
+          }
+        ],
+        "exemptions": [{
+          "court_name": "rinder",
+          "granted_on": "20140203",
+          "expires_on": "20160412",
+          "purpose": "ALPHABET",
+          "company_names": [
+              "123 LTD",
+              "321 LTD"
+
+          ]
+      }]
+      }
+    ],
+    "CreatedTime": "16-FEB-22 14.40.57.000000",
+    "delta_at": "20211008152823383176"
+  }

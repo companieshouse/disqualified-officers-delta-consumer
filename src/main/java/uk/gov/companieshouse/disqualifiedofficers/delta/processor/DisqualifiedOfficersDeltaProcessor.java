@@ -69,7 +69,8 @@ public class DisqualifiedOfficersDeltaProcessor {
             DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                     .getDisqualifiedOfficer()
                     .get(0);
-            if (Boolean.valueOf(disqualificationOfficer.getCorporateInd())) {
+            if (disqualificationOfficer.getCorporateInd() != null 
+                        && disqualificationOfficer.getCorporateInd().equals("1")) {
                 InternalCorporateDisqualificationApi apiObject = transformer
                         .transformCorporateDisqualification(disqualifiedOfficersDelta);
                 //invoke disqualified officers API with Corporate method
@@ -104,7 +105,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                 null);
         final ApiResponse<Void> response =
                 apiClientService.putDisqualification(logContext,
-                        disqualification.getOfficerId(),
+                disqualification.getOfficerId(),
                         internalDisqualificationApi);
         ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
         apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),
@@ -122,7 +123,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                 null);
         final ApiResponse<Void> response =
                 apiClientService.putDisqualification(logContext,
-                        disqualification.getOfficerId(),
+                disqualification.getOfficerId(),
                         internalDisqualificationApi);
         ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
         apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),

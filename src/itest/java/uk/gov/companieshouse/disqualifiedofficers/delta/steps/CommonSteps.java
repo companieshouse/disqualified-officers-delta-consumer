@@ -66,6 +66,8 @@ public class CommonSteps {
 
     @Then("a PUT request is sent to the disqualifications api with the transformed data")
     public void putRequestIsSentToTheDisqualificationsApi() {
+        logger.info("I'm here" + output);
+        logger.info(type);
         verify(1, requestMadeFor(new DisqualificationRequestMatcher(logger, type, output)));
     }
 

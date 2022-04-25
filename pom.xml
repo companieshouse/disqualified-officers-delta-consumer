@@ -21,7 +21,7 @@
         <map-struct.version>1.4.2.Final</map-struct.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-build-helper-plugin.version>3.2.0</maven-build-helper-plugin.version>
-        <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
+        <maven-failsafe-plugin.version>2.12.4</maven-failsafe-plugin.version>
         <docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
         <io-cucumber.version>7.2.3</io-cucumber.version>
         <ch-kafka.version>1.4.2</ch-kafka.version>

@@ -27,8 +27,8 @@
         "company_names" : [
           "CONSORTIUM TECHNOLOGY LIMITED"
         ],
-        "court_name" : null,
-        "disqualification_type": "undertaking",
+        "court_name" : "Insolvency Service",
+        "disqualification_type": "court-order",
         "disqualified_from" : [2015,2,18],
         "disqualified_until" : [2025,2,17],
         "heard_on" : [2015,2,14],

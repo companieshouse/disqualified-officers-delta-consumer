@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.steps;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -66,9 +67,12 @@ public class CommonSteps {
 
     @Then("a PUT request is sent to the disqualifications api with the transformed data")
     public void putRequestIsSentToTheDisqualificationsApi() {
-        logger.info("I'm here" + output);
-        logger.info(type);
         verify(1, requestMadeFor(new DisqualificationRequestMatcher(logger, type, output)));
+    }
+
+    @After
+    public void shutdownWiremock(){
+        wireMockServer.stop();
     }
 
     private void configureWiremock() {

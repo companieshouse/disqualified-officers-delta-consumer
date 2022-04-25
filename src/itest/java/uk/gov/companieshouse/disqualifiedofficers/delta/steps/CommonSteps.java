@@ -28,8 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommonSteps {
 
-    private final static String ENCODED_OFFICER_ID = "1kETe9SJWIp9OlvZgO1xmjyt5_s";
-
     @Value("${disqualified-officers.delta.topic.main}")
     private String mainTopic;
 

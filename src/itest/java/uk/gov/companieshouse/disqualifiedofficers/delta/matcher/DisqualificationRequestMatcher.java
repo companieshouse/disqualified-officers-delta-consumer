@@ -9,6 +9,10 @@ import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.ValueMatcher;
 import uk.gov.companieshouse.logging.Logger;
 
+/**
+ *  Custom matcher class used to match requests made by the consumer to the
+ *  data api. The url, request type and request body are compared.
+ */
 public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
 
     private String expectedOutput;

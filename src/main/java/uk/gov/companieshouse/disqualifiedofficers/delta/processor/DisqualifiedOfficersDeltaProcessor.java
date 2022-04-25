@@ -105,7 +105,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                 null);
         final ApiResponse<Void> response =
                 apiClientService.putDisqualification(logContext,
-                disqualification.getOfficerId(),
+                        disqualification.getOfficerId(),
                         internalDisqualificationApi);
         ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
         apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),
@@ -123,7 +123,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                 null);
         final ApiResponse<Void> response =
                 apiClientService.putDisqualification(logContext,
-                disqualification.getOfficerId(),
+                        disqualification.getOfficerId(),
                         internalDisqualificationApi);
         ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
         apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),

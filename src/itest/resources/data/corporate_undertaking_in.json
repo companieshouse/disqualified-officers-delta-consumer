@@ -1,11 +1,10 @@
 {
     "disqualified_officer": [ 
-      {"corporate_ind":"true",
+      {"corporate_ind":"1",
         "officer_disq_id": "3000034602",
         "external_number": "166284060001",
         "officer_id": "1234567890",
         "officer_detail_id": "3002560732",
-        "date_of_birth": "19760206",
         "title": "",
         "forename": "",
         "middle_name": "",

@@ -27,7 +27,7 @@ test-unit:
 
 .PHONY: test-integration
 test-integration:
-	mvn integration-test -Dskip.unit.tests=true
+	mvn integration-test -Dskip.unit.tests=true failsafe:verify
 
 .PHONY: package
 package:

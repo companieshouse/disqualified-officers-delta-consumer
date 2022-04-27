@@ -33,7 +33,7 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
     }
 
     private MatchResult matchUrl(String actualUrl) {
-        String expectedUrl = "/disqualified-officers/" + type + "/1234567890/internal";
+        String expectedUrl = "/disqualified-officers/" + type + "/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal";
 
         MatchResult urlResult = MatchResult.of(expectedUrl.equals(actualUrl));
 

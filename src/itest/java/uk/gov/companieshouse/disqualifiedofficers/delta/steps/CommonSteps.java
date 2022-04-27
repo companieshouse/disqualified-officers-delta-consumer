@@ -80,7 +80,7 @@ public class CommonSteps {
     }
 
     private void stubPutDisqualification(String type) {
-        stubFor(put(urlEqualTo("/disqualified-officers/" + type + "/1234567890/internal"))
+        stubFor(put(urlEqualTo("/disqualified-officers/" + type + "/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal"))
                 .willReturn(aResponse().withStatus(200)));
     }
 }

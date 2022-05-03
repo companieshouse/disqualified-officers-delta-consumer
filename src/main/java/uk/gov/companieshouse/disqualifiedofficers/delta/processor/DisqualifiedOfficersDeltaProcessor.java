@@ -18,7 +18,7 @@ import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificat
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.handler.ApiResponseHandler;
 import uk.gov.companieshouse.disqualifiedofficers.delta.producer.DisqualifiedOfficersDeltaProducer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
@@ -83,11 +83,8 @@ public class DisqualifiedOfficersDeltaProcessor {
                 invokeDisqualificationsDataApi(logContext, disqualificationOfficer, 
                         apiObject, logMap);
             }
-        } catch (RetryableErrorException ex) {
-            retryDeltaMessage(chsDelta);
         } catch (Exception ex) {
-            handleErrorMessage(chsDelta);
-            // send to error topic
+            throw new NonRetryableErrorException("Error when extracting disqualified-officers delta", ex);
         }
     }
 
@@ -108,8 +105,8 @@ public class DisqualifiedOfficersDeltaProcessor {
                         internalDisqualificationApi.getInternalData().getOfficerId(),
                         internalDisqualificationApi);
         ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
-        apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),
-                logContext,"Response received from disqualified officers data api", logMap, logger);
+        apiResponseHandler.handleResponse(HttpStatus.valueOf(response.getStatusCode()),
+                logContext, logMap, logger);
     }
 
     private void invokeDisqualificationsDataApi(final String logContext,
@@ -126,13 +123,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                         internalDisqualificationApi.getInternalData().getOfficerId(),
                         internalDisqualificationApi);
         ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
-        apiResponseHandler.handleResponse(null, HttpStatus.valueOf(response.getStatusCode()),
-                logContext,"Response received from disqualified officers data api", logMap, logger);
-    }
-
-    public void retryDeltaMessage(Message<ChsDelta> chsDelta) {
-    }
-
-    private void handleErrorMessage(Message<ChsDelta> chsDelta) {
+        apiResponseHandler.handleResponse(HttpStatus.valueOf(response.getStatusCode()),
+                logContext, logMap, logger);
     }
 }

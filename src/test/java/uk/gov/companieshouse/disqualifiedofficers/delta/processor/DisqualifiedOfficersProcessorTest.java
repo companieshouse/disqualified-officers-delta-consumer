@@ -15,8 +15,6 @@ import uk.gov.companieshouse.api.delta.DisqualificationAddress;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
-import uk.gov.companieshouse.disqualifiedofficers.delta.producer.DisqualifiedOfficersDeltaProducer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.logging.Logger;
@@ -33,8 +31,6 @@ public class DisqualifiedOfficersProcessorTest {
     private DisqualifiedOfficersDeltaProcessor deltaProcessor;
 
     @Mock
-    private DisqualifiedOfficersDeltaProducer disqualifiedOfficersDeltaProducer;
-    @Mock
     private DisqualifiedOfficersApiTransformer transformer;
     @Mock
     private Logger logger;
@@ -45,7 +41,6 @@ public class DisqualifiedOfficersProcessorTest {
     @BeforeEach
     void setUp() {
         deltaProcessor = new DisqualifiedOfficersDeltaProcessor(
-                disqualifiedOfficersDeltaProducer,
                 transformer,
                 logger,
                 apiClientService
@@ -58,10 +53,7 @@ public class DisqualifiedOfficersProcessorTest {
         Message<ChsDelta> mockChsDeltaMessage = createChsDeltaMessage();
         DisqualificationDelta expectedDelta = createDisqualificationDelta();
         when(transformer.transformNaturalDisqualification(expectedDelta)).thenCallRealMethod();
-        try{
-            deltaProcessor.processDelta(mockChsDeltaMessage);
-        } catch(NonRetryableErrorException ex) {}
-
+        deltaProcessor.processDelta(mockChsDeltaMessage);
 
         verify(transformer).transformNaturalDisqualification(expectedDelta);
     }

@@ -10,9 +10,9 @@ import uk.gov.companieshouse.disqualifiedofficers.delta.AbstractIntegrationTest;
 public class DisqualifiedOfficersDeltaConsumerITest extends AbstractIntegrationTest {
 
     @Autowired
-    public KafkaTemplate<String, ChsDelta> kafkaTemplate;
+    public KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${disqualified-officers.delta.topic.main}")
+    @Value("${disqualified-officers.delta.topic}")
     private String mainTopic;
 
     @Test

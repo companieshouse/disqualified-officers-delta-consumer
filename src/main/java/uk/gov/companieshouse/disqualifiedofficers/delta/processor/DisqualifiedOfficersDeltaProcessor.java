@@ -20,7 +20,6 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.handler.ApiResponseHandler;
-import uk.gov.companieshouse.disqualifiedofficers.delta.producer.DisqualifiedOfficersDeltaProducer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.logging.Logger;
@@ -29,23 +28,19 @@ import uk.gov.companieshouse.logging.Logger;
 @Component
 public class DisqualifiedOfficersDeltaProcessor {
 
-    private final DisqualifiedOfficersDeltaProducer deltaProducer;
     private final DisqualifiedOfficersApiTransformer transformer;
     private final ApiClientService apiClientService;
     private final Logger logger;
 
     /**
      * Constructor for the delta processor.
-     * @param deltaProducer uses the chKafkaProducer to send a message
      * @param transformer transforms the data from delta to api object through mapstruct
      * @param logger logs out messages to the app logs
      * @param apiClientService handles PUT request to the disqualified data API
      */
     @Autowired
-    public DisqualifiedOfficersDeltaProcessor(DisqualifiedOfficersDeltaProducer deltaProducer,
-            DisqualifiedOfficersApiTransformer transformer, Logger logger,
-            ApiClientService apiClientService) {
-        this.deltaProducer = deltaProducer;
+    public DisqualifiedOfficersDeltaProcessor(DisqualifiedOfficersApiTransformer transformer,
+            Logger logger, ApiClientService apiClientService) {
         this.transformer = transformer;
         this.logger = logger;
         this.apiClientService = apiClientService;
@@ -55,36 +50,38 @@ public class DisqualifiedOfficersDeltaProcessor {
      * Process CHS Delta message.
      */
     public void processDelta(Message<ChsDelta> chsDelta) {
-        try {
-            MessageHeaders headers = chsDelta.getHeaders();
-            final String receivedTopic =
-                    Objects.requireNonNull(headers.get(KafkaHeaders.RECEIVED_TOPIC)).toString();
-            final ChsDelta payload = chsDelta.getPayload();
-            final String logContext = payload.getContextId();
-            final Map<String, Object> logMap = new HashMap<>();
+        MessageHeaders headers = chsDelta.getHeaders();
+        final String receivedTopic =
+                Objects.requireNonNull(headers.get(KafkaHeaders.RECEIVED_TOPIC)).toString();
+        final ChsDelta payload = chsDelta.getPayload();
+        final String logContext = payload.getContextId();
+        final Map<String, Object> logMap = new HashMap<>();
 
-            ObjectMapper mapper = new ObjectMapper();
-            DisqualificationDelta disqualifiedOfficersDelta = mapper.readValue(payload.getData(),
+        ObjectMapper mapper = new ObjectMapper();
+        DisqualificationDelta disqualifiedOfficersDelta;
+        try {
+            disqualifiedOfficersDelta = mapper.readValue(payload.getData(),
                     DisqualificationDelta.class);
-            DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
-                    .getDisqualifiedOfficer()
-                    .get(0);
-            if (disqualificationOfficer.getCorporateInd() != null 
-                        && disqualificationOfficer.getCorporateInd().equals("1")) {
-                InternalCorporateDisqualificationApi apiObject = transformer
-                        .transformCorporateDisqualification(disqualifiedOfficersDelta);
-                //invoke disqualified officers API with Corporate method
-                invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
-                        apiObject, logMap);
-            } else {
-                InternalNaturalDisqualificationApi apiObject = transformer
-                        .transformNaturalDisqualification(disqualifiedOfficersDelta);
-                //invoke disqualified officers API with Natural method
-                invokeDisqualificationsDataApi(logContext, disqualificationOfficer, 
-                        apiObject, logMap);
-            }
         } catch (Exception ex) {
-            throw new NonRetryableErrorException("Error when extracting disqualified-officers delta", ex);
+            throw new NonRetryableErrorException(
+                    "Error when extracting disqualified-officers delta", ex);
+        }
+        DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
+                .getDisqualifiedOfficer()
+                .get(0);
+        if (disqualificationOfficer.getCorporateInd() != null
+                    && disqualificationOfficer.getCorporateInd().equals("1")) {
+            InternalCorporateDisqualificationApi apiObject = transformer
+                    .transformCorporateDisqualification(disqualifiedOfficersDelta);
+            //invoke disqualified officers API with Corporate method
+            invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
+                    apiObject, logMap);
+        } else {
+            InternalNaturalDisqualificationApi apiObject = transformer
+                    .transformNaturalDisqualification(disqualifiedOfficersDelta);
+            //invoke disqualified officers API with Natural method
+            invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
+                    apiObject, logMap);
         }
     }
 

@@ -1,16 +1,26 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.serialization;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class ChsDeltaSerializerTest {
 
-    private ChsDeltaSerializer serializer = new ChsDeltaSerializer();
+    @Mock
+    private Logger logger;
+    private ChsDeltaSerializer serializer;
+
+    @BeforeEach
+    public void init() {
+        serializer = new ChsDeltaSerializer(logger);
+    }
 
     @Test
     void When_serialize_Expect_ValidByteArray() {
@@ -20,6 +30,19 @@ public class ChsDeltaSerializerTest {
         byte[] serializedObject = serializer.serialize("", chsDelta);
 
         assertThat(serializedObject).isEqualTo(data);
+    }
+
+    @Test
+    void When_serialize_null_returns_null() {
+        byte[] serialize = serializer.serialize("", null);
+        assertThat(serialize).isNull();
+    }
+
+    @Test
+    void When_serialize_receivesBytes_returnsBytes() {
+        byte[] byteExample = "Example bytes".getBytes();
+        byte[] serialize = serializer.serialize("", byteExample);
+        assertThat(serialize).isEqualTo(byteExample);
     }
 
 }

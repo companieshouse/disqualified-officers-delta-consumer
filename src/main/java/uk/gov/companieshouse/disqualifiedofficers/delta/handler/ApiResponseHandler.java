@@ -2,7 +2,6 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.handler;
 
 import java.util.Map;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.logging.Logger;
@@ -30,7 +29,8 @@ public class ApiResponseHandler {
             logger.errorContext(logContext, msg + ", retry", null, logMap);
             throw new RetryableErrorException(msg);
         } else {
-            logger.debugContext(logContext, "Response received from disqualified-officers-data-api", logMap);
+            logger.debugContext(logContext,
+                    "Response received from disqualified-officers-data-api", logMap);
         }
     }
 }

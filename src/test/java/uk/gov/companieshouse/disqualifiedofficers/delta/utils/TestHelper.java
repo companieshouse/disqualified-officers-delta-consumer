@@ -1,5 +1,8 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.utils;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -13,6 +16,8 @@ import uk.gov.companieshouse.delta.ChsDelta;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+
+import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQCN;
 
 public class TestHelper {
 
@@ -102,5 +107,14 @@ public class TestHelper {
         disqualifiedOfficer.addDisqualificationsItem(disqualification);
 
         return new DisqualificationDelta().addDisqualifiedOfficerItem(disqualifiedOfficer);
+    }
+
+    public ProducerRecord<String, Object> createRecord(String topic, String header) {
+        Object recordObj = new Object();
+        RecordHeaders headers = new RecordHeaders();
+        headers.add(EXCEPTION_CAUSE_FQCN, header.getBytes());
+        ProducerRecord<String, Object> record = new ProducerRecord<>(topic, 1,1L ,null, recordObj, headers);
+
+        return record;
     }
 }

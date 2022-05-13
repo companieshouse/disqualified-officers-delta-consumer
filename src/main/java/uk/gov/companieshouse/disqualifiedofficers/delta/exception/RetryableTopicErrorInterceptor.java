@@ -11,6 +11,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
 import uk.gov.companieshouse.disqualifiedofficers.delta.config.LoggingConfig;
+import uk.gov.companieshouse.logging.Logger;
 
 /**
  * Retryable Topic Error Interceptor.
@@ -21,8 +22,10 @@ public class RetryableTopicErrorInterceptor implements ProducerInterceptor<Strin
     public ProducerRecord<String, Object> onSend(ProducerRecord<String, Object> record) {
         String nextTopic = record.topic().contains("-error") ? getNextErrorTopic(record)
                 : record.topic();
-        LoggingConfig.getLogger().info(format("Moving record into new topic: %s with value: %s",
-                nextTopic, record.value()));
+        if (LoggingConfig.getLogger() != null) {
+            LoggingConfig.getLogger().info(format("Moving record into new topic: %s with value: %s",
+                    nextTopic, record.value()));
+        }
         if (nextTopic.contains("-invalid")) {
             return new ProducerRecord<>(nextTopic, record.key(), record.value());
         }

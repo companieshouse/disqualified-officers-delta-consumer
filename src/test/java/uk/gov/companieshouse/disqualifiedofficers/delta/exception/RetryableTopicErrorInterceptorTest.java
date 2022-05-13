@@ -35,4 +35,13 @@ public class RetryableTopicErrorInterceptorTest  {
 
         assertThat(newRecord.topic()).isEqualTo("topic-invalid");
     }
+
+    @Test
+    void when_error_is_retryable_topic_is_unchanged() {
+        TestHelper testHelper = new TestHelper();
+        ProducerRecord<String, Object> record = testHelper.createRecord("topic-error", RetryableErrorException.class.getName());
+        ProducerRecord<String, Object> newRecord = interceptor.onSend(record);
+
+        assertThat(newRecord.topic()).isEqualTo("topic-error");
+    }
 }

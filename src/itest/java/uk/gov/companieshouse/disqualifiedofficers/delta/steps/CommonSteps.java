@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommonSteps {
 
-    @Value("${disqualified-officers.delta.topic.main}")
+    @Value("${disqualified-officers.delta.topic}")
     private String mainTopic;
 
     @Value("${wiremock.server.port}")
@@ -37,7 +37,7 @@ public class CommonSteps {
     private static WireMockServer wireMockServer;
 
     @Autowired
-    private KafkaTemplate<String, ChsDelta> kafkaTemplate;
+    private KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     private Logger logger;
 

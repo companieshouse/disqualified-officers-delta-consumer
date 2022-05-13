@@ -31,8 +31,8 @@ class ApiResponseHandlerTest {
         Map<String, Object> logMap = new HashMap<>();
 
         apiResponseHandler.handleResponse(
-                ex, httpStatus,"status", "testy test test", logMap, logger );
-        verify(logger).debugContext("status", "testy test test", logMap);
+                httpStatus,"status", logMap, logger );
+        verify(logger).debugContext("status", "Response received from disqualified-officers-data-api", logMap);
     }
 
     @Test
@@ -40,8 +40,9 @@ class ApiResponseHandlerTest {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         Map<String, Object> logMap = new HashMap<>();
         assertThrows(NonRetryableErrorException.class, () -> apiResponseHandler.handleResponse(
-                ex, httpStatus, "status", "testy test test", logMap, logger));
-        verify(logger).errorContext("status", "testy test test", null, logMap);
+                httpStatus, "status", logMap, logger));
+        verify(logger).errorContext("status",
+                "400 BAD_REQUEST response received from disqualified-officers-data-api", null, logMap);
     }
 
     @Test
@@ -49,7 +50,8 @@ class ApiResponseHandlerTest {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         Map<String, Object> logMap = new HashMap<>();
         assertThrows(RetryableErrorException.class, () -> apiResponseHandler.handleResponse(
-                ex, httpStatus, "status", "testy test test", logMap, logger));
-        verify(logger).errorContext("status", "testy test test, retry", null, logMap);
+                httpStatus, "status", logMap, logger));
+        verify(logger).errorContext("status",
+                "Non-Successful 200 response received from disqualified-officers-data-api, retry", null, logMap);
     }
 }

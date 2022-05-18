@@ -39,8 +39,7 @@ public class DisqualifiedOfficersDeltaConsumer {
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
             autoCreateTopics = "false",
             exclude = NonRetryableErrorException.class)
-    @KafkaListener(id = "${disqualified-officers.delta.main-id}",
-            topics = "${disqualified-officers.delta.topic}",
+    @KafkaListener(topics = "${disqualified-officers.delta.topic}",
             groupId = "${disqualified-officers.delta.group-id}",
             containerFactory = "listenerContainerFactory")
     public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage,

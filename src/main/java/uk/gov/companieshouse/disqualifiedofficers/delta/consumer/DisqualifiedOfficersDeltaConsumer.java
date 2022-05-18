@@ -3,6 +3,7 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.kafka.retrytopic.FixedDelayStrategy;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -21,12 +22,15 @@ public class DisqualifiedOfficersDeltaConsumer {
 
     private final DisqualifiedOfficersDeltaProcessor deltaProcessor;
     private final Logger logger;
+    public final KafkaTemplate<String, Object> kafkaTemplate;
+
 
     @Autowired
     public DisqualifiedOfficersDeltaConsumer(DisqualifiedOfficersDeltaProcessor deltaProcessor,
-                Logger logger) {
+                Logger logger, KafkaTemplate<String, Object> kafkaTemplate) {
         this.deltaProcessor = deltaProcessor;
         this.logger = logger;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     /**
@@ -35,7 +39,8 @@ public class DisqualifiedOfficersDeltaConsumer {
     @RetryableTopic(attempts = "${disqualified-officers.delta.retry-attempts}",
             backoff = @Backoff(delayExpression = "${disqualified-officers.delta.backoff-delay}"),
             fixedDelayTopicStrategy = FixedDelayStrategy.SINGLE_TOPIC,
-            dltTopicSuffix = "-error",
+            retryTopicSuffix = "-${disqualified-officers.delta.group-id}-retry",
+            dltTopicSuffix = "-${disqualified-officers.delta.group-id}-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
             autoCreateTopics = "false",
             exclude = NonRetryableErrorException.class)

@@ -12,7 +12,6 @@ spring:
 disqualified-officers:
   delta:
     group-id: disqualified-officers-delta-consumer
-    retry-id: disqualified-officers-retry-consumer
     retry-attempts: 4
     backoff-delay: 100
     topic: disqualified-officers-delta

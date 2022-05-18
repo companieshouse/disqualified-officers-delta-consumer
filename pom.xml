@@ -24,7 +24,7 @@
         <maven-failsafe-plugin.version>2.12.4</maven-failsafe-plugin.version>
         <docker-maven-plugin.version>1.0.0</docker-maven-plugin.version>
         <io-cucumber.version>7.2.3</io-cucumber.version>
-        <ch-kafka.version>1.4.2</ch-kafka.version>
+        <ch-kafka.version>1.4.6</ch-kafka.version>
         <structured-logging.version>1.9.12</structured-logging.version>
         <kafka-models.version>1.0.25</kafka-models.version>
         <private-api-sdk-java.version>2.0.146</private-api-sdk-java.version>
@@ -33,6 +33,8 @@
         <wiremock.standalone.version>2.32.0</wiremock.standalone.version>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
+        <spring.boot.version>2.6.4</spring.boot.version>
+
 
         <!--sonar configuration-->
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml,
@@ -40,6 +42,18 @@
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>

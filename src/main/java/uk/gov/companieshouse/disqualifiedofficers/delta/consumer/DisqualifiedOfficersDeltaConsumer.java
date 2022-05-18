@@ -24,7 +24,9 @@ public class DisqualifiedOfficersDeltaConsumer {
     private final Logger logger;
     public final KafkaTemplate<String, Object> kafkaTemplate;
 
-
+    /**
+     * Default constructor.
+     */
     @Autowired
     public DisqualifiedOfficersDeltaConsumer(DisqualifiedOfficersDeltaProcessor deltaProcessor,
                 Logger logger, KafkaTemplate<String, Object> kafkaTemplate) {

@@ -7,7 +7,7 @@ springfox:
 
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_BROKER_ADDR:localhost:9092}
+    bootstrap-servers: ${DATA_SYNC_KAFKA_BROKER_URL:localhost:9092}
 
 disqualified-officers:
   delta:

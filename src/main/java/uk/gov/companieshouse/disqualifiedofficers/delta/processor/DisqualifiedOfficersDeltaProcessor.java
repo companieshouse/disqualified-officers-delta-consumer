@@ -19,6 +19,7 @@ import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificatio
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
+import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.handler.ApiResponseHandler;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
@@ -71,14 +72,26 @@ public class DisqualifiedOfficersDeltaProcessor {
                 .get(0);
         if (disqualificationOfficer.getCorporateInd() != null
                     && disqualificationOfficer.getCorporateInd().equals("1")) {
-            InternalCorporateDisqualificationApi apiObject = transformer
-                    .transformCorporateDisqualification(disqualifiedOfficersDelta);
+            InternalCorporateDisqualificationApi apiObject;
+            try {
+                apiObject = transformer.transformCorporateDisqualification(
+                        disqualifiedOfficersDelta);
+            } catch (Exception ex) {
+                throw new RetryableErrorException(
+                        "Error when transforming into Api object", ex);
+            }
             //invoke disqualified officers API with Corporate method
             invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
                     apiObject, logMap);
         } else {
-            InternalNaturalDisqualificationApi apiObject = transformer
-                    .transformNaturalDisqualification(disqualifiedOfficersDelta);
+            InternalNaturalDisqualificationApi apiObject;
+            try {
+                apiObject = transformer.transformNaturalDisqualification(
+                        disqualifiedOfficersDelta);
+            } catch (Exception ex) {
+                throw new RetryableErrorException(
+                        "Error when transforming into Api object", ex);
+            }
             //invoke disqualified officers API with Natural method
             invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
                     apiObject, logMap);

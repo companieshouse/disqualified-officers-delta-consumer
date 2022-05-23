@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.logging.Logger;
@@ -22,8 +21,6 @@ class ApiResponseHandlerTest {
 
     @Mock
     private Logger logger;
-    @Mock
-    ResponseStatusException ex;
 
     @Test
     void handle200Response() throws NonRetryableErrorException, RetryableErrorException {
@@ -46,12 +43,22 @@ class ApiResponseHandlerTest {
     }
 
     @Test
+    void handle404Response() throws NonRetryableErrorException, RetryableErrorException {
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        Map<String, Object> logMap = new HashMap<>();
+        assertThrows(RetryableErrorException.class, () -> apiResponseHandler.handleResponse(
+                httpStatus, "status", logMap, logger));
+        verify(logger).errorContext("status",
+                "Non-Successful response received from disqualified-officers-data-api, retry", null, logMap);
+    }
+
+    @Test
     void handle500Response() throws NonRetryableErrorException, RetryableErrorException {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         Map<String, Object> logMap = new HashMap<>();
         assertThrows(RetryableErrorException.class, () -> apiResponseHandler.handleResponse(
                 httpStatus, "status", logMap, logger));
         verify(logger).errorContext("status",
-                "Non-Successful 200 response received from disqualified-officers-data-api, retry", null, logMap);
+                "Non-Successful response received from disqualified-officers-data-api, retry", null, logMap);
     }
 }

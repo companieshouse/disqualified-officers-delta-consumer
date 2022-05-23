@@ -6,9 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class ChsDeltaSerializerTest {
@@ -43,6 +45,12 @@ public class ChsDeltaSerializerTest {
         byte[] byteExample = "Example bytes".getBytes();
         byte[] serialize = serializer.serialize("", byteExample);
         assertThat(serialize).isEqualTo(byteExample);
+    }
+
+    @Test
+    void When_serialize_receives_blank_object_exception_thrown() {
+        ChsDelta payload = new ChsDelta();
+        assertThrows(NonRetryableErrorException.class, () -> serializer.serialize("",payload));
     }
 
 }

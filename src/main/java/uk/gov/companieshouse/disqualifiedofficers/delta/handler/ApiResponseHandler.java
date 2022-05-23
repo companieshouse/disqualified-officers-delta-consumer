@@ -25,7 +25,7 @@ public class ApiResponseHandler {
             throw new NonRetryableErrorException(msg);
         } else if (!httpStatus.is2xxSuccessful()) {
             // any other client or server status can be retried
-            String msg = "Non-Successful 200 response received from disqualified-officers-data-api";
+            String msg = "Non-Successful response received from disqualified-officers-data-api";
             logger.errorContext(logContext, msg + ", retry", null, logMap);
             throw new RetryableErrorException(msg);
         } else {

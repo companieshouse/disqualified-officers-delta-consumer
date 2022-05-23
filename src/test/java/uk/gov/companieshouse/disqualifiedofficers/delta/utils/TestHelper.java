@@ -26,17 +26,7 @@ public class TestHelper {
                 ClassLoader.getSystemClassLoader().getResourceAsStream("disqualified-officers-delta-example.json"));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
 
-        ChsDelta mockChsDelta = ChsDelta.newBuilder()
-                .setData(data)
-                .setContextId("context_id")
-                .setAttempt(1)
-                .build();
-
-        return MessageBuilder
-                .withPayload(mockChsDelta)
-                .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
-                .setHeader("DISQUALIFIED_OFFICERS_DELTA_RETRY_COUNT", 1)
-                .build();
+        return buildMessage(data);
     }
 
     public InternalNaturalDisqualificationApi createDisqualificationApi() {
@@ -116,5 +106,30 @@ public class TestHelper {
         ProducerRecord<String, Object> record = new ProducerRecord<>(topic, 1,1L ,null, recordObj, headers);
 
         return record;
+    }
+
+    public Message<ChsDelta> createInvalidChsDeltaMessage() {
+        return buildMessage("This is some invalid data");
+    }
+
+    public Message<ChsDelta> createBrokenChsDeltaMessage() throws IOException {
+        InputStreamReader exampleJsonPayload = new InputStreamReader(
+                ClassLoader.getSystemClassLoader().getResourceAsStream("invalid-disqualified-officers-delta-example.json"));
+        String data = FileCopyUtils.copyToString(exampleJsonPayload);
+        return buildMessage(data);
+    }
+
+    private Message<ChsDelta> buildMessage(String data) {
+        ChsDelta mockChsDelta = ChsDelta.newBuilder()
+                .setData(data)
+                .setContextId("context_id")
+                .setAttempt(1)
+                .build();
+
+        return MessageBuilder
+                .withPayload(mockChsDelta)
+                .setHeader(KafkaHeaders.RECEIVED_TOPIC, "test")
+                .setHeader("DISQUALIFIED_OFFICERS_DELTA_RETRY_COUNT", 1)
+                .build();
     }
 }

@@ -41,8 +41,7 @@ public class DisqualifiedOfficersDeltaConsumer {
     @RetryableTopic(attempts = "${disqualified-officers.delta.retry-attempts}",
             backoff = @Backoff(delayExpression = "${disqualified-officers.delta.backoff-delay}"),
             fixedDelayTopicStrategy = FixedDelayStrategy.SINGLE_TOPIC,
-            retryTopicSuffix = "-${disqualified-officers.delta.group-id}-retry",
-            dltTopicSuffix = "-${disqualified-officers.delta.group-id}-error",
+            dltTopicSuffix = "-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
             autoCreateTopics = "false",
             exclude = NonRetryableErrorException.class)

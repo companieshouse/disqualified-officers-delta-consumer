@@ -5,9 +5,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.data.TestData;
 import uk.gov.companieshouse.disqualifiedofficers.delta.matcher.DisqualificationRequestMatcher;
@@ -15,6 +19,7 @@ import uk.gov.companieshouse.logging.Logger;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
@@ -24,7 +29,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 public class CommonSteps {
 
@@ -38,6 +42,8 @@ public class CommonSteps {
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
+    @Autowired
+    public KafkaConsumer<String, Object> kafkaConsumer;
     @Autowired
     private Logger logger;
 
@@ -59,8 +65,43 @@ public class CommonSteps {
         ChsDelta delta = new ChsDelta(TestData.getInputData(officerType, disqType), 1, "1");
         kafkaTemplate.send(mainTopic, delta);
 
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        countDown();
+    }
+
+    @When("an invalid avro message is sent")
+    public void invalidAvroMessageIsSent() throws Exception {
+        kafkaTemplate.send(mainTopic, "InvalidData");
+
+        countDown();
+    }
+
+    @When("a message with invalid data is sent")
+    public void messageWithInvalidDataIsSent() throws Exception {
+        ChsDelta delta = new ChsDelta("InvalidData", 1, "1");
+        kafkaTemplate.send(mainTopic, delta);
+
+        countDown();
+    }
+
+    @When("^the consumer receives a message but the data api returns a (\\d*)$")
+    public void theConsumerReceivesMessageButDataApiReturns(int responseCode) throws Exception{
+        configureWiremock();
+        stubPutDisqualification("natural", responseCode);
+
+        ChsDelta delta = new ChsDelta(
+                TestData.getInputData("natural", "undertaking"), 1, "1");
+        kafkaTemplate.send(mainTopic, delta);
+
+        countDown();
+    }
+
+    @When("the consumer receives a message that causes an error")
+    public void theConsumerReceivesMessageThatCausesAnError() throws Exception {
+        ChsDelta delta = new ChsDelta(
+                TestData.getInputData("natural", "error"), 1, "1");
+        kafkaTemplate.send(mainTopic, delta);
+
+        countDown();
     }
 
     @Then("a PUT request is sent to the disqualifications api with the transformed data")
@@ -68,9 +109,30 @@ public class CommonSteps {
         verify(1, requestMadeFor(new DisqualificationRequestMatcher(logger, type, output)));
     }
 
+    @Then("^the message should be moved to topic (.*)$")
+    public void theMessageShouldBeMovedToTopic(String topic) {
+        ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, topic);
+
+        assertThat(singleRecord.value()).isNotNull();
+    }
+
+    @Then("^the message should retry (\\d*) times and then error$")
+    public void theMessageShouldRetryAndError(int retries) {
+        ConsumerRecords<String, Object> records = KafkaTestUtils.getRecords(kafkaConsumer);
+        Iterable<ConsumerRecord<String, Object>> retryRecords =  records.records("disqualified-officers-delta-retry");
+        Iterable<ConsumerRecord<String, Object>> errorRecords =  records.records("disqualified-officers-delta-error");
+
+        int actualRetries = (int) StreamSupport.stream(retryRecords.spliterator(), false).count();
+        int errors = (int) StreamSupport.stream(errorRecords.spliterator(), false).count();
+
+        assertThat(actualRetries).isEqualTo(retries);
+        assertThat(errors).isEqualTo(1);
+    }
+
     @After
     public void shutdownWiremock(){
-        wireMockServer.stop();
+        if (wireMockServer != null)
+            wireMockServer.stop();
     }
 
     private void configureWiremock() {
@@ -80,8 +142,17 @@ public class CommonSteps {
     }
 
     private void stubPutDisqualification(String type) {
+        stubPutDisqualification(type, 200);
+    }
+
+    private void stubPutDisqualification(String type, int responseCode) {
         stubFor(put(urlEqualTo("/disqualified-officers/" + type + "/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal"))
-                .willReturn(aResponse().withStatus(200)));
+                .willReturn(aResponse().withStatus(responseCode)));
+    }
+
+    private void countDown() throws Exception {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        countDownLatch.await(5, TimeUnit.SECONDS);
     }
 }
 

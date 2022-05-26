@@ -77,7 +77,7 @@ public class DisqualifiedOfficersProcessorTest {
         Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage();
         InternalNaturalDisqualificationApi apiObject = testHelper.createDisqualificationApi();
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, null);
-        when(apiClientService.putDisqualification(any(),any(), eq(apiObject))).thenReturn(response);
+        when(apiClientService.putDisqualification(any(),any(), eq(apiObject))).thenThrow(new RetryableErrorException(""));
         when(transformer.transformNaturalDisqualification(any())).thenReturn(apiObject);
         assertThrows(RetryableErrorException.class, ()->deltaProcessor.processDelta(mockChsDeltaMessage));
     }

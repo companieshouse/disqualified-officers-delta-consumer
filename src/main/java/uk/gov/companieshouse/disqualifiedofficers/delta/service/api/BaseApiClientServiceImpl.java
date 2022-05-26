@@ -8,6 +8,8 @@ import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.Executor;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.ApiResponse;
+import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
+import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.logging.Logger;
 
 public abstract class BaseApiClientServiceImpl {
@@ -41,15 +43,25 @@ public abstract class BaseApiClientServiceImpl {
             return executor.execute();
 
         } catch (URIValidationException ex) {
-            logger.errorContext(logContext, "SDK exception", ex, logMap);
+            String msg = "404 NOT_FOUND response received from disqualified-officers-data-api";
+            logger.errorContext(logContext, msg, ex, logMap);
 
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
+            throw new RetryableErrorException(msg, ex);
         } catch (ApiErrorResponseException ex) {
             logMap.put("status", ex.getStatusCode());
-            logger.errorContext(logContext, "SDK exception", ex, logMap);
 
-            throw new ResponseStatusException(HttpStatus.valueOf(ex.getStatusCode()),
-                    ex.getStatusMessage(), ex);
+            if (ex.getStatusCode() == HttpStatus.BAD_REQUEST.value()) {
+                // 400 BAD REQUEST status cannot be retried
+                String msg =
+                        "400 BAD_REQUEST response received from disqualified-officers-data-api";
+                logger.errorContext(logContext, msg, ex, logMap);
+                throw new NonRetryableErrorException(msg, ex);
+            }
+
+            // any other client or server status is retryable
+            String msg = "Non-Successful response received from disqualified-officers-data-api";
+            logger.errorContext(logContext, msg + ", retry", ex, logMap);
+            throw new RetryableErrorException(msg, ex);
         }
     }
 }

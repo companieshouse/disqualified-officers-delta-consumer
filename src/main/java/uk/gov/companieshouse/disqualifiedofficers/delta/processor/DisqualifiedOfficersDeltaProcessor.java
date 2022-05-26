@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -20,7 +19,6 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
-import uk.gov.companieshouse.disqualifiedofficers.delta.handler.ApiResponseHandler;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.logging.Logger;
@@ -109,14 +107,13 @@ public class DisqualifiedOfficersDeltaProcessor {
                 logContext,
                 String.format("Process disqualification for officer with id [%s]",
                         disqualification.getOfficerId()),
-                null);
+                logMap);
         final ApiResponse<Void> response =
                 apiClientService.putDisqualification(logContext,
                         internalDisqualificationApi.getInternalData().getOfficerId(),
                         internalDisqualificationApi);
-        ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
-        apiResponseHandler.handleResponse(HttpStatus.valueOf(response.getStatusCode()),
-                logContext, logMap, logger);
+        logger.debugContext(logContext,
+                "Response received from disqualified-officers-data-api", logMap);
     }
 
     private void invokeDisqualificationsDataApi(final String logContext,
@@ -127,13 +124,12 @@ public class DisqualifiedOfficersDeltaProcessor {
                 logContext,
                 String.format("Process disqualification for officer with id [%s]",
                         disqualification.getOfficerId()),
-                null);
+                logMap);
         final ApiResponse<Void> response =
                 apiClientService.putDisqualification(logContext,
                         internalDisqualificationApi.getInternalData().getOfficerId(),
                         internalDisqualificationApi);
-        ApiResponseHandler apiResponseHandler = new ApiResponseHandler();
-        apiResponseHandler.handleResponse(HttpStatus.valueOf(response.getStatusCode()),
-                logContext, logMap, logger);
+        logger.debugContext(logContext,
+                "Response received from disqualified-officers-data-api", logMap);
     }
 }

@@ -13,7 +13,7 @@ Feature: Retries and Errors
   Scenario: Process message when the data api returns 400
     Given the application is running
     When the consumer receives a message but the data api returns a 400
-    Then the message should be moved to topic disqualified-officers-delta-error
+    Then the message should be moved to topic disqualified-officers-delta-invalid
 
   Scenario: Process message when the data api returns 503
     Given the application is running

@@ -84,6 +84,21 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
                         .upsert(uri, internalDisqualificationApi));
     }
 
+    @Override
+    public ApiResponse<Void> deleteDisqualification(
+            final String log,
+            final String officerId) {
+        final String uri =
+                String.format("/disqualified-officers/delete/%s/internal", officerId);
+
+        Map<String,Object> logMap = createLogMap(officerId,"DELETE", uri);
+        logger.infoContext(log, String.format("DELETE %s", uri), logMap);
+
+        return executeOp(log, "deleteDisqualification", uri,
+                getApiClient(log).privateDisqualificationResourceHandler()
+                        .deleteDisqualification(uri));
+    }
+
     private Map<String, Object> createLogMap(String officerId, String method, String path) {
         final Map<String, Object> logMap = new HashMap<>();
         logMap.put("officer_id", officerId);

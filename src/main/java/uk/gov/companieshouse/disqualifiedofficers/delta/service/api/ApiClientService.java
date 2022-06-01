@@ -26,4 +26,9 @@ public interface ApiClientService {
             final String log,
             final String officerId,
             final InternalCorporateDisqualificationApi internalDisqualificationApi);
+
+    /**
+     * Delete disqualification.
+     */
+    ApiResponse<Void> deleteDisqualification(final String log, final String officerId);
 }

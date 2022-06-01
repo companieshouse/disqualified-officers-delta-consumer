@@ -21,13 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.requestMadeFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommonSteps {
@@ -62,7 +56,7 @@ public class CommonSteps {
         this.type = officerType;
         this.output = TestData.getOutputData(officerType, disqType);
 
-        ChsDelta delta = new ChsDelta(TestData.getInputData(officerType, disqType), 1, "1");
+        ChsDelta delta = new ChsDelta(TestData.getInputData(officerType, disqType), 1, "1", false);
         kafkaTemplate.send(mainTopic, delta);
 
         countDown();
@@ -77,7 +71,7 @@ public class CommonSteps {
 
     @When("a message with invalid data is sent")
     public void messageWithInvalidDataIsSent() throws Exception {
-        ChsDelta delta = new ChsDelta("InvalidData", 1, "1");
+        ChsDelta delta = new ChsDelta("InvalidData", 1, "1", false);
         kafkaTemplate.send(mainTopic, delta);
 
         countDown();
@@ -89,7 +83,7 @@ public class CommonSteps {
         stubPutDisqualification("natural", responseCode);
 
         ChsDelta delta = new ChsDelta(
-                TestData.getInputData("natural", "undertaking"), 1, "1");
+                TestData.getInputData("natural", "undertaking"), 1, "1", false);
         kafkaTemplate.send(mainTopic, delta);
 
         countDown();
@@ -98,7 +92,7 @@ public class CommonSteps {
     @When("the consumer receives a message that causes an error")
     public void theConsumerReceivesMessageThatCausesAnError() throws Exception {
         ChsDelta delta = new ChsDelta(
-                TestData.getInputData("natural", "error"), 1, "1");
+                TestData.getInputData("natural", "error"), 1, "1", false);
         kafkaTemplate.send(mainTopic, delta);
 
         countDown();
@@ -129,6 +123,22 @@ public class CommonSteps {
         assertThat(errors).isEqualTo(1);
     }
 
+    @When("the consumer receives a delete payload")
+    public void theConsumerReceivesDelete() throws Exception {
+        configureWiremock();
+        stubDeleteDisqualification(200);
+        ChsDelta delta = new ChsDelta(TestData.getDeleteData(), 1, "1", true);
+        kafkaTemplate.send(mainTopic, delta);
+
+        countDown();
+    }
+
+    @Then("a DELETE request is sent to the disqualifications api with the encoded Id")
+    public void deleteRequestIsSent() {
+        verify(1, deleteRequestedFor(urlMatching(
+                "/disqualified-officers/delete/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal")));
+    }
+
     @After
     public void shutdownWiremock(){
         if (wireMockServer != null)
@@ -147,6 +157,11 @@ public class CommonSteps {
 
     private void stubPutDisqualification(String type, int responseCode) {
         stubFor(put(urlEqualTo("/disqualified-officers/" + type + "/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal"))
+                .willReturn(aResponse().withStatus(responseCode)));
+    }
+
+    private void stubDeleteDisqualification(int responseCode) {
+        stubFor(delete(urlEqualTo("/disqualified-officers/delete/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal"))
                 .willReturn(aResponse().withStatus(responseCode)));
     }
 

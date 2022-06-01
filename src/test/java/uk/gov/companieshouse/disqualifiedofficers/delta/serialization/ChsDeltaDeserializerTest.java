@@ -20,7 +20,7 @@ public class ChsDeltaDeserializerTest {
 
     @Test
     void When_deserialize_Expect_ValidChsDeltaObject() {
-        ChsDelta chsDelta = new ChsDelta("data", 1, "context_id");
+        ChsDelta chsDelta = new ChsDelta("data", 1, "context_id",false);
         byte[] data = encodedData(chsDelta);
 
         ChsDelta deserializedObject = deserializer.deserialize("", data);

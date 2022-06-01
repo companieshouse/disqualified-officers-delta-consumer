@@ -53,7 +53,11 @@ public class DisqualifiedOfficersDeltaConsumer {
         logger.info("A new message read from " + topic + " topic with payload: "
                 + chsDeltaMessage.getPayload());
         try {
-            deltaProcessor.processDelta(chsDeltaMessage);
+            if (Boolean.TRUE.equals(chsDeltaMessage.getPayload().getIsDelete())) {
+                deltaProcessor.processDelete(chsDeltaMessage);
+            } else {
+                deltaProcessor.processDelta(chsDeltaMessage);
+            }
         } catch (Exception exception) {
             logger.error(String.format("Exception occurred while processing the topic: %s "
                     + "with message: %s", topic, chsDeltaMessage), exception);

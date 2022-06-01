@@ -21,9 +21,10 @@ import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQC
 
 public class TestHelper {
 
-    public Message<ChsDelta> createChsDeltaMessage() throws IOException {
+    public Message<ChsDelta> createChsDeltaMessage(boolean isDelete) throws IOException {
+        String filename = isDelete ? "disqualified-officers-delete-example.json":"disqualified-officers-delta-example.json";
         InputStreamReader exampleJsonPayload = new InputStreamReader(
-                ClassLoader.getSystemClassLoader().getResourceAsStream("disqualified-officers-delta-example.json"));
+                ClassLoader.getSystemClassLoader().getResourceAsStream(filename));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
 
         return buildMessage(data);
@@ -116,6 +117,14 @@ public class TestHelper {
         InputStreamReader exampleJsonPayload = new InputStreamReader(
                 ClassLoader.getSystemClassLoader().getResourceAsStream("invalid-disqualified-officers-delta-example.json"));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
+        return buildMessage(data);
+    }
+
+    public Message<ChsDelta> createDeleteMessage() throws IOException {
+        InputStreamReader exampleJsonPayload = new InputStreamReader(
+                ClassLoader.getSystemClassLoader().getResourceAsStream("disqualified-officers-delete-example.json"));
+        String data = FileCopyUtils.copyToString(exampleJsonPayload);
+
         return buildMessage(data);
     }
 

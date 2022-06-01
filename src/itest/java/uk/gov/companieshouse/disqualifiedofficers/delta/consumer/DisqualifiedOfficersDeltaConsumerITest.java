@@ -17,7 +17,7 @@ public class DisqualifiedOfficersDeltaConsumerITest extends AbstractIntegrationT
 
     @Test
     public void testSendingKafkaMessage() {
-        ChsDelta chsDelta = new ChsDelta("{ \"key\": \"value\" }", 1, "some_id");
+        ChsDelta chsDelta = new ChsDelta("{ \"key\": \"value\" }", 1, "some_id", false);
         kafkaTemplate.send(mainTopic, chsDelta);
     }
 

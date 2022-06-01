@@ -14,6 +14,7 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.MapperUtils;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.utils.TestHelper;
@@ -53,7 +54,7 @@ public class DisqualifiedOfficersProcessorTest {
     @Test
     @DisplayName("Transforms a kafka message containing a ChsDelta payload into a DisqualificationDelta")
     void When_ValidChsDeltaMessage_Expect_ValidDisqualificationDeltaMapping() throws IOException {
-        Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage();
+        Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage(false);
         DisqualificationDelta expectedDelta = testHelper.createDisqualificationDelta();
         InternalNaturalDisqualificationApi apiObject = testHelper.createDisqualificationApi();
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
@@ -74,9 +75,8 @@ public class DisqualifiedOfficersProcessorTest {
 
     @Test
     void When_ApiReturns500_Expect_RetryableError() throws IOException {
-        Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage();
+        Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage(false);
         InternalNaturalDisqualificationApi apiObject = testHelper.createDisqualificationApi();
-        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, null);
         when(apiClientService.putDisqualification(any(),any(), eq(apiObject))).thenThrow(new RetryableErrorException(""));
         when(transformer.transformNaturalDisqualification(any())).thenReturn(apiObject);
         assertThrows(RetryableErrorException.class, ()->deltaProcessor.processDelta(mockChsDeltaMessage));
@@ -87,5 +87,24 @@ public class DisqualifiedOfficersProcessorTest {
         Message<ChsDelta> mockChsDeltaMessage = testHelper.createBrokenChsDeltaMessage();
         when(transformer.transformNaturalDisqualification(any())).thenCallRealMethod();
         assertThrows(RetryableErrorException.class, ()->deltaProcessor.processDelta(mockChsDeltaMessage));
+    }
+
+    @Test
+    void When_Valid_Delete_Message_Received_Delete_Endpoint_is_Called() throws IOException {
+        Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage(true);
+        final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
+        String encoded_id = MapperUtils.encode("1234567890");
+
+        when(apiClientService.deleteDisqualification("context_id", encoded_id)).thenReturn(response);
+
+        deltaProcessor.processDelete(mockChsDeltaMessage);
+
+        verify(apiClientService).deleteDisqualification("context_id", encoded_id);
+    }
+
+    @Test
+    void When_InvalidDeleteMessage_Expect_NonRetryableError() {
+        Message<ChsDelta> mockChsDeltaMessage = testHelper.createInvalidChsDeltaMessage();
+        assertThrows(NonRetryableErrorException.class, ()->deltaProcessor.processDelete(mockChsDeltaMessage));
     }
 }

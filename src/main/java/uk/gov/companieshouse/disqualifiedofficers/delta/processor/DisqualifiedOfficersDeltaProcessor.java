@@ -11,6 +11,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 
+import uk.gov.companieshouse.api.delta.DisqualificationDeleteDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
@@ -19,6 +20,7 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.MapperUtils;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.logging.Logger;
@@ -94,6 +96,27 @@ public class DisqualifiedOfficersDeltaProcessor {
             invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
                     apiObject, logMap);
         }
+    }
+
+    /**
+     * Process CHS Delta delete message.
+     */
+    public void processDelete(Message<ChsDelta> chsDelta) {
+        final ChsDelta payload = chsDelta.getPayload();
+        final String logContext = payload.getContextId();
+        final String officerId;
+
+        ObjectMapper mapper = new ObjectMapper();
+        DisqualificationDeleteDelta disqualifiedOfficersDelete;
+        try {
+            disqualifiedOfficersDelete = mapper.readValue(payload.getData(),
+                    DisqualificationDeleteDelta.class);
+        } catch (Exception ex) {
+            throw new NonRetryableErrorException(
+                    "Error when extracting disqualified-officers delete delta", ex);
+        }
+        officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
+        apiClientService.deleteDisqualification(logContext, officerId);
     }
 
     /**

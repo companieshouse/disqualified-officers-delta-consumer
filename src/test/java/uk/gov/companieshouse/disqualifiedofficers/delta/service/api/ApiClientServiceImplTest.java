@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
+import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateDisqualificationDelete;
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateNaturalDisqualificationUpsert;
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateCorporateDisqualificationUpsert;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
@@ -75,6 +76,25 @@ class ApiClientServiceImplTest {
                 eq("/disqualified-officers/corporate/" +
                         "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==/internal"),
                 any(PrivateCorporateDisqualificationUpsert.class));
+
+        assertThat(response).isEqualTo(expectedResponse);
+
+    }
+
+    @Test
+    void deleteDisqualification() {
+        final ApiResponse<Void> expectedResponse = new ApiResponse<>(HttpStatus.OK.value(), null, null);
+        ApiClientServiceImpl apiClientServiceSpy = Mockito.spy(apiClientService);
+        doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(), anyString(),
+                anyString(),
+                any(PrivateDisqualificationDelete.class));
+
+        ApiResponse<Void> response = apiClientServiceSpy.deleteDisqualification("context_id",
+                "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==");
+        verify(apiClientServiceSpy).executeOp(anyString(), eq("deleteDisqualification"),
+                eq("/disqualified-officers/delete/" +
+                        "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==/internal"),
+                any(PrivateDisqualificationDelete.class));
 
         assertThat(response).isEqualTo(expectedResponse);
 

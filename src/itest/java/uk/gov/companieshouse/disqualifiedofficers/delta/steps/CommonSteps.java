@@ -136,7 +136,6 @@ public class CommonSteps {
     @When("the consumer receives an invalid delete payload")
     public void theConsumerReceivesInvalidDelete() throws Exception {
         configureWiremock();
-        stubDeleteDisqualification(200);
         ChsDelta delta = new ChsDelta("invalid", 1, "1", true);
         kafkaTemplate.send(mainTopic, delta);
 

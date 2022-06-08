@@ -133,6 +133,26 @@ public class CommonSteps {
         countDown();
     }
 
+    @When("the consumer receives an invalid delete payload")
+    public void theConsumerReceivesInvalidDelete() throws Exception {
+        configureWiremock();
+        stubDeleteDisqualification(200);
+        ChsDelta delta = new ChsDelta("invalid", 1, "1", true);
+        kafkaTemplate.send(mainTopic, delta);
+
+        countDown();
+    }
+
+    @When("^the consumer receives a delete message but the data api returns a (\\d*)$")
+    public void theConsumerReceivesDeleteMessageButDataApiReturns(int responseCode) throws Exception{
+        configureWiremock();
+        stubDeleteDisqualification(responseCode);
+        ChsDelta delta = new ChsDelta(TestData.getDeleteData(), 1, "1", true);
+        kafkaTemplate.send(mainTopic, delta);
+
+        countDown();
+    }
+
     @Then("a DELETE request is sent to the disqualifications api with the encoded Id")
     public void deleteRequestIsSent() {
         verify(1, deleteRequestedFor(urlMatching(

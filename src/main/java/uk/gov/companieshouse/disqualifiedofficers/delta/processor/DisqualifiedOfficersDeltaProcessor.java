@@ -68,7 +68,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                     "Error when extracting disqualified-officers delta", ex);
         }
 
-        logger.trace(String.format("DisqualificationDelta extraced for context ID %s " + "Kafka message: %s", logContext, disqualifiedOfficersDelta));
+        logger.trace(String.format("DisqualificationDelta extraced for context ID [%s] Kafka message: [%s]", logContext, disqualifiedOfficersDelta));
 
         DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                 .getDisqualifiedOfficer()
@@ -84,7 +84,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                         "Error when transforming into Api object", ex);
             }
 
-            logger.trace(String.format("Message with context ID: %s successfully transformed into CorporateDisqualificationAPI object",
+            logger.trace(String.format("Message with context ID: [%s] successfully transformed into CorporateDisqualificationAPI object",
                 logContext));
 
             //invoke disqualified officers API with Corporate method
@@ -100,7 +100,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                         "Error when transforming into Api object", ex);
             }
 
-            logger.trace(String.format("Message with context ID: %s successfully transformed into NaturalDisqualificationAPI object",
+            logger.trace(String.format("Message with context ID: [%s] successfully transformed into NaturalDisqualificationAPI object",
                 logContext));
 
             //invoke disqualified officers API with Natural method
@@ -127,9 +127,9 @@ public class DisqualifiedOfficersDeltaProcessor {
                     "Error when extracting disqualified-officers delete delta", ex);
         }
 
-        logger.trace(String.format("DisqualificationDeleteDelta extraced for context ID %s " + "Kafka message: %s", logContext, disqualifiedOfficersDelete));
+        logger.trace(String.format("DisqualificationDeleteDelta extraced for context ID [%s] Kafka message: [%s]", logContext, disqualifiedOfficersDelete));
         officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
-        logger.trace(String.format("Performing a DELETE for officer id: %s", officerId));
+        logger.trace(String.format("Performing a DELETE for officer id: [%s]", officerId));
         apiClientService.deleteDisqualification(logContext, officerId);
     }
 

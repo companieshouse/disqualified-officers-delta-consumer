@@ -68,7 +68,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                     "Error when extracting disqualified-officers delta", ex);
         }
 
-        logger.trace(String.format("DisqualificationDelta extraced for context ID [%s]"
+        logger.info(String.format("DisqualificationDelta extraced for context ID [%s]"
                 + " Kafka message: [%s]", logContext, disqualifiedOfficersDelta));
 
         DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
@@ -85,7 +85,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                         "Error when transforming into Api object", ex);
             }
 
-            logger.trace(String.format("Message with context ID: [%s] successfully transformed into"
+            logger.info(String.format("Message with context ID: [%s] successfully transformed into"
                     + " CorporateDisqualificationAPI object", logContext));
 
             //invoke disqualified officers API with Corporate method
@@ -101,7 +101,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                         "Error when transforming into Api object", ex);
             }
 
-            logger.trace(String.format("Message with context ID: [%s] successfully" 
+            logger.info(String.format("Message with context ID: [%s] successfully" 
                     + " transformed into NaturalDisqualificationAPI object", logContext));
 
             //invoke disqualified officers API with Natural method
@@ -128,10 +128,10 @@ public class DisqualifiedOfficersDeltaProcessor {
                     "Error when extracting disqualified-officers delete delta", ex);
         }
 
-        logger.trace(String.format("DisqualificationDeleteDelta extraced for context ID" 
+        logger.info(String.format("DisqualificationDeleteDelta extraced for context ID" 
                 + " [%s] Kafka message: [%s]", logContext, disqualifiedOfficersDelete));
         officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
-        logger.trace(String.format("Performing a DELETE for officer id: [%s]", officerId));
+        logger.info(String.format("Performing a DELETE for officer id: [%s]", officerId));
         apiClientService.deleteDisqualification(logContext, officerId);
     }
 

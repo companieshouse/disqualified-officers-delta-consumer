@@ -67,6 +67,10 @@ public class DisqualifiedOfficersDeltaProcessor {
             throw new NonRetryableErrorException(
                     "Error when extracting disqualified-officers delta", ex);
         }
+
+        logger.info(String.format("DisqualificationDelta extracted for context ID [%s]"
+                + " Kafka message: [%s]", logContext, disqualifiedOfficersDelta));
+
         DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                 .getDisqualifiedOfficer()
                 .get(0);
@@ -80,6 +84,10 @@ public class DisqualifiedOfficersDeltaProcessor {
                 throw new RetryableErrorException(
                         "Error when transforming into Api object", ex);
             }
+
+            logger.info(String.format("Message with context ID: [%s] successfully transformed into"
+                    + " CorporateDisqualificationAPI object", logContext));
+
             //invoke disqualified officers API with Corporate method
             invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
                     apiObject, logMap);
@@ -92,6 +100,10 @@ public class DisqualifiedOfficersDeltaProcessor {
                 throw new RetryableErrorException(
                         "Error when transforming into Api object", ex);
             }
+
+            logger.info(String.format("Message with context ID: [%s] successfully" 
+                    + " transformed into NaturalDisqualificationAPI object", logContext));
+
             //invoke disqualified officers API with Natural method
             invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
                     apiObject, logMap);
@@ -115,7 +127,11 @@ public class DisqualifiedOfficersDeltaProcessor {
             throw new NonRetryableErrorException(
                     "Error when extracting disqualified-officers delete delta", ex);
         }
+
+        logger.info(String.format("DisqualificationDeleteDelta extracted for context ID" 
+                + " [%s] Kafka message: [%s]", logContext, disqualifiedOfficersDelete));
         officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
+        logger.info(String.format("Performing a DELETE for officer id: [%s]", officerId));
         apiClientService.deleteDisqualification(logContext, officerId);
     }
 

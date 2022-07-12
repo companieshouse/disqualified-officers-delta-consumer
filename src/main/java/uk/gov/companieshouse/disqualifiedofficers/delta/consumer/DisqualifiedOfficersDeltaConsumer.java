@@ -1,5 +1,10 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.consumer;
 
+import static java.lang.String.format;
+import static java.time.Duration.between;
+
+import java.time.Instant;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
@@ -50,13 +55,20 @@ public class DisqualifiedOfficersDeltaConsumer {
             containerFactory = "listenerContainerFactory")
     public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage,
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        Instant startTime = Instant.now();
         logger.info("A new message read from " + topic + " topic with payload: "
                 + chsDeltaMessage.getPayload());
         try {
             if (Boolean.TRUE.equals(chsDeltaMessage.getPayload().getIsDelete())) {
                 deltaProcessor.processDelete(chsDeltaMessage);
+                logger.info(format("Disqualified officer Delete message is successfully "
+                        + "processed in %d milliseconds",
+                        between(startTime, Instant.now()).toMillis()));
             } else {
                 deltaProcessor.processDelta(chsDeltaMessage);
+                logger.info(format("Disqualified officer message is successfully "
+                        + "processed in %d milliseconds",
+                        between(startTime, Instant.now()).toMillis()));
             }
         } catch (Exception exception) {
             logger.error(String.format("Exception occurred while processing the topic: %s "

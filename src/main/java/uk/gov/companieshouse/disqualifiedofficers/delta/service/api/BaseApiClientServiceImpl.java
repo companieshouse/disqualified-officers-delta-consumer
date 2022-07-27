@@ -56,7 +56,7 @@ public abstract class BaseApiClientServiceImpl {
                 logger.errorContext(logContext, msg, ex, logMap);
                 throw new NonRetryableErrorException(msg, ex);
             } else if (ex.getStatusCode() == HttpStatus.NOT_FOUND.value()
-                    && operationName.equals("DELETE")) {
+                    && operationName.equals("deleteDisqualification")) {
                 String msg = 
                         "404 NOT_FOUND response received from disqualified-officers-data-api";
                 throw new RetryableErrorException(msg);

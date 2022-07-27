@@ -3,7 +3,6 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.service.api;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.Executor;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
@@ -56,6 +55,11 @@ public abstract class BaseApiClientServiceImpl {
                         "400 BAD_REQUEST response received from disqualified-officers-data-api";
                 logger.errorContext(logContext, msg, ex, logMap);
                 throw new NonRetryableErrorException(msg, ex);
+            } else if (ex.getStatusCode() == HttpStatus.NOT_FOUND.value()
+                    && operationName.equals("DELETE")) {
+                String msg = 
+                        "404 NOT_FOUND response received from disqualified-officers-data-api";
+                throw new RetryableErrorException(msg);
             }
 
             // any other client or server status is retryable

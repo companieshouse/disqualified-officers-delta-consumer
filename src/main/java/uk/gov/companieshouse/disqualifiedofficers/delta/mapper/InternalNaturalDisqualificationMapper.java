@@ -69,8 +69,8 @@ public interface InternalNaturalDisqualificationMapper {
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate varDate = LocalDate.parse(sourceCase.getDateOfBirth(), formatter);
-        target.getExternalData().setDateOfBirth(varDate);
+        LocalDate dob = LocalDate.parse(sourceCase.getDateOfBirth(), formatter);
+        target.getExternalData().setDateOfBirth(dob);
     }
 
 }

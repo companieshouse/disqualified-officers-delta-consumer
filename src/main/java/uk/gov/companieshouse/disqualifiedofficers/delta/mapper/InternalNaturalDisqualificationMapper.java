@@ -1,5 +1,8 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,7 +21,8 @@ public interface InternalNaturalDisqualificationMapper {
     @Mapping(target = "internalData.officerDisqId", source = "officerDisqId")
     @Mapping(target = "internalData.officerDetailId", source = "officerDetailId")
     @Mapping(target = "internalData.officerIdRaw", source = "officerId")
-    @Mapping(target = "externalData.dateOfBirth", source = "dateOfBirth", dateFormat = "yyyyMMdd")
+    @Mapping(target = "externalData.dateOfBirth", source = "dateOfBirth", 
+            dateFormat = "yyyyMMdd", ignore = true)
     @Mapping(target = "externalData.personNumber", source = "externalNumber")
     @Mapping(target = "externalData.forename", source = "forename")
     @Mapping(target = "externalData.honours", source = "honours")
@@ -48,6 +52,25 @@ public interface InternalNaturalDisqualificationMapper {
         links.setSelf(link);
         externalTarget.setLinks(links);
         internalData.setOfficerId(encodedOfficerId);
+    }
+
+    /**
+    * Invoked at the end of the auto-generated mapping methods.
+    * @param target        the target object
+    * @param sourceCase    the source object
+    */
+    @AfterMapping
+    default void mapDob(@MappingTarget InternalNaturalDisqualificationApi target,
+                          DisqualificationOfficer sourceCase) {
+
+        if (sourceCase.getDateOfBirth() == null
+                || sourceCase.getDateOfBirth().equals("")) {
+            return;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate dob = LocalDate.parse(sourceCase.getDateOfBirth(), formatter);
+        target.getExternalData().setDateOfBirth(dob);
     }
 
 }

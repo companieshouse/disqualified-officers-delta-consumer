@@ -14,7 +14,7 @@ disqualified-officers:
     group-id: disqualified-officers-delta-consumer
     retry-attempts: 4
     backoff-delay: 100
-    topic: disqualified-officers-delta
+    topic: ${DISQUALIFIED_OFFICERS_DELTA_TOPIC:disqualified-officers-delta}
 
 logger:
   namespace: disqualified-officers-delta-consumer

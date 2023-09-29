@@ -16,7 +16,7 @@
       {
         "case_identifier" : "INV3975227",
         "address" : {
-          "premise" : "30",
+          "premises" : "30",
           "address_line_1" : "Lucy Road",
           "address_line_2" : "Skewen",
           "locality" : "Neath",

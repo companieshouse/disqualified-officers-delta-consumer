@@ -3,6 +3,7 @@
     "date_of_birth": [1976,2,6],
     "person_number" : "166284060001",
     "etag" : null,
+    "kind" : null,
     "forename" : "Dust",
     "honours" : "",
     "nationality" : "British",
@@ -16,7 +17,7 @@
       {
         "case_identifier" : "INV3975227",
         "address" : {
-          "premise" : "30",
+          "premises" : "30",
           "address_line_1" : "Lucy Road",
           "address_line_2" : "Skewen",
           "locality" : "Neath",

@@ -38,7 +38,7 @@ public class TestHelper {
         internalData.setOfficerDisqId("3000035941");
 
         DisqualificationAddress address = new DisqualificationAddress();
-        address.setPremise("39");
+        address.setPremises("39");
         address.setAddressLine1("Arnold Gardens");
         address.setLocality("London");
         address.setPostalCode("N13 5JE");
@@ -69,7 +69,7 @@ public class TestHelper {
 
     public DisqualificationDelta createDisqualificationDelta() {
         DisqualificationAddress address = new DisqualificationAddress();
-        address.setPremise("39");
+        address.setPremises("39");
         address.setAddressLine1("Arnold Gardens");
         address.setLocality("London");
         address.setPostalCode("N13 5JE");

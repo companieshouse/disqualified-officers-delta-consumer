@@ -115,5 +115,6 @@ class InternalNaturalDisqualificationMapperTest {
         assertEquals(disqualification.getUndertakenOn(), LocalDate.of(2015, 02, 14));
         assertEquals(disqualification.getDisqualifiedFrom(), LocalDate.of(2015, 02, 18));
         assertEquals(disqualification.getDisqualifiedUntil(), LocalDate.of(2025, 02, 17));
+        assertEquals(disqualification.getAddress().getPremises(), "30");
     }
 }

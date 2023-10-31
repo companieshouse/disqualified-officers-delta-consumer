@@ -111,5 +111,6 @@ class InternalCorporateDisqualificationMapperTest {
         assertNull(disqualification.getUndertakenOn());
         assertEquals(disqualification.getDisqualifiedFrom(), LocalDate.of(2013, 06, 24));
         assertEquals(disqualification.getDisqualifiedUntil(), LocalDate.of(2018, 06, 23));
+        assertEquals(disqualification.getAddress().getPremises(), "Companies House");
     }
 }

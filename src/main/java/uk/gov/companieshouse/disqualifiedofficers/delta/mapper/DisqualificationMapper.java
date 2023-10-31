@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import uk.gov.companieshouse.api.delta.Disqualification;
+import uk.gov.companieshouse.api.disqualification.Address;
 import uk.gov.companieshouse.api.disqualification.LastVariation;
 
 @Mapper(componentModel = "spring")
@@ -117,6 +118,22 @@ public interface DisqualificationMapper {
             target.setHeardOn(LocalDate.parse(sourceDisq.getHearingDate(), formater));
         } else {
             target.setUndertakenOn(LocalDate.parse(sourceDisq.getHearingDate(), formater));
+        }
+    }
+
+    /**
+    * Invoked at the end of the auto-generated mapping methods.
+    *
+    * @param target     the target disqualification
+    * @param sourceDisq    the source disqualification
+    */
+    @AfterMapping
+    default void mapAddressPremiseToPremises(
+                @MappingTarget uk.gov.companieshouse.api.disqualification.Disqualification target,
+                Disqualification sourceDisq) {
+        Address address = target.getAddress();
+        if (sourceDisq.getAddress() != null) {
+            address.setPremises(sourceDisq.getAddress().getPremise());
         }
     }
 }

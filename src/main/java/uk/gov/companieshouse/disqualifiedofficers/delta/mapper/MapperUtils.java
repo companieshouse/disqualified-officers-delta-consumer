@@ -73,6 +73,7 @@ public final class MapperUtils {
         descriptionIdentifier.put("S9B", 
                 "competition-and-markets-authority-disqualification-undertaking");
         descriptionIdentifier.put("S10", "participation-in-wrongful-trading");
+        descriptionIdentifier.put("S3A", "director-disqualification-sanctions");
 
         return descriptionIdentifier;
     }

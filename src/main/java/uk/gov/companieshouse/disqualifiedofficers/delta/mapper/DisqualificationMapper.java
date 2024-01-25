@@ -71,6 +71,7 @@ public interface DisqualificationMapper {
         disqualifyingLaw.put("CDDA", "company-directors-disqualification-act-1986");
         disqualifyingLaw.put("CDDO",
                 "company-directors-disqualification-northern-ireland-order-2002");
+        disqualifyingLaw.put("SAMLA", "sanctions-anti-money-laundering-act-2018");
 
         HashMap<String, String> descriptionIdentifier = MapperUtils.createIdentifierHashMap();
 
@@ -79,7 +80,10 @@ public interface DisqualificationMapper {
         reason.put("act", disqualifyingLaw.get(sectionParts[0]));
         reason.put("description_identifier", descriptionIdentifier.get(sectionParts[2]));
 
-        String disqualificationReference = sectionParts[0].equals("CDDA") ? "section" : "article";
+        String disqualificationReference = "article";
+        if (sectionParts[0].equals("CDDA") || sectionParts[0].equals("SAMLA")) {
+            disqualificationReference = "section";
+        }
 
         reason.put(disqualificationReference, sectionParts[2].substring(1));
 
@@ -99,6 +103,7 @@ public interface DisqualificationMapper {
         HashMap<String, String> disqualificationType = new HashMap<>();
         disqualificationType.put("ORDER", "court-order");
         disqualificationType.put("UNDERTAKING", "undertaking");
+        disqualificationType.put("SANCTION", "sanction");
         target.setDisqualificationType(disqualificationType.get(sourceDisq.getDisqType()));
     }
 
@@ -116,7 +121,7 @@ public interface DisqualificationMapper {
         if (sourceDisq.getDisqType().equals("ORDER")) {
             target.setCourtName(sourceDisq.getCourtName());
             target.setHeardOn(LocalDate.parse(sourceDisq.getHearingDate(), formater));
-        } else {
+        } else if (sourceDisq.getDisqType().equals("UNDERTAKING")) {
             target.setUndertakenOn(LocalDate.parse(sourceDisq.getHearingDate(), formater));
         }
     }

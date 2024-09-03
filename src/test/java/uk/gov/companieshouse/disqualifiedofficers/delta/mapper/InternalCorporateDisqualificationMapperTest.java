@@ -54,7 +54,7 @@ class InternalCorporateDisqualificationMapperTest {
                 FileCopyUtils.copyToString(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream(path)));
 
         disqualificationDelta = mapper.readValue(input, DisqualificationDelta.class);
-        disqualificationOfficer = disqualificationDelta.getDisqualifiedOfficer().get(0);
+        disqualificationOfficer = disqualificationDelta.getDisqualifiedOfficer().getFirst();
     }
 
     @Test
@@ -71,25 +71,25 @@ class InternalCorporateDisqualificationMapperTest {
         companyNames.add("TEST LTD");
         permissionToAct.setCompanyNames(companyNames);
         permissionToAct.setCourtName("CARDIFF");
-        permissionToAct.setExpiresOn(LocalDate.of(2015, 02, 23));
-        permissionToAct.setGrantedOn(LocalDate.of(2013, 05, 15));
+        permissionToAct.setExpiresOn(LocalDate.of(2015, 2, 23));
+        permissionToAct.setGrantedOn(LocalDate.of(2013, 5, 15));
 
         assertThat(disqualificationDelta).isNotNull();
         assertThat(disqualificationTarget).isNotNull();
         assertEquals(externalDisqualificationTarget.getName(), "BOOMSHACK LTD.");
-        assertEquals(internalDisqualificationTarget.getOfficerDetailId(), null);
-        assertEquals(internalDisqualificationTarget.getOfficerDisqId(), null);
+        assertNull(internalDisqualificationTarget.getOfficerDetailId());
+        assertNull(internalDisqualificationTarget.getOfficerDisqId());
         assertEquals(internalDisqualificationTarget.getOfficerId(), "D7WbjxLxswJPHWaLzilZ98PoaZU");
         assertEquals(internalDisqualificationTarget.getOfficerIdRaw(), "1234554321");
-        assertEquals(externalDisqualificationTarget.getPersonNumber(), null);
-        assertEquals(externalDisqualificationTarget.getPermissionsToAct().get(0), permissionToAct);
+        assertNull(externalDisqualificationTarget.getPersonNumber());
+        assertEquals(externalDisqualificationTarget.getPermissionsToAct().getFirst(), permissionToAct);
         DisqualificationLinks links = new DisqualificationLinks();
         links.setSelf("/disqualified-officers/corporate/D7WbjxLxswJPHWaLzilZ98PoaZU");
         assertEquals(externalDisqualificationTarget.getLinks(), links);
         assertEquals(externalDisqualificationTarget.getCompanyNumber(), "0000000012");
         assertEquals(externalDisqualificationTarget.getCountryOfRegistration(), "England");
 
-        Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().get(0);
+        Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().getFirst();
         assertEquals(disqualification.getCaseIdentifier(), "IME3707935");
         List<String> list = new ArrayList<>();
         list.add("TEEHEE LIMITED");
@@ -107,10 +107,10 @@ class InternalCorporateDisqualificationMapperTest {
         reason.put("article", "4");
         reason.put("description_identifier", "fraud-etc-in-winding-up");
         assertEquals(disqualification.getReason(), reason);
-        assertEquals(disqualification.getHeardOn(), LocalDate.of(2013, 01, 01));
+        assertEquals(disqualification.getHeardOn(), LocalDate.of(2013, 1, 1));
         assertNull(disqualification.getUndertakenOn());
-        assertEquals(disqualification.getDisqualifiedFrom(), LocalDate.of(2013, 06, 24));
-        assertEquals(disqualification.getDisqualifiedUntil(), LocalDate.of(2018, 06, 23));
+        assertEquals(disqualification.getDisqualifiedFrom(), LocalDate.of(2013, 6, 24));
+        assertEquals(disqualification.getDisqualifiedUntil(), LocalDate.of(2018, 6, 23));
         assertEquals(disqualification.getAddress().getPremises(), "Companies House");
     }
 }

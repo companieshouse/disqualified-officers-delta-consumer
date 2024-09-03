@@ -15,9 +15,9 @@ import uk.gov.companieshouse.logging.Logger;
  */
 public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
 
-    private String expectedOutput;
-    private String type;
-    private Logger logger;
+    private final String expectedOutput;
+    private final String type;
+    private final Logger logger;
 
     public DisqualificationRequestMatcher(Logger logger, String type, String output) {
         this.type = type;

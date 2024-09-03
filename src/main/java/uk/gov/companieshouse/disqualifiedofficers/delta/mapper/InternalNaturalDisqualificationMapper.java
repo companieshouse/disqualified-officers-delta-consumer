@@ -64,7 +64,7 @@ public interface InternalNaturalDisqualificationMapper {
                           DisqualificationOfficer sourceCase) {
 
         if (sourceCase.getDateOfBirth() == null
-                || sourceCase.getDateOfBirth().equals("")) {
+                || sourceCase.getDateOfBirth().isEmpty()) {
             return;
         }
 

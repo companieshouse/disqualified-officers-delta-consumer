@@ -28,3 +28,10 @@ wiremock:
   server:
     port: 8888
 
+management:
+  endpoints:
+    web:
+      base-path: /disqualified-officers-delta-consumer
+      path-mapping:
+        health: /healthcheck
+

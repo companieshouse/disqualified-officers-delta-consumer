@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.utils;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -16,6 +15,7 @@ import uk.gov.companieshouse.delta.ChsDelta;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQCN;
 
@@ -24,7 +24,7 @@ public class TestHelper {
     public Message<ChsDelta> createChsDeltaMessage(boolean isDelete) throws IOException {
         String filename = isDelete ? "disqualified-officers-delete-example.json":"disqualified-officers-delta-example.json";
         InputStreamReader exampleJsonPayload = new InputStreamReader(
-                ClassLoader.getSystemClassLoader().getResourceAsStream(filename));
+                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(filename)));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
 
         return buildMessage(data);
@@ -104,9 +104,8 @@ public class TestHelper {
         Object recordObj = new Object();
         RecordHeaders headers = new RecordHeaders();
         headers.add(EXCEPTION_CAUSE_FQCN, header.getBytes());
-        ProducerRecord<String, Object> record = new ProducerRecord<>(topic, 1,1L ,null, recordObj, headers);
 
-        return record;
+        return new ProducerRecord<>(topic, 1,1L ,null, recordObj, headers);
     }
 
     public Message<ChsDelta> createInvalidChsDeltaMessage() {
@@ -115,14 +114,14 @@ public class TestHelper {
 
     public Message<ChsDelta> createBrokenChsDeltaMessage() throws IOException {
         InputStreamReader exampleJsonPayload = new InputStreamReader(
-                ClassLoader.getSystemClassLoader().getResourceAsStream("invalid-disqualified-officers-delta-example.json"));
+                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("invalid-disqualified-officers-delta-example.json")));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
         return buildMessage(data);
     }
 
     public Message<ChsDelta> createDeleteMessage() throws IOException {
         InputStreamReader exampleJsonPayload = new InputStreamReader(
-                ClassLoader.getSystemClassLoader().getResourceAsStream("disqualified-officers-delete-example.json"));
+                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("disqualified-officers-delete-example.json")));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
 
         return buildMessage(data);

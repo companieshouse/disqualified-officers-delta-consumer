@@ -16,7 +16,7 @@ public class ChsDeltaDeserializerTest {
 
     @Mock
     private Logger logger;
-    private ChsDeltaDeserializer deserializer = new ChsDeltaDeserializer();
+    private final ChsDeltaDeserializer deserializer = new ChsDeltaDeserializer();
 
     @Test
     void When_deserialize_Expect_ValidChsDeltaObject() {

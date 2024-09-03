@@ -2,9 +2,7 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -43,12 +41,12 @@ public interface DisqualificationMapper {
                 @MappingTarget uk.gov.companieshouse.api.disqualification.Disqualification target,
                 Disqualification sourceDisq) {
         if (sourceDisq.getVarInstrumentStartDate() == null
-                || sourceDisq.getVarInstrumentStartDate().equals("")) {
+                || sourceDisq.getVarInstrumentStartDate().isEmpty()) {
             return;
         }
         LastVariation lastVariation = new LastVariation(); 
-        DateTimeFormatter formater = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate varDate = LocalDate.parse(sourceDisq.getVarInstrumentStartDate(), formater);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate varDate = LocalDate.parse(sourceDisq.getVarInstrumentStartDate(), formatter);
         lastVariation.setVariedOn(varDate);
         lastVariation.setCaseIdentifier(sourceDisq.getVariationCourtRefNo());
         lastVariation.setCourtName(sourceDisq.getVariationCourt());
@@ -117,12 +115,12 @@ public interface DisqualificationMapper {
     default void parseHearingDetails(
                 @MappingTarget uk.gov.companieshouse.api.disqualification.Disqualification target,
                 Disqualification sourceDisq) {
-        DateTimeFormatter formater = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         if (sourceDisq.getDisqType().equals("ORDER")) {
             target.setCourtName(sourceDisq.getCourtName());
-            target.setHeardOn(LocalDate.parse(sourceDisq.getHearingDate(), formater));
+            target.setHeardOn(LocalDate.parse(sourceDisq.getHearingDate(), formatter));
         } else if (sourceDisq.getDisqType().equals("UNDERTAKING")) {
-            target.setUndertakenOn(LocalDate.parse(sourceDisq.getHearingDate(), formater));
+            target.setUndertakenOn(LocalDate.parse(sourceDisq.getHearingDate(), formatter));
         }
     }
 

@@ -73,7 +73,7 @@ public class DisqualifiedOfficersDeltaProcessor {
 
         DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                 .getDisqualifiedOfficer()
-                .get(0);
+                .getFirst();
         if (disqualificationOfficer.getCorporateInd() != null
                     && disqualificationOfficer.getCorporateInd().equals("1")) {
             InternalCorporateDisqualificationApi apiObject;

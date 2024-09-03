@@ -41,7 +41,7 @@ public class DisqualifiedOfficersApiTransformer {
     */
     public InternalNaturalDisqualificationApi transformNaturalDisqualification(
             DisqualificationDelta disqualificationDelta) {
-        DisqualificationOfficer officer = disqualificationDelta.getDisqualifiedOfficer().get(0);
+        DisqualificationOfficer officer = disqualificationDelta.getDisqualifiedOfficer().getFirst();
         InternalNaturalDisqualificationApi apiObject = naturalMapper
                         .disqualificationDeltaToApi(officer);
         return parseNaturalDeltaAt(apiObject, disqualificationDelta);
@@ -54,7 +54,7 @@ public class DisqualifiedOfficersApiTransformer {
     */
     public InternalCorporateDisqualificationApi transformCorporateDisqualification(
             DisqualificationDelta disqualificationDelta) {
-        DisqualificationOfficer officer = disqualificationDelta.getDisqualifiedOfficer().get(0);
+        DisqualificationOfficer officer = disqualificationDelta.getDisqualifiedOfficer().getFirst();
         InternalCorporateDisqualificationApi abiObject = corporateMapper
                         .disqualificationDeltaToApi(officer);
         return parseCorporateDeltaAt(abiObject, disqualificationDelta);

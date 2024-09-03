@@ -36,8 +36,7 @@ public class ChsDeltaSerializer implements Serializer<Object> {
                 return (byte[]) payload;
             }
 
-            if (payload instanceof ChsDelta) {
-                ChsDelta chsDelta = (ChsDelta) payload;
+            if (payload instanceof ChsDelta chsDelta) {
                 DatumWriter<ChsDelta> writer = new SpecificDatumWriter<>();
                 EncoderFactory encoderFactory = EncoderFactory.get();
 

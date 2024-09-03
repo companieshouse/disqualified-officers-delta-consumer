@@ -13,7 +13,7 @@ disqualified-officers:
   delta:
     group-id: disqualified-officers-delta-consumer
     retry-attempts: 4
-    backoff-delay: 100
+    backoff-delay: ${DISQUALIFIED_OFFICERS_BACKOFF_DELAY:100}
     topic: ${DISQUALIFIED_OFFICERS_DELTA_TOPIC:disqualified-officers-delta}
 
 logger:

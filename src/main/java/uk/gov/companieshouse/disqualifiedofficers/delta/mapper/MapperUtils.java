@@ -2,7 +2,6 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 
 import java.util.Base64;
 import java.util.HashMap;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 public final class MapperUtils {

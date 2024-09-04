@@ -4,7 +4,6 @@ import static java.lang.String.format;
 import static java.time.Duration.between;
 
 import java.time.Instant;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
@@ -20,7 +19,6 @@ import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.processor.DisqualifiedOfficersDeltaProcessor;
 import uk.gov.companieshouse.logging.Logger;
-
 
 @Component
 public class DisqualifiedOfficersDeltaConsumer {

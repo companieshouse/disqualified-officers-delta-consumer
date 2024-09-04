@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.serialization;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;

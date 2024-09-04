@@ -5,7 +5,6 @@ import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQC
 import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_STACKTRACE;
 
 import java.util.Map;
-
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;

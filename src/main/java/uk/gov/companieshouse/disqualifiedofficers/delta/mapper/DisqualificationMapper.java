@@ -3,12 +3,10 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
 import uk.gov.companieshouse.api.delta.Disqualification;
 import uk.gov.companieshouse.api.disqualification.Address;
 import uk.gov.companieshouse.api.disqualification.LastVariation;

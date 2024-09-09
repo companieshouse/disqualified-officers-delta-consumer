@@ -4,13 +4,12 @@ import static java.lang.String.format;
 import static java.time.Duration.between;
 
 import java.time.Instant;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.retrytopic.DltStrategy;
-import org.springframework.kafka.retrytopic.FixedDelayStrategy;
+import org.springframework.kafka.retrytopic.SameIntervalTopicReuseStrategy;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
@@ -20,7 +19,6 @@ import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.processor.DisqualifiedOfficersDeltaProcessor;
 import uk.gov.companieshouse.logging.Logger;
-
 
 @Component
 public class DisqualifiedOfficersDeltaConsumer {
@@ -45,7 +43,7 @@ public class DisqualifiedOfficersDeltaConsumer {
      */
     @RetryableTopic(attempts = "${disqualified-officers.delta.retry-attempts}",
             backoff = @Backoff(delayExpression = "${disqualified-officers.delta.backoff-delay}"),
-            fixedDelayTopicStrategy = FixedDelayStrategy.SINGLE_TOPIC,
+            sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             dltTopicSuffix = "-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
             autoCreateTopics = "false",

@@ -2,7 +2,6 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 import uk.gov.companieshouse.api.delta.Exemption;
 import uk.gov.companieshouse.api.disqualification.PermissionToAct;
 

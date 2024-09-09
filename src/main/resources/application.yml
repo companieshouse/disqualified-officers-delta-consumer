@@ -34,4 +34,8 @@ management:
       base-path: /disqualified-officers-delta-consumer
       path-mapping:
         health: /healthcheck
+    enabled-by-default: false
+    health:
+      enabled: true
+      show-details: always
 

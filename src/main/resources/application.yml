@@ -30,12 +30,13 @@ wiremock:
 
 management:
   endpoints:
-    web:
-      base-path: /disqualified-officers-delta-consumer
-      path-mapping:
-        health: /healthcheck
     enabled-by-default: false
+    web:
+      base-path: /
+      path-mapping:
+        health: disqualified-officers-delta-consumer/healthcheck
+  endpoint:
     health:
+      show-details: never
       enabled: true
-      show-details: always
 

@@ -5,13 +5,11 @@ import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQC
 import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_STACKTRACE;
 
 import java.util.Map;
-
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
 import uk.gov.companieshouse.disqualifiedofficers.delta.config.LoggingConfig;
-import uk.gov.companieshouse.logging.Logger;
 
 /**
  * Retryable Topic Error Interceptor.

@@ -44,7 +44,7 @@ public class DisqualifiedOfficersApiTransformerTest {
         input.setDisqualifiedOfficer(disqualifiedOfficerList);
         input.setDeltaAt("20211008152823383176");
 
-        DisqualificationOfficer disqualificationOfficer = input.getDisqualifiedOfficer().get(0);
+        DisqualificationOfficer disqualificationOfficer = input.getDisqualifiedOfficer().getFirst();
         InternalNaturalDisqualificationApi mock = mock(InternalNaturalDisqualificationApi.class);
 
         when(naturalMapper.disqualificationDeltaToApi(disqualificationOfficer)).thenReturn(mock);
@@ -62,7 +62,7 @@ public class DisqualifiedOfficersApiTransformerTest {
         input.setDisqualifiedOfficer(disqualifiedOfficerList);
         input.setDeltaAt("20211008152823383176");
 
-        DisqualificationOfficer disqualificationOfficer = input.getDisqualifiedOfficer().get(0);
+        DisqualificationOfficer disqualificationOfficer = input.getDisqualifiedOfficer().getFirst();
         InternalCorporateDisqualificationApi mock = mock(InternalCorporateDisqualificationApi.class);
 
         when(corporateMapper.disqualificationDeltaToApi(disqualificationOfficer)).thenReturn(mock);
@@ -79,7 +79,7 @@ public class DisqualifiedOfficersApiTransformerTest {
         disqualifiedOfficerList.add(new DisqualificationOfficer());
         input.setDisqualifiedOfficer(disqualifiedOfficerList);
 
-        DisqualificationOfficer disqualificationOfficer = input.getDisqualifiedOfficer().get(0);
+        DisqualificationOfficer disqualificationOfficer = input.getDisqualifiedOfficer().getFirst();
 
         when(naturalMapper.disqualificationDeltaToApi(disqualificationOfficer))
                 .thenThrow(NullPointerException.class);

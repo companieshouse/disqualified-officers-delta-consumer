@@ -55,7 +55,7 @@ class InternalNaturalDisqualificationMapperTest {
                 FileCopyUtils.copyToString(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream(path)));
 
         disqualificationDelta = mapper.readValue(input, DisqualificationDelta.class);
-        disqualificationOfficer = disqualificationDelta.getDisqualifiedOfficer().get(0);
+        disqualificationOfficer = disqualificationDelta.getDisqualifiedOfficer().getFirst();
     }
 
 
@@ -73,13 +73,13 @@ class InternalNaturalDisqualificationMapperTest {
         companyNames.add("321 LTD");
         permissionToAct.setCompanyNames(companyNames);
         permissionToAct.setCourtName("rinder");
-        permissionToAct.setExpiresOn(LocalDate.of(2016, 04, 12));
-        permissionToAct.setGrantedOn(LocalDate.of(2014, 02, 03));
+        permissionToAct.setExpiresOn(LocalDate.of(2016, 4, 12));
+        permissionToAct.setGrantedOn(LocalDate.of(2014, 2, 3));
 
         assertThat(disqualificationDelta).isNotNull();
         assertThat(disqualificationTarget).isNotNull();
         assertEquals(externalDisqualificationTarget.getForename(), "Dust");
-        assertEquals(externalDisqualificationTarget.getDateOfBirth(), LocalDate.of(1976, 02, 06));
+        assertEquals(externalDisqualificationTarget.getDateOfBirth(), LocalDate.of(1976, 2, 6));
         assertEquals(externalDisqualificationTarget.getSurname(), "KINDNESSLIQUOR");
         assertTrue(externalDisqualificationTarget.getHonours().isEmpty());
         assertEquals(externalDisqualificationTarget.getNationality(), "British");
@@ -90,19 +90,19 @@ class InternalNaturalDisqualificationMapperTest {
         assertEquals(externalDisqualificationTarget.getTitle(), "Mr");
         assertEquals(externalDisqualificationTarget.getPersonNumber(), "166284060001");
         assertEquals(externalDisqualificationTarget.getOtherForenames(), "Condition Reserve");
-        assertEquals(externalDisqualificationTarget.getPermissionsToAct().get(0), permissionToAct);
+        assertEquals(externalDisqualificationTarget.getPermissionsToAct().getFirst(), permissionToAct);
         DisqualificationLinks links = new DisqualificationLinks();
         links.setSelf("/disqualified-officers/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s");
         assertEquals(externalDisqualificationTarget.getLinks(), links);
 
-        Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().get(0);
+        Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().getFirst();
         assertEquals(disqualification.getCaseIdentifier(), "INV3975227");
         List<String> list = new ArrayList<>();
         list.add("CONSORTIUM TECHNOLOGY LIMITED");
         assertEquals(disqualification.getCompanyNames(), list);
         assertNull(disqualification.getCourtName());
         LastVariation var = new LastVariation();
-        var.setVariedOn(LocalDate.of(2021, 02, 17));
+        var.setVariedOn(LocalDate.of(2021, 2, 17));
         var.setCaseIdentifier("1");
         var.setCourtName("Judys");
         assertEquals(var, disqualification.getLastVariation());
@@ -112,9 +112,9 @@ class InternalNaturalDisqualificationMapperTest {
         reason.put("section", "7");
         reason.put("description_identifier", "order-or-undertaking-and-reporting-provisions");
         assertEquals(disqualification.getReason(), reason);
-        assertEquals(disqualification.getUndertakenOn(), LocalDate.of(2015, 02, 14));
-        assertEquals(disqualification.getDisqualifiedFrom(), LocalDate.of(2015, 02, 18));
-        assertEquals(disqualification.getDisqualifiedUntil(), LocalDate.of(2025, 02, 17));
+        assertEquals(disqualification.getUndertakenOn(), LocalDate.of(2015, 2, 14));
+        assertEquals(disqualification.getDisqualifiedFrom(), LocalDate.of(2015, 2, 18));
+        assertEquals(disqualification.getDisqualifiedUntil(), LocalDate.of(2025, 2, 17));
         assertEquals(disqualification.getAddress().getPremises(), "30");
     }
 }

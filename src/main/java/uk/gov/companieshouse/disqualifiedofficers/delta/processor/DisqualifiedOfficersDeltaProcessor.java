@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.processor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -10,7 +9,6 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
-
 import uk.gov.companieshouse.api.delta.DisqualificationDeleteDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
@@ -73,7 +71,7 @@ public class DisqualifiedOfficersDeltaProcessor {
 
         DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                 .getDisqualifiedOfficer()
-                .get(0);
+                .getFirst();
         if (disqualificationOfficer.getCorporateInd() != null
                     && disqualificationOfficer.getCorporateInd().equals("1")) {
             InternalCorporateDisqualificationApi apiObject;

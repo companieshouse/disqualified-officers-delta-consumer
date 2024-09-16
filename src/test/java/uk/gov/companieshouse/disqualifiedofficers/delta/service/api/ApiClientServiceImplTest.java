@@ -10,11 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
-import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateDisqualificationDelete;
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateNaturalDisqualificationUpsert;
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateCorporateDisqualificationUpsert;
-import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.logging.Logger;
 
@@ -42,7 +40,7 @@ class ApiClientServiceImplTest {
     }
 
     @Test
-    void putNaturalDisqualification() throws ApiErrorResponseException, URIValidationException {
+    void putNaturalDisqualification() {
         final ApiResponse<Void> expectedResponse = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         ApiClientServiceImpl apiClientServiceSpy = Mockito.spy(apiClientService);
         doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(), anyString(),
@@ -62,7 +60,7 @@ class ApiClientServiceImplTest {
     }
 
     @Test
-    void putCorporateDisqualification() throws ApiErrorResponseException, URIValidationException {
+    void putCorporateDisqualification() {
         final ApiResponse<Void> expectedResponse = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         ApiClientServiceImpl apiClientServiceSpy = Mockito.spy(apiClientService);
         doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(), anyString(),

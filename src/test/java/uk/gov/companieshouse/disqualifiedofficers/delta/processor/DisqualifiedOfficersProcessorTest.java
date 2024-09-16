@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public class DisqualifiedOfficersProcessorTest {
 
     private DisqualifiedOfficersDeltaProcessor deltaProcessor;
-    private TestHelper testHelper = new TestHelper();
+    private final TestHelper testHelper = new TestHelper();
 
     @Mock
     private DisqualifiedOfficersApiTransformer transformer;

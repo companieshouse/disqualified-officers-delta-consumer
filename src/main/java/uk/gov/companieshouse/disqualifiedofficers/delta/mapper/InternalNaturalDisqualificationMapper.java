@@ -2,12 +2,10 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
@@ -64,7 +62,7 @@ public interface InternalNaturalDisqualificationMapper {
                           DisqualificationOfficer sourceCase) {
 
         if (sourceCase.getDateOfBirth() == null
-                || sourceCase.getDateOfBirth().equals("")) {
+                || sourceCase.getDateOfBirth().isEmpty()) {
             return;
         }
 

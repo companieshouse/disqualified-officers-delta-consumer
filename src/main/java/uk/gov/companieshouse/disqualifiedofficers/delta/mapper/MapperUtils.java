@@ -2,7 +2,6 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 
 import java.util.Base64;
 import java.util.HashMap;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 public final class MapperUtils {
@@ -16,9 +15,8 @@ public final class MapperUtils {
      */
     public static String encode(String officerId) {
         String salt = "my2_4s!gdDxC4$n9";
-        String encodedOfficerId = Base64.getUrlEncoder().withoutPadding().encodeToString(
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(
                 DigestUtils.sha1(officerId + salt));
-        return encodedOfficerId;
     }
     
     /**

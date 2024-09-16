@@ -29,7 +29,7 @@ public class TestData {
     private static String readFile(String path) {
         String data;
         try {
-            data = FileCopyUtils.copyToString(new InputStreamReader(new FileInputStream(new File(path))));
+            data = FileCopyUtils.copyToString(new InputStreamReader(new FileInputStream(path)));
         } catch (IOException e) {
             data = null;
         }

@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.serialization;
 
 import java.nio.charset.StandardCharsets;
-
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
@@ -36,8 +35,7 @@ public class ChsDeltaSerializer implements Serializer<Object> {
                 return (byte[]) payload;
             }
 
-            if (payload instanceof ChsDelta) {
-                ChsDelta chsDelta = (ChsDelta) payload;
+            if (payload instanceof ChsDelta chsDelta) {
                 DatumWriter<ChsDelta> writer = new SpecificDatumWriter<>();
                 EncoderFactory encoderFactory = EncoderFactory.get();
 

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class DisqualifiedOfficersProcessorTest {
+class DisqualifiedOfficersProcessorTest {
 
     private DisqualifiedOfficersDeltaProcessor deltaProcessor;
     private final TestHelper testHelper = new TestHelper();
@@ -93,13 +93,13 @@ public class DisqualifiedOfficersProcessorTest {
     void When_Valid_Delete_Message_Received_Delete_Endpoint_is_Called() throws IOException {
         Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage(true);
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
-        String encoded_id = MapperUtils.encode("1234567890");
+        String encodedId = MapperUtils.encode("1234567890");
 
-        when(apiClientService.deleteDisqualification("context_id", encoded_id)).thenReturn(response);
+        when(apiClientService.deleteDisqualification("context_id", encodedId)).thenReturn(response);
 
         deltaProcessor.processDelete(mockChsDeltaMessage);
 
-        verify(apiClientService).deleteDisqualification("context_id", encoded_id);
+        verify(apiClientService).deleteDisqualification("context_id", encodedId);
     }
 
     @Test

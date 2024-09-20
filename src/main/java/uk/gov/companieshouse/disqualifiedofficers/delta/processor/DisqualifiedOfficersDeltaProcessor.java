@@ -3,18 +3,14 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.processor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.delta.DisqualificationDeleteDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
-import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
@@ -22,7 +18,6 @@ import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.MapperUtils;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.logging.Logger;
-
 
 @Component
 public class DisqualifiedOfficersDeltaProcessor {
@@ -49,9 +44,6 @@ public class DisqualifiedOfficersDeltaProcessor {
      * Process CHS Delta message.
      */
     public void processDelta(Message<ChsDelta> chsDelta) {
-        MessageHeaders headers = chsDelta.getHeaders();
-        final String receivedTopic =
-                Objects.requireNonNull(headers.get(KafkaHeaders.RECEIVED_TOPIC)).toString();
         final ChsDelta payload = chsDelta.getPayload();
         final String logContext = payload.getContextId();
         final Map<String, Object> logMap = new HashMap<>();
@@ -145,10 +137,9 @@ public class DisqualifiedOfficersDeltaProcessor {
                 String.format("Process disqualification for officer with id [%s]",
                         disqualification.getOfficerId()),
                 logMap);
-        final ApiResponse<Void> response =
-                apiClientService.putDisqualification(logContext,
-                        internalDisqualificationApi.getInternalData().getOfficerId(),
-                        internalDisqualificationApi);
+        apiClientService.putDisqualification(logContext,
+                internalDisqualificationApi.getInternalData().getOfficerId(),
+                internalDisqualificationApi);
         logger.debugContext(logContext,
                 "Response received from disqualified-officers-data-api", logMap);
     }
@@ -162,10 +153,9 @@ public class DisqualifiedOfficersDeltaProcessor {
                 String.format("Process disqualification for officer with id [%s]",
                         disqualification.getOfficerId()),
                 logMap);
-        final ApiResponse<Void> response =
-                apiClientService.putDisqualification(logContext,
-                        internalDisqualificationApi.getInternalData().getOfficerId(),
-                        internalDisqualificationApi);
+        apiClientService.putDisqualification(logContext,
+                internalDisqualificationApi.getInternalData().getOfficerId(),
+                internalDisqualificationApi);
         logger.debugContext(logContext,
                 "Response received from disqualified-officers-data-api", logMap);
     }

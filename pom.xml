@@ -81,7 +81,7 @@
             <version>2.10.0</version>
             <scope>test</scope>
         </dependency>
-<!--        Transitive dependencies start here-->
+<!--        Transitive dependencies end here-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

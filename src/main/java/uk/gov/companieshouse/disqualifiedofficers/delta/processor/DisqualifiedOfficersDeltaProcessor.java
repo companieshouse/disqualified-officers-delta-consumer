@@ -122,7 +122,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                 + " [%s] Kafka message: [%s]", logContext, disqualifiedOfficersDelete));
         officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
         logger.info(String.format("Performing a DELETE for officer id: [%s]", officerId));
-        apiClientService.deleteDisqualification(logContext, officerId);
+        apiClientService.deleteDisqualification(logContext, officerId, disqualifiedOfficersDelete.getDeltaAt());
     }
 
     /**

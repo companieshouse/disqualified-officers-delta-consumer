@@ -86,7 +86,8 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     @Override
     public ApiResponse<Void> deleteDisqualification(
             final String log,
-            final String officerId) {
+            final String officerId,
+            final String deltaAt) {
         final String uri =
                 String.format("/disqualified-officers/delete/%s/internal", officerId);
 
@@ -95,7 +96,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
 
         return executeOp(log, "deleteDisqualification", uri,
                 getApiClient(log).privateDisqualificationResourceHandler()
-                        .deleteDisqualification(uri));
+                        .deleteDisqualification(uri, deltaAt));
     }
 
     private Map<String, Object> createLogMap(String officerId, String method, String path) {

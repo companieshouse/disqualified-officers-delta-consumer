@@ -30,5 +30,5 @@ public interface ApiClientService {
     /**
      * Delete disqualification.
      */
-    ApiResponse<Void> deleteDisqualification(final String log, final String officerId);
+    ApiResponse<Void> deleteDisqualification(final String log, final String officerId, final String deltaAt);
 }

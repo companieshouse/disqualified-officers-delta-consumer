@@ -96,11 +96,11 @@ class DisqualifiedOfficersProcessorTest {
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         String encodedId = MapperUtils.encode("1234567890");
 
-        when(apiClientService.deleteDisqualification(eq("context_id"), eq(encodedId), anyString())).thenReturn(response);
+        when(apiClientService.deleteDisqualification(eq("context_id"), eq(encodedId), anyString(), any())).thenReturn(response);
 
         deltaProcessor.processDelete(mockChsDeltaMessage);
 
-        verify(apiClientService).deleteDisqualification(eq("context_id"), eq(encodedId), anyString());
+        verify(apiClientService).deleteDisqualification(eq("context_id"), eq(encodedId), anyString(), any());
     }
 
     @Test

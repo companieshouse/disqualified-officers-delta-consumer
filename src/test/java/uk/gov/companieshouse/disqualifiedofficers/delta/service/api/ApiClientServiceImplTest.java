@@ -20,6 +20,7 @@ import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateC
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateDisqualificationDelete;
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateNaturalDisqualificationUpsert;
 import uk.gov.companieshouse.api.model.ApiResponse;
+import uk.gov.companieshouse.disqualifiedofficers.delta.processor.DisqualificationType;
 import uk.gov.companieshouse.logging.Logger;
 
 
@@ -83,10 +84,10 @@ class ApiClientServiceImplTest {
                 any(PrivateDisqualificationDelete.class));
 
         apiClientServiceSpy.deleteDisqualification(
-                "context_id", "officer_id", DELTA_AT);
+                "context_id", "officer_id", DELTA_AT, DisqualificationType.NATURAL);
 
         verify(apiClientServiceSpy).executeOp(eq("context_id"), eq("deleteDisqualification"),
-                eq("/disqualified-officers/delete/officer_id/internal"),
+                eq("/disqualified-officers/natural/officer_id/internal"),
                 any(PrivateDisqualificationDelete.class));
     }
 

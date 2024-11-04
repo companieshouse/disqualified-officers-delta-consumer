@@ -155,7 +155,7 @@ public class CommonSteps {
     @Then("a DELETE request is sent to the disqualifications api with the encoded Id")
     public void deleteRequestIsSent() {
         verify(1, deleteRequestedFor(urlMatching(
-                "/disqualified-officers/delete/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal")));
+                "/disqualified-officers/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal")));
     }
 
     @After

@@ -33,7 +33,7 @@ build:
 	cp ./target/$(artifact_name)-$(version).jar ./$(artifact_name).jar
 
 .PHONY: test
-test: test-integration test-unit
+test: clean test-integration test-unit
 
 .PHONY: test-unit
 test-unit:

@@ -180,7 +180,7 @@ public class CommonSteps {
     }
 
     private void stubDeleteDisqualification(int responseCode) {
-        stubFor(delete(urlEqualTo("/disqualified-officers/delete/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal"))
+        stubFor(delete(urlEqualTo("/disqualified-officers/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal"))
                 .willReturn(aResponse().withStatus(responseCode)));
     }
 

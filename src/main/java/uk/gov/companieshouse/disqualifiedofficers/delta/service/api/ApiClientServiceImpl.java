@@ -12,6 +12,7 @@ import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificatio
 import uk.gov.companieshouse.api.http.ApiKeyHttpClient;
 import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.model.ApiResponse;
+import uk.gov.companieshouse.disqualifiedofficers.delta.processor.DisqualificationType;
 import uk.gov.companieshouse.logging.Logger;
 
 
@@ -57,7 +58,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
 
     @Override
     public ApiResponse<Void> putDisqualification(final String log, final String officerId,
-                            InternalNaturalDisqualificationApi internalDisqualificationApi) {
+            InternalNaturalDisqualificationApi internalDisqualificationApi) {
         final String uri = String.format("/disqualified-officers/natural/%s/internal", officerId);
 
         Map<String, Object> logMap = createLogMap(officerId, "PUT", uri);
@@ -71,7 +72,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
 
     @Override
     public ApiResponse<Void> putDisqualification(final String log, final String officerId,
-                            InternalCorporateDisqualificationApi internalDisqualificationApi) {
+            InternalCorporateDisqualificationApi internalDisqualificationApi) {
         final String uri = String.format("/disqualified-officers/corporate/%s/internal", officerId);
 
         Map<String, Object> logMap = createLogMap(officerId, "PUT", uri);
@@ -86,16 +87,17 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     @Override
     public ApiResponse<Void> deleteDisqualification(
             final String log,
-            final String officerId) {
-        final String uri =
-                String.format("/disqualified-officers/delete/%s/internal", officerId);
+            final String officerId,
+            final String deltaAt,
+            DisqualificationType type) {
+        final String uri = "/disqualified-officers/%s/%s/internal".formatted(type.getTypeAsString(), officerId);
 
-        Map<String,Object> logMap = createLogMap(officerId,"DELETE", uri);
+        Map<String, Object> logMap = createLogMap(officerId, "DELETE", uri);
         logger.infoContext(log, String.format("DELETE %s", uri), logMap);
 
         return executeOp(log, "deleteDisqualification", uri,
                 getApiClient(log).privateDisqualificationResourceHandler()
-                        .deleteDisqualification(uri));
+                        .deleteDisqualification(uri, deltaAt));
     }
 
     private Map<String, Object> createLogMap(String officerId, String method, String path) {

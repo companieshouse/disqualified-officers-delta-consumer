@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -95,11 +96,11 @@ class DisqualifiedOfficersProcessorTest {
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         String encodedId = MapperUtils.encode("1234567890");
 
-        when(apiClientService.deleteDisqualification("context_id", encodedId)).thenReturn(response);
+        when(apiClientService.deleteDisqualification(eq("context_id"), eq(encodedId), anyString(), any())).thenReturn(response);
 
         deltaProcessor.processDelete(mockChsDeltaMessage);
 
-        verify(apiClientService).deleteDisqualification("context_id", encodedId);
+        verify(apiClientService).deleteDisqualification(eq("context_id"), eq(encodedId), anyString(), any());
     }
 
     @Test

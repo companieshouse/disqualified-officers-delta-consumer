@@ -5,7 +5,7 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>2.1.6</version>
+        <version>2.1.10</version>
     </parent>
 
     <artifactId>disqualified-officers-delta-consumer</artifactId>
@@ -17,19 +17,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <main.class>uk.gov.companieshouse.disqualifiedofficers.delta.DisqualifiedOfficersDeltaConsumerApplication</main.class>
-        <spring.boot.version>3.3.5</spring.boot.version>
-        <map-struct.version>1.6.2</map-struct.version>
-        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
+        <spring.boot.version>3.4.0</spring.boot.version>
+        <map-struct.version>1.6.3</map-struct.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
-        <maven-failsafe-plugin.version>3.5.1</maven-failsafe-plugin.version>
+        <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+
+        <!-- Companies house specific dependencies -->
         <ch-kafka.version>3.0.3</ch-kafka.version>
         <structured-logging.version>3.0.20</structured-logging.version>
         <kafka-models.version>3.0.8</kafka-models.version>
-        <private-api-sdk-java.version>4.0.234</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.255</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.6</api-sdk-manager-java-library.version>
-        <jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
-        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+
+        <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -40,8 +41,8 @@
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
         <assertj-core.version>3.26.3</assertj-core.version>
-        <wiremock.version>3.9.2</wiremock.version>
-        <testcontainers.version>1.20.3</testcontainers.version>
+        <wiremock.version>3.10.0</wiremock.version>
+        <testcontainers.version>1.20.4</testcontainers.version>
 
         <!--sonar configuration-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -69,19 +70,19 @@
     </dependencyManagement>
 
     <dependencies>
-<!--        Transitive dependencies start here-->
+        <!--section to provide specific versions of transitive dependencies to avoid vulnerabilities, if any exist-->
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>1.12.0</version>
         </dependency>
         <dependency>
-            <groupId>org.xmlunit</groupId>
-            <artifactId>xmlunit-core</artifactId>
-            <version>2.10.0</version>
-            <scope>test</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>6.2.1</version>
         </dependency>
-<!--        Transitive dependencies end here-->
+        <!--end transitive dependencies-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -147,22 +148,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>${springfox-boot-starter.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.springfox</groupId>
-                    <artifactId>springfox-swagger-ui</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.github.classgraph</groupId>
-                    <artifactId>classgraph</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -263,9 +248,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
-                <configuration>
-                    <mainClass>${main.class}</mainClass>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>

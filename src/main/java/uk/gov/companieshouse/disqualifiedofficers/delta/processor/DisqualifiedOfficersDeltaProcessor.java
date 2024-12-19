@@ -1,8 +1,8 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.processor;
 
+import static uk.gov.companieshouse.disqualifiedofficers.delta.DisqualifiedOfficersDeltaConsumerApplication.NAMESPACE;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
@@ -14,31 +14,33 @@ import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificatio
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
+import uk.gov.companieshouse.disqualifiedofficers.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.MapperUtils;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
 import uk.gov.companieshouse.disqualifiedofficers.delta.transformer.DisqualifiedOfficersApiTransformer;
 import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 
 @Component
 public class DisqualifiedOfficersDeltaProcessor {
 
     private final DisqualifiedOfficersApiTransformer transformer;
     private final ApiClientService apiClientService;
-    private final Logger logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
+    private final ObjectMapper objectMapper;
 
     /**
      * Constructor for the delta processor.
      *
      * @param transformer      transforms the data from delta to api object through mapstruct
-     * @param logger           logs out messages to the app logs
      * @param apiClientService handles PUT request to the disqualified data API
      */
     @Autowired
     public DisqualifiedOfficersDeltaProcessor(DisqualifiedOfficersApiTransformer transformer,
-            Logger logger, ApiClientService apiClientService) {
+                      ApiClientService apiClientService, ObjectMapper objectMapper) {
         this.transformer = transformer;
-        this.logger = logger;
         this.apiClientService = apiClientService;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -46,25 +48,23 @@ public class DisqualifiedOfficersDeltaProcessor {
      */
     public void processDelta(Message<ChsDelta> chsDelta) {
         final ChsDelta payload = chsDelta.getPayload();
-        final String logContext = payload.getContextId();
-        final Map<String, Object> logMap = new HashMap<>();
+        final String contextId = payload.getContextId();
 
-        ObjectMapper mapper = new ObjectMapper();
-        DisqualificationDelta disqualifiedOfficersDelta;
+        DisqualificationDelta disqualifiedOfficersDelta = new DisqualificationDelta();
         try {
-            disqualifiedOfficersDelta = mapper.readValue(payload.getData(),
+            disqualifiedOfficersDelta = objectMapper.readValue(payload.getData(),
                     DisqualificationDelta.class);
         } catch (Exception ex) {
+            LOGGER.error("Unable to deserialise delta: [%s]".formatted(disqualifiedOfficersDelta),
+                    ex, DataMapHolder.getLogMap());
             throw new NonRetryableErrorException(
-                    "Error when extracting disqualified-officers delta", ex);
+                    "Error deserialising disqualified-officers delta", ex);
         }
-
-        logger.info(String.format("DisqualificationDelta extracted for context ID [%s]"
-                + " Kafka message: [%s]", logContext, disqualifiedOfficersDelta));
 
         DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                 .getDisqualifiedOfficer()
                 .getFirst();
+        DataMapHolder.get().officerId(disqualificationOfficer.getOfficerId());
         if (disqualificationOfficer.getCorporateInd() != null
                 && disqualificationOfficer.getCorporateInd().equals("1")) {
             InternalCorporateDisqualificationApi apiObject;
@@ -72,32 +72,24 @@ public class DisqualifiedOfficersDeltaProcessor {
                 apiObject = transformer.transformCorporateDisqualification(
                         disqualifiedOfficersDelta);
             } catch (Exception ex) {
+                LOGGER.error("Unable to transform delta into Corporate disqualification: [%s]"
+                        .formatted(disqualifiedOfficersDelta), ex, DataMapHolder.getLogMap());
                 throw new RetryableErrorException(
-                        "Error when transforming into Api object", ex);
+                        "Error transforming delta to Corporate disqualification request", ex);
             }
-
-            logger.info(String.format("Message with context ID: [%s] successfully transformed into"
-                    + " CorporateDisqualificationAPI object", logContext));
-
-            //invoke disqualified officers API with Corporate method
-            invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
-                    apiObject, logMap);
+            invokeDataApiForCorporateDisqualification(contextId, apiObject);
         } else {
             InternalNaturalDisqualificationApi apiObject;
             try {
                 apiObject = transformer.transformNaturalDisqualification(
                         disqualifiedOfficersDelta);
             } catch (Exception ex) {
+                LOGGER.error("Unable to transform delta into Natural disqualification: [%s]"
+                        .formatted(disqualifiedOfficersDelta), ex, DataMapHolder.getLogMap());
                 throw new RetryableErrorException(
-                        "Error when transforming into Api object", ex);
+                        "Error transforming delta to Natural disqualification request", ex);
             }
-
-            logger.info(String.format("Message with context ID: [%s] successfully"
-                    + " transformed into NaturalDisqualificationAPI object", logContext));
-
-            //invoke disqualified officers API with Natural method
-            invokeDisqualificationsDataApi(logContext, disqualificationOfficer,
-                    apiObject, logMap);
+            invokeDataApiForNaturalDisqualification(contextId, apiObject);
         }
     }
 
@@ -106,26 +98,23 @@ public class DisqualifiedOfficersDeltaProcessor {
      */
     public void processDelete(Message<ChsDelta> chsDelta) {
         final ChsDelta payload = chsDelta.getPayload();
-        final String logContext = payload.getContextId();
-        final String officerId;
+        final String contextId = payload.getContextId();
 
-        ObjectMapper mapper = new ObjectMapper();
-        DisqualificationDeleteDelta disqualifiedOfficersDelete;
+        DisqualificationDeleteDelta disqualifiedOfficersDelete = new DisqualificationDeleteDelta();
         try {
-            disqualifiedOfficersDelete = mapper.readValue(payload.getData(),
+            disqualifiedOfficersDelete = objectMapper.readValue(payload.getData(),
                     DisqualificationDeleteDelta.class);
         } catch (Exception ex) {
+            LOGGER.error("Unable to deserialise delta: [%s]".formatted(disqualifiedOfficersDelete),
+                    ex, DataMapHolder.getLogMap());
             throw new NonRetryableErrorException(
-                    "Error when extracting disqualified-officers delete delta", ex);
+                    "Error deserialising disqualified-officers delete delta", ex);
         }
-        logger.info(String.format("DisqualificationDeleteDelta extracted for context ID"
-                + " [%s] Kafka message: [%s]", logContext, disqualifiedOfficersDelete));
 
-        officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
-        logger.info(String.format("Performing a DELETE for officer id: [%s]", officerId));
-
+        final String officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
+        DataMapHolder.get().officerId(officerId);
         apiClientService.deleteDisqualification(
-                logContext,
+                contextId,
                 officerId,
                 disqualifiedOfficersDelete.getDeltaAt(),
                 DisqualificationType.getTypeFromCorporateInd(disqualifiedOfficersDelete.getCorporateInd()));
@@ -134,35 +123,17 @@ public class DisqualifiedOfficersDeltaProcessor {
     /**
      * Invoke Disqualifications Data API.
      */
-    private void invokeDisqualificationsDataApi(final String logContext,
-            DisqualificationOfficer disqualification,
-            InternalNaturalDisqualificationApi internalDisqualificationApi,
-            final Map<String, Object> logMap) {
-        logger.infoContext(
-                logContext,
-                String.format("Process disqualification for officer with id [%s]",
-                        disqualification.getOfficerId()),
-                logMap);
-        apiClientService.putDisqualification(logContext,
+    private void invokeDataApiForNaturalDisqualification(final String contextId,
+            InternalNaturalDisqualificationApi internalDisqualificationApi) {
+        apiClientService.putNaturalDisqualification(contextId,
                 internalDisqualificationApi.getInternalData().getOfficerId(),
                 internalDisqualificationApi);
-        logger.debugContext(logContext,
-                "Response received from disqualified-officers-data-api", logMap);
     }
 
-    private void invokeDisqualificationsDataApi(final String logContext,
-            DisqualificationOfficer disqualification,
-            InternalCorporateDisqualificationApi internalDisqualificationApi,
-            final Map<String, Object> logMap) {
-        logger.infoContext(
-                logContext,
-                String.format("Process disqualification for officer with id [%s]",
-                        disqualification.getOfficerId()),
-                logMap);
-        apiClientService.putDisqualification(logContext,
+    private void invokeDataApiForCorporateDisqualification(final String contextId,
+            InternalCorporateDisqualificationApi internalDisqualificationApi) {
+        apiClientService.putCorporateDisqualification(contextId,
                 internalDisqualificationApi.getInternalData().getOfficerId(),
                 internalDisqualificationApi);
-        logger.debugContext(logContext,
-                "Response received from disqualified-officers-data-api", logMap);
     }
 }

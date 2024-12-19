@@ -1,5 +1,9 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.service.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.when;
+
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpResponseException.Builder;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +17,7 @@ import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
-import uk.gov.companieshouse.logging.Logger;
-
 import java.util.HashMap;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BaseApiClientServiceImplTest {
@@ -27,13 +25,11 @@ class BaseApiClientServiceImplTest {
     private BaseApiClientServiceImpl service;
 
     @Mock
-    private Logger logger;
-    @Mock
     private Executor<ApiResponse<Integer>> executor;
 
     @BeforeEach
     void setup() {
-        service = new BaseApiClientServiceImpl(logger) {};
+        service = new BaseApiClientServiceImpl() {};
     }
 
     @Test
@@ -41,7 +37,7 @@ class BaseApiClientServiceImplTest {
         ApiResponse<Integer> expectedResponse = new ApiResponse<>(200, new HashMap<>());
         when(executor.execute()).thenReturn(expectedResponse);
 
-        ApiResponse<Integer> actualResponse = service.executeOp(null, null, null, executor);
+        ApiResponse<Integer> actualResponse = service.executeOp(null, executor);
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
     }
@@ -51,7 +47,7 @@ class BaseApiClientServiceImplTest {
         when(executor.execute()).thenThrow(new URIValidationException("Not Found"));
 
         RetryableErrorException thrown = assertThrows(RetryableErrorException.class,
-                () -> service.executeOp(null, null, null, executor));
+                () -> service.executeOp(null, executor));
 
         assertThat(thrown.getMessage()).isEqualTo("404 NOT_FOUND response received from disqualified-officers-data-api");
     }
@@ -62,7 +58,7 @@ class BaseApiClientServiceImplTest {
                 new ApiErrorResponseException(new Builder(500, "500", new HttpHeaders())));
 
         RetryableErrorException thrown = assertThrows(RetryableErrorException.class,
-                () -> service.executeOp(null, null, null, executor));
+                () -> service.executeOp(null, executor));
 
         assertThat(thrown.getMessage()).isEqualTo("Non-Successful response 500 received from disqualified-officers-data-api");
     }
@@ -73,7 +69,7 @@ class BaseApiClientServiceImplTest {
                 new ApiErrorResponseException(new Builder(400, "400", new HttpHeaders())));
 
         NonRetryableErrorException thrown = assertThrows(NonRetryableErrorException.class,
-                () -> service.executeOp(null, null, null, executor));
+                () -> service.executeOp(null, executor));
 
         assertThat(thrown.getMessage()).isEqualTo("Non-retryable response 400 received from disqualified-officers-data-api");
     }
@@ -84,7 +80,7 @@ class BaseApiClientServiceImplTest {
                 new ApiErrorResponseException(new Builder(409, "409", new HttpHeaders())));
 
         NonRetryableErrorException thrown = assertThrows(NonRetryableErrorException.class,
-                () -> service.executeOp(null, null, null, executor));
+                () -> service.executeOp(null, executor));
 
         assertThat(thrown.getMessage()).isEqualTo("Non-retryable response 409 received from disqualified-officers-data-api");
     }

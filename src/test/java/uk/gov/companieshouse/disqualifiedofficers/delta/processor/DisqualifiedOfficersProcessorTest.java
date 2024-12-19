@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.processor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,14 +42,15 @@ class DisqualifiedOfficersProcessorTest {
     private Logger logger;
     @Mock
     private ApiClientService apiClientService;
-
+    @Mock
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         deltaProcessor = new DisqualifiedOfficersDeltaProcessor(
                 transformer,
-                logger,
-                apiClientService
+                apiClientService,
+                objectMapper
         );
     }
 
@@ -59,13 +61,13 @@ class DisqualifiedOfficersProcessorTest {
         DisqualificationDelta expectedDelta = testHelper.createDisqualificationDelta();
         InternalNaturalDisqualificationApi apiObject = testHelper.createDisqualificationApi();
         final ApiResponse<Void> response = new ApiResponse<>(HttpStatus.OK.value(), null, null);
-        when(apiClientService.putDisqualification(any(),any(), eq(apiObject))).thenReturn(response);
+        when(apiClientService.putNaturalDisqualification(any(),any(), eq(apiObject))).thenReturn(response);
         when(transformer.transformNaturalDisqualification(expectedDelta)).thenReturn(apiObject);
 
         deltaProcessor.processDelta(mockChsDeltaMessage);
 
         verify(transformer).transformNaturalDisqualification(expectedDelta);
-        verify(apiClientService).putDisqualification("context_id", "3002276133", apiObject);
+        verify(apiClientService).putNaturalDisqualification("context_id", "3002276133", apiObject);
     }
 
     @Test
@@ -78,7 +80,7 @@ class DisqualifiedOfficersProcessorTest {
     void When_ApiReturns500_Expect_RetryableError() throws IOException {
         Message<ChsDelta> mockChsDeltaMessage = testHelper.createChsDeltaMessage(false);
         InternalNaturalDisqualificationApi apiObject = testHelper.createDisqualificationApi();
-        when(apiClientService.putDisqualification(any(),any(), eq(apiObject))).thenThrow(new RetryableErrorException(""));
+        when(apiClientService.putNaturalDisqualification(any(),any(), eq(apiObject))).thenThrow(new RetryableErrorException(""));
         when(transformer.transformNaturalDisqualification(any())).thenReturn(apiObject);
         assertThrows(RetryableErrorException.class, ()->deltaProcessor.processDelta(mockChsDeltaMessage));
     }

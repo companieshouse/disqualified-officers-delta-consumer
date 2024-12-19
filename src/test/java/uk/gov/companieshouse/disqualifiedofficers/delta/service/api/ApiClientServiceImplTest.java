@@ -39,16 +39,13 @@ class ApiClientServiceImplTest {
     void putNaturalDisqualification() {
         final ApiResponse<Void> expectedResponse = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         ApiClientServiceImpl apiClientServiceSpy = Mockito.spy(apiClientService);
-        doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(), anyString(),
-                anyString(),
+        doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(),
                 any(PrivateNaturalDisqualificationUpsert.class));
 
-        ApiResponse<Void> response = apiClientServiceSpy.putDisqualification("context_id",
+        ApiResponse<Void> response = apiClientServiceSpy.putNaturalDisqualification("context_id",
                 "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==",
                 new InternalNaturalDisqualificationApi());
-        verify(apiClientServiceSpy).executeOp(anyString(), eq("putDisqualification"),
-                eq("/disqualified-officers/natural/" +
-                        "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==/internal"),
+        verify(apiClientServiceSpy).executeOp(eq("putDisqualification"),
                 any(PrivateNaturalDisqualificationUpsert.class));
 
         assertThat(response).isEqualTo(expectedResponse);
@@ -59,16 +56,13 @@ class ApiClientServiceImplTest {
     void putCorporateDisqualification() {
         final ApiResponse<Void> expectedResponse = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         ApiClientServiceImpl apiClientServiceSpy = Mockito.spy(apiClientService);
-        doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(), anyString(),
-                anyString(),
+        doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(),
                 any(PrivateCorporateDisqualificationUpsert.class));
 
-        ApiResponse<Void> response = apiClientServiceSpy.putDisqualification("context_id",
+        ApiResponse<Void> response = apiClientServiceSpy.putCorporateDisqualification("context_id",
                 "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==",
                 new InternalCorporateDisqualificationApi());
-        verify(apiClientServiceSpy).executeOp(anyString(), eq("putDisqualification"),
-                eq("/disqualified-officers/corporate/" +
-                        "ZTgzYWQwODAzMGY1ZDNkNGZiOTAxOWQ1YzJkYzc5MWViMTE3ZjQxZA==/internal"),
+        verify(apiClientServiceSpy).executeOp(eq("putDisqualification"),
                 any(PrivateCorporateDisqualificationUpsert.class));
 
         assertThat(response).isEqualTo(expectedResponse);
@@ -79,15 +73,13 @@ class ApiClientServiceImplTest {
     void deleteDisqualification() {
         final ApiResponse<Void> expectedResponse = new ApiResponse<>(HttpStatus.OK.value(), null, null);
         ApiClientServiceImpl apiClientServiceSpy = Mockito.spy(apiClientService);
-        doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(), anyString(),
-                anyString(),
+        doReturn(expectedResponse).when(apiClientServiceSpy).executeOp(anyString(),
                 any(PrivateDisqualificationDelete.class));
 
         apiClientServiceSpy.deleteDisqualification(
                 "context_id", "officer_id", DELTA_AT, DisqualificationType.NATURAL);
 
-        verify(apiClientServiceSpy).executeOp(eq("context_id"), eq("deleteDisqualification"),
-                eq("/disqualified-officers/natural/officer_id/internal"),
+        verify(apiClientServiceSpy).executeOp("deleteDisqualification",
                 any(PrivateDisqualificationDelete.class));
     }
 

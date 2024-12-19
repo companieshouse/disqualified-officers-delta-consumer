@@ -49,15 +49,7 @@ public abstract class BaseApiClientServiceImpl {
                         status);
                 LOGGER.error(msg, ex, DataMapHolder.getLogMap());
                 throw new NonRetryableErrorException(msg, ex);
-                //TODO the below is not required as we will never get 404 back from data api in delete case, will in upsert case.
-            } else if (status == HttpStatus.NOT_FOUND.value()
-                    && operationName.equals("deleteDisqualification")) {
-                String msg = String.format(
-                        "Retryable response %s received from disqualified-officers-data-api",
-                        status);
-                throw new RetryableErrorException(msg);
             }
-
             // any other client or server status is retryable
             String msg = String.format(
                     "Non-Successful response %s received from disqualified-officers-data-api",

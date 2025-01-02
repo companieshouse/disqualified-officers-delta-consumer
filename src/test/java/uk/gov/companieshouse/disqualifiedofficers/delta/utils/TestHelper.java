@@ -6,10 +6,15 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.FileCopyUtils;
+import uk.gov.companieshouse.api.delta.DisqualificationDeleteDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
-import uk.gov.companieshouse.api.disqualification.*;
 import uk.gov.companieshouse.api.delta.DisqualificationAddress;
+import uk.gov.companieshouse.api.disqualification.Address;
+import uk.gov.companieshouse.api.disqualification.Disqualification;
+import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
+import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
+import uk.gov.companieshouse.api.disqualification.NaturalDisqualificationApi;
 import uk.gov.companieshouse.delta.ChsDelta;
 
 import java.io.IOException;
@@ -100,6 +105,13 @@ public class TestHelper {
         return new DisqualificationDelta().addDisqualifiedOfficerItem(disqualifiedOfficer);
     }
 
+    public DisqualificationDeleteDelta createDisqualificationDeleteDelta() {
+        return new DisqualificationDeleteDelta()
+                .officerId("3002276133")
+                .action(DisqualificationDeleteDelta.ActionEnum.DELETE)
+                .deltaAt("20230724093435661593");
+    }
+
     public ProducerRecord<String, Object> createRecord(String topic, String header) {
         Object recordObj = new Object();
         RecordHeaders headers = new RecordHeaders();
@@ -112,7 +124,7 @@ public class TestHelper {
         return buildMessage("This is some invalid data");
     }
 
-    public Message<ChsDelta> createBrokenChsDeltaMessage() throws IOException {
+    public Message<ChsDelta> createDeltaWithoutDisqualification() throws IOException {
         InputStreamReader exampleJsonPayload = new InputStreamReader(
                 Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("invalid-disqualified-officers-delta-example.json")));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);

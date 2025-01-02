@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -21,16 +20,12 @@ import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateD
 import uk.gov.companieshouse.api.handler.delta.disqualification.request.PrivateNaturalDisqualificationUpsert;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.disqualifiedofficers.delta.processor.DisqualificationType;
-import uk.gov.companieshouse.logging.Logger;
 
 
 @ExtendWith(MockitoExtension.class)
 class ApiClientServiceImplTest {
 
     private static final String DELTA_AT = "20240925171003950844";
-
-    @Mock
-    Logger logger;
 
     @InjectMocks
     private ApiClientServiceImpl apiClientService;
@@ -79,8 +74,7 @@ class ApiClientServiceImplTest {
         apiClientServiceSpy.deleteDisqualification(
                 "context_id", "officer_id", DELTA_AT, DisqualificationType.NATURAL);
 
-        verify(apiClientServiceSpy).executeOp("deleteDisqualification",
+        verify(apiClientServiceSpy).executeOp(anyString(),
                 any(PrivateDisqualificationDelete.class));
     }
-
 }

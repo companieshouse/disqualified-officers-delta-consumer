@@ -13,7 +13,6 @@ import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificat
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
-import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.MapperUtils;
 import uk.gov.companieshouse.disqualifiedofficers.delta.service.api.ApiClientService;
@@ -74,7 +73,7 @@ public class DisqualifiedOfficersDeltaProcessor {
             } catch (Exception ex) {
                 LOGGER.error("Unable to transform delta into Corporate disqualification: [%s]"
                         .formatted(disqualifiedOfficersDelta), ex, DataMapHolder.getLogMap());
-                throw new RetryableErrorException(
+                throw new NonRetryableErrorException(
                         "Error transforming delta to Corporate disqualification request", ex);
             }
             invokeDataApiForCorporateDisqualification(contextId, apiObject);
@@ -86,7 +85,7 @@ public class DisqualifiedOfficersDeltaProcessor {
             } catch (Exception ex) {
                 LOGGER.error("Unable to transform delta into Natural disqualification: [%s]"
                         .formatted(disqualifiedOfficersDelta), ex, DataMapHolder.getLogMap());
-                throw new RetryableErrorException(
+                throw new NonRetryableErrorException(
                         "Error transforming delta to Natural disqualification request", ex);
             }
             invokeDataApiForNaturalDisqualification(contextId, apiObject);

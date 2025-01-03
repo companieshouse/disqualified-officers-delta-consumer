@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.service.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -21,28 +20,28 @@ import uk.gov.companieshouse.disqualifiedofficers.delta.processor.Disqualificati
 @Service
 public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements ApiClientService {
 
-    @Value("${api.disqualified-officers-data-api-key}")
-    private String chsApiKey;
+    private final String chsApiKey;
+    private final String apiUrl;
+    private final String internalApiUrl;
 
-    @Value("${api.api-url}")
-    private String apiUrl;
-
-    @Value("${api.internal-api-url}")
-    private String internalApiUrl;
-
-    @Autowired
-    public ApiClientServiceImpl( ) {
+    public ApiClientServiceImpl(
+            @Value("${api.disqualified-officers-data-api-key}")String chsApiKey,
+            @Value("${api.api-url}")String apiUrl,
+            @Value("${api.internal-api-url}")String internalApiUrl) {
+        this.chsApiKey = chsApiKey;
+        this.apiUrl = apiUrl;
+        this.internalApiUrl = internalApiUrl;
     }
 
     @Override
-    public InternalApiClient getApiClient(String contextId) {
+    public InternalApiClient getApiClient(final String contextId) {
         InternalApiClient internalApiClient = new InternalApiClient(getHttpClient(contextId));
         internalApiClient.setBasePath(apiUrl);
         internalApiClient.setInternalBasePath(internalApiUrl);
         return internalApiClient;
     }
 
-    private HttpClient getHttpClient(String contextId) {
+    private HttpClient getHttpClient(final String contextId) {
         ApiKeyHttpClient httpClient = new ApiKeyHttpClient(chsApiKey);
         httpClient.setRequestId(contextId);
         return httpClient;

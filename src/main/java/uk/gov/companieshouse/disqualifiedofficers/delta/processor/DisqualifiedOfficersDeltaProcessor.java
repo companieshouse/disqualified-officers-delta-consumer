@@ -23,9 +23,9 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @Component
 public class DisqualifiedOfficersDeltaProcessor {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
     private final DisqualifiedOfficersApiTransformer transformer;
     private final ApiClientService apiClientService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
     private final ObjectMapper objectMapper;
 
     /**

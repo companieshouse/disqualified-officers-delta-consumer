@@ -72,6 +72,8 @@ public final class MapperUtils {
                 "competition-and-markets-authority-disqualification-undertaking");
         descriptionIdentifier.put("S10", "participation-in-wrongful-trading");
         descriptionIdentifier.put("S3A", "director-disqualification-sanctions");
+        descriptionIdentifier.put("16A", "director-disqualification-sanctions");
+
 
         return descriptionIdentifier;
     }

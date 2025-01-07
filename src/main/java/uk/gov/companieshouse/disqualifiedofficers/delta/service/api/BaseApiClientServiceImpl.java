@@ -21,13 +21,11 @@ public abstract class BaseApiClientServiceImpl {
     /**
      * General execution of an SDK endpoint.
      *
-     * @param <T>           type of api response
-     * @param operationName name of operation
-     * @param executor      executor to use
+     * @param <T>      type of api response
+     * @param executor executor to use
      * @return the response object
      */
-    public <T> ApiResponse<T> executeOp(final String operationName,
-                                        final Executor<ApiResponse<T>> executor) {
+    public <T> ApiResponse<T> executeOp(final Executor<ApiResponse<T>> executor) {
         try {
 
             return executor.execute();

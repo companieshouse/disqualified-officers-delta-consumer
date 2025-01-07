@@ -52,8 +52,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
                                                         InternalNaturalDisqualificationApi internalDisqualificationApi) {
         final String uri = String.format("/disqualified-officers/natural/%s/internal", officerId);
         DataMapHolder.get().resourceUri(uri);
-        return executeOp("putDisqualification",
-                getApiClient(contextId).privateDisqualificationResourceHandler()
+        return executeOp(getApiClient(contextId).privateDisqualificationResourceHandler()
                         .putDisqualification()
                         .upsert(uri, internalDisqualificationApi));
     }
@@ -63,8 +62,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
             InternalCorporateDisqualificationApi internalDisqualificationApi) {
         final String uri = String.format("/disqualified-officers/corporate/%s/internal", officerId);
         DataMapHolder.get().resourceUri(uri);
-        return executeOp("putDisqualification",
-                getApiClient(contextId).privateDisqualificationResourceHandler()
+        return executeOp(getApiClient(contextId).privateDisqualificationResourceHandler()
                         .putDisqualification()
                         .upsert(uri, internalDisqualificationApi));
     }
@@ -75,7 +73,7 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
         final String uri = "/disqualified-officers/%s/%s/internal".formatted(type.getTypeAsString(), officerId);
         DataMapHolder.get().resourceUri(uri);
         DataMapHolder.get().officerType(type.getTypeAsString());
-        return executeOp("deleteDisqualification",
+        return executeOp(
                 getApiClient(contextId).privateDisqualificationResourceHandler()
                         .deleteDisqualification(uri, deltaAt));
     }

@@ -37,7 +37,7 @@ class BaseApiClientServiceImplTest {
         ApiResponse<Integer> expectedResponse = new ApiResponse<>(200, new HashMap<>());
         when(executor.execute()).thenReturn(expectedResponse);
 
-        ApiResponse<Integer> actualResponse = service.executeOp(null, executor);
+        ApiResponse<Integer> actualResponse = service.executeOp(executor);
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
     }
@@ -47,7 +47,7 @@ class BaseApiClientServiceImplTest {
         when(executor.execute()).thenThrow(new URIValidationException("Not Found"));
 
         RetryableErrorException thrown = assertThrows(RetryableErrorException.class,
-                () -> service.executeOp(null, executor));
+                () -> service.executeOp(executor));
 
         assertThat(thrown.getMessage()).isEqualTo("404 NOT_FOUND response received from disqualified-officers-data-api");
     }
@@ -58,7 +58,7 @@ class BaseApiClientServiceImplTest {
                 new ApiErrorResponseException(new Builder(500, "500", new HttpHeaders())));
 
         RetryableErrorException thrown = assertThrows(RetryableErrorException.class,
-                () -> service.executeOp(null, executor));
+                () -> service.executeOp(executor));
 
         assertThat(thrown.getMessage()).isEqualTo("Non-Successful response 500 received from disqualified-officers-data-api");
     }
@@ -69,7 +69,7 @@ class BaseApiClientServiceImplTest {
                 new ApiErrorResponseException(new Builder(400, "400", new HttpHeaders())));
 
         NonRetryableErrorException thrown = assertThrows(NonRetryableErrorException.class,
-                () -> service.executeOp(null, executor));
+                () -> service.executeOp(executor));
 
         assertThat(thrown.getMessage()).isEqualTo("Non-retryable response 400 received from disqualified-officers-data-api");
     }
@@ -80,7 +80,7 @@ class BaseApiClientServiceImplTest {
                 new ApiErrorResponseException(new Builder(409, "409", new HttpHeaders())));
 
         NonRetryableErrorException thrown = assertThrows(NonRetryableErrorException.class,
-                () -> service.executeOp(null, executor));
+                () -> service.executeOp(executor));
 
         assertThat(thrown.getMessage()).isEqualTo("Non-retryable response 409 received from disqualified-officers-data-api");
     }

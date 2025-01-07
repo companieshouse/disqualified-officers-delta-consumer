@@ -74,12 +74,13 @@ class DisqualifiedOfficersProcessorTest {
     @Test
     void When_InvalidChsDeltaMessage_Expect_NonRetryableError() throws JsonProcessingException {
         Message<ChsDelta> invalidDelta = testHelper.createInvalidChsDeltaMessage();
-        when(objectMapper.readValue(invalidDelta.getPayload().getData(), DisqualificationDelta.class)).thenThrow(NullPointerException.class);
+        when(objectMapper.readValue(invalidDelta.getPayload().getData(), DisqualificationDelta.class)).thenThrow(JsonProcessingException.class);
         assertThrows(NonRetryableErrorException.class, ()->deltaProcessor.processDelta(invalidDelta));
     }
 
     @Test
     void When_ApiReturns500_Expect_RetryableError() throws IOException {
+        //TODO change the order of the stubbing to reflect actual flow.
         Message<ChsDelta> chsDelta = testHelper.createChsDeltaMessage(false);
         InternalNaturalDisqualificationApi apiObject = testHelper.createDisqualificationApi();
         when(apiClientService.putNaturalDisqualification(any(),any(), eq(apiObject))).thenThrow(new RetryableErrorException(""));
@@ -90,11 +91,13 @@ class DisqualifiedOfficersProcessorTest {
 
     @Test
     void WhenDisqualificationsTransformerFailsExpectNonRetryableError() throws IOException {
+        //TODO this should test the catch block within one of the transformer test cases - need to test both failing catch blocks.
         Message<ChsDelta> delta = testHelper.createDeltaWithoutDisqualification();
         when(objectMapper.readValue(delta.getPayload().getData(), DisqualificationDelta.class)).thenThrow(NoSuchElementException.class);
         assertThrows(NonRetryableErrorException.class, ()->deltaProcessor.processDelta(delta));
     }
 
+    //TODO should be a corporate officer positive test case as well. So make corporate ind 1 to get it to work.
     @Test
     void When_Valid_Delete_Message_Received_Delete_Endpoint_is_Called() throws IOException {
         Message<ChsDelta> chsDeleteDelta = testHelper.createChsDeltaMessage(true);

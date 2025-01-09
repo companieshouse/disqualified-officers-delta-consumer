@@ -68,6 +68,7 @@ public interface DisqualificationMapper {
         disqualifyingLaw.put("CDDO",
                 "company-directors-disqualification-northern-ireland-order-2002");
         disqualifyingLaw.put("SAMLA", "sanctions-anti-money-laundering-act-2018");
+        disqualifyingLaw.put("CT-Regs", "sanctions-counter-terrorism-regulations-2019");
 
         HashMap<String, String> descriptionIdentifier = MapperUtils.createIdentifierHashMap();
 
@@ -77,7 +78,7 @@ public interface DisqualificationMapper {
         reason.put("description_identifier", descriptionIdentifier.get(sectionParts[2]));
 
         String disqualificationReference = "article";
-        if (sectionParts[0].equals("CDDA") || sectionParts[0].equals("SAMLA")) {
+        if (sectionParts[0].equals("CDDA") || sectionParts[0].equals("SAMLA") || sectionParts[0].equals("CT-Regs")) {
             disqualificationReference = "section";
         }
 

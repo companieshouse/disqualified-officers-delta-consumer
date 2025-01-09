@@ -169,21 +169,6 @@ public class TestHelper {
         return buildMessage("This is some invalid data");
     }
 
-    public static Message<ChsDelta> createDeltaWithoutDisqualification() throws IOException {
-        InputStreamReader exampleJsonPayload = new InputStreamReader(
-                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("invalid-disqualified-officers-delta-example.json")));
-        String data = FileCopyUtils.copyToString(exampleJsonPayload);
-        return buildMessage(data);
-    }
-
-    public static Message<ChsDelta> createDeleteMessage() throws IOException {
-        InputStreamReader exampleJsonPayload = new InputStreamReader(
-                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("disqualified-officers-delete-example.json")));
-        String data = FileCopyUtils.copyToString(exampleJsonPayload);
-
-        return buildMessage(data);
-    }
-
     private static Message<ChsDelta> buildMessage(String data) {
         ChsDelta mockChsDelta = ChsDelta.newBuilder()
                 .setData(data)

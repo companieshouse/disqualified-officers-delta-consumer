@@ -11,7 +11,9 @@ import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
 import uk.gov.companieshouse.api.delta.DisqualificationAddress;
 import uk.gov.companieshouse.api.disqualification.Address;
+import uk.gov.companieshouse.api.disqualification.CorporateDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.Disqualification;
+import uk.gov.companieshouse.api.disqualification.InternalCorporateDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.NaturalDisqualificationApi;
@@ -26,8 +28,8 @@ import static org.springframework.kafka.support.KafkaHeaders.EXCEPTION_CAUSE_FQC
 
 public class TestHelper {
 
-    public Message<ChsDelta> createChsDeltaMessage(boolean isDelete) throws IOException {
-        String filename = isDelete ? "disqualified-officers-delete-example.json":"disqualified-officers-delta-example.json";
+    public static Message<ChsDelta> createChsDeltaMessageNaturalOfficer(boolean isDelete) throws IOException {
+        String filename = isDelete ? "disqualified-officers-delete-example.json":"disqualified-officers-natural-example.json";
         InputStreamReader exampleJsonPayload = new InputStreamReader(
                 Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(filename)));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
@@ -35,7 +37,17 @@ public class TestHelper {
         return buildMessage(data);
     }
 
-    public InternalNaturalDisqualificationApi createDisqualificationApi() {
+    public static Message<ChsDelta> createChsDeltaMessageCorporateOfficer(boolean isDelete) throws IOException {
+        String filename = isDelete ? "disqualified-officers-delete-example.json":"disqualified-officers-corporate-example.json";
+        InputStreamReader exampleJsonPayload = new InputStreamReader(
+                Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(filename)));
+        String data = FileCopyUtils.copyToString(exampleJsonPayload);
+
+        return buildMessage(data);
+    }
+
+
+    public static InternalNaturalDisqualificationApi createNaturalDisqualificationApi() {
         InternalNaturalDisqualificationApi internalNaturalDisqualificationApi = new InternalNaturalDisqualificationApi();
         InternalDisqualificationApiInternalData internalData = new InternalDisqualificationApiInternalData();
         internalData.setOfficerIdRaw("3002276133");
@@ -72,7 +84,39 @@ public class TestHelper {
         return internalNaturalDisqualificationApi;
     }
 
-    public DisqualificationDelta createDisqualificationDelta() {
+    public static InternalCorporateDisqualificationApi createCorporateDisqualificationApi() {
+        InternalCorporateDisqualificationApi internalCorporateDisqualificationApi = new InternalCorporateDisqualificationApi();
+        InternalDisqualificationApiInternalData internalData = new InternalDisqualificationApiInternalData();
+        internalData.setOfficerIdRaw("3002276133");
+        internalData.setOfficerId("3002276133");
+        internalData.setOfficerDisqId("3000035941");
+
+        Address address = new Address();
+        address.setPremises("39");
+        address.setAddressLine1("Arnold Gardens");
+        address.setLocality("London");
+        address.setPostalCode("N13 5JE");
+
+        Disqualification disqualification = new Disqualification();
+        disqualification.setDisqualifiedFrom(LocalDate.of(2015,8,13));
+        disqualification.setDisqualifiedUntil(LocalDate.of(2030,8,12));
+        disqualification.setDisqualificationType("ORDER");
+        disqualification.setHeardOn(LocalDate.of(2015,7,23));
+        disqualification.setCaseIdentifier("1396 OF 2015");
+        disqualification.setCourtName("Companies Court - London");
+        disqualification.addCompanyNamesItem("EARNSHAW EQUITIES LIMITED");
+        disqualification.setAddress(address);
+
+        CorporateDisqualificationApi externalData = new CorporateDisqualificationApi();
+        externalData.setPersonNumber("168544120001");
+        externalData.addDisqualificationsItem(disqualification);
+
+        internalCorporateDisqualificationApi.setInternalData(internalData);
+        internalCorporateDisqualificationApi.setExternalData(externalData);
+        return internalCorporateDisqualificationApi;
+    }
+
+    public static DisqualificationDelta buildExpectedDisqualificationDelta(String corporateInd) {
         DisqualificationAddress address = new DisqualificationAddress();
         address.setPremise("39");
         address.setAddressLine1("Arnold Gardens");
@@ -101,18 +145,19 @@ public class TestHelper {
         disqualifiedOfficer.setSurname("PISTOLAS");
         disqualifiedOfficer.setNationality("British");
         disqualifiedOfficer.addDisqualificationsItem(disqualification);
+        disqualifiedOfficer.setCorporateInd(corporateInd);
 
         return new DisqualificationDelta().addDisqualifiedOfficerItem(disqualifiedOfficer);
     }
 
-    public DisqualificationDeleteDelta createDisqualificationDeleteDelta() {
+    public static DisqualificationDeleteDelta createDisqualificationDeleteDelta() {
         return new DisqualificationDeleteDelta()
                 .officerId("3002276133")
                 .action(DisqualificationDeleteDelta.ActionEnum.DELETE)
                 .deltaAt("20230724093435661593");
     }
 
-    public ProducerRecord<String, Object> createRecord(String topic, String header) {
+    public static ProducerRecord<String, Object> createRecord(String topic, String header) {
         Object recordObj = new Object();
         RecordHeaders headers = new RecordHeaders();
         headers.add(EXCEPTION_CAUSE_FQCN, header.getBytes());
@@ -120,18 +165,18 @@ public class TestHelper {
         return new ProducerRecord<>(topic, 1,1L ,null, recordObj, headers);
     }
 
-    public Message<ChsDelta> createInvalidChsDeltaMessage() {
+    public static Message<ChsDelta> createInvalidChsDeltaMessage() {
         return buildMessage("This is some invalid data");
     }
 
-    public Message<ChsDelta> createDeltaWithoutDisqualification() throws IOException {
+    public static Message<ChsDelta> createDeltaWithoutDisqualification() throws IOException {
         InputStreamReader exampleJsonPayload = new InputStreamReader(
                 Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("invalid-disqualified-officers-delta-example.json")));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
         return buildMessage(data);
     }
 
-    public Message<ChsDelta> createDeleteMessage() throws IOException {
+    public static Message<ChsDelta> createDeleteMessage() throws IOException {
         InputStreamReader exampleJsonPayload = new InputStreamReader(
                 Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("disqualified-officers-delete-example.json")));
         String data = FileCopyUtils.copyToString(exampleJsonPayload);
@@ -139,7 +184,7 @@ public class TestHelper {
         return buildMessage(data);
     }
 
-    private Message<ChsDelta> buildMessage(String data) {
+    private static Message<ChsDelta> buildMessage(String data) {
         ChsDelta mockChsDelta = ChsDelta.newBuilder()
                 .setData(data)
                 .setContextId("context_id")

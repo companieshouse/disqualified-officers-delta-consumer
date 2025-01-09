@@ -6,7 +6,6 @@ import static org.springframework.kafka.support.KafkaHeaders.RECEIVED_PARTITION;
 import static org.springframework.kafka.support.KafkaHeaders.RECEIVED_TOPIC;
 import static uk.gov.companieshouse.disqualifiedofficers.delta.DisqualifiedOfficersDeltaConsumerApplication.NAMESPACE;
 
-import consumer.exception.NonRetryableErrorException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,6 +14,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;

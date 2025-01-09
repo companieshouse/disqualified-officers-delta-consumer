@@ -99,12 +99,12 @@ public class DisqualifiedOfficersDeltaProcessor {
         final ChsDelta payload = chsDelta.getPayload();
         final String contextId = payload.getContextId();
 
-        DisqualificationDeleteDelta disqualifiedOfficersDelete = new DisqualificationDeleteDelta();
+        DisqualificationDeleteDelta disqualifiedOfficersDelete;
         try {
             disqualifiedOfficersDelete = objectMapper.readValue(payload.getData(),
                     DisqualificationDeleteDelta.class);
         } catch (Exception ex) {
-            LOGGER.error("Unable to deserialise delta: [%s]".formatted(disqualifiedOfficersDelete),
+            LOGGER.error("Unable to deserialise delta: [%s]".formatted(payload.getData()),
                     ex, DataMapHolder.getLogMap());
             throw new NonRetryableErrorException(
                     "Error deserialising disqualified-officers delete delta", ex);

@@ -1,8 +1,5 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.service.api;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -12,8 +9,8 @@ import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificatio
 import uk.gov.companieshouse.api.http.ApiKeyHttpClient;
 import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.model.ApiResponse;
+import uk.gov.companieshouse.disqualifiedofficers.delta.logging.DataMapHolder;
 import uk.gov.companieshouse.disqualifiedofficers.delta.processor.DisqualificationType;
-import uk.gov.companieshouse.logging.Logger;
 
 
 /**
@@ -23,88 +20,61 @@ import uk.gov.companieshouse.logging.Logger;
 @Service
 public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements ApiClientService {
 
-    @Value("${api.disqualified-officers-data-api-key}")
-    private String chsApiKey;
+    private final String chsApiKey;
+    private final String apiUrl;
+    private final String internalApiUrl;
 
-    @Value("${api.api-url}")
-    private String apiUrl;
-
-    @Value("${api.internal-api-url}")
-    private String internalApiUrl;
-
-    /**
-     * Construct an {@link ApiClientServiceImpl}.
-     *
-     * @param logger the CH logger
-     */
-    @Autowired
-    public ApiClientServiceImpl(final Logger logger) {
-        super(logger);
+    public ApiClientServiceImpl(
+            @Value("${api.disqualified-officers-data-api-key}")String chsApiKey,
+            @Value("${api.api-url}")String apiUrl,
+            @Value("${api.internal-api-url}")String internalApiUrl) {
+        this.chsApiKey = chsApiKey;
+        this.apiUrl = apiUrl;
+        this.internalApiUrl = internalApiUrl;
     }
 
     @Override
-    public InternalApiClient getApiClient(String contextId) {
+    public InternalApiClient getApiClient(final String contextId) {
         InternalApiClient internalApiClient = new InternalApiClient(getHttpClient(contextId));
         internalApiClient.setBasePath(apiUrl);
         internalApiClient.setInternalBasePath(internalApiUrl);
         return internalApiClient;
     }
 
-    private HttpClient getHttpClient(String contextId) {
+    private HttpClient getHttpClient(final String contextId) {
         ApiKeyHttpClient httpClient = new ApiKeyHttpClient(chsApiKey);
         httpClient.setRequestId(contextId);
         return httpClient;
     }
 
     @Override
-    public ApiResponse<Void> putDisqualification(final String log, final String officerId,
-            InternalNaturalDisqualificationApi internalDisqualificationApi) {
+    public ApiResponse<Void> putNaturalDisqualification(final String contextId, final String officerId,
+                                                        InternalNaturalDisqualificationApi internalDisqualificationApi) {
         final String uri = String.format("/disqualified-officers/natural/%s/internal", officerId);
-
-        Map<String, Object> logMap = createLogMap(officerId, "PUT", uri);
-        logger.infoContext(log, String.format("PUT %s", uri), logMap);
-
-        return executeOp(log, "putDisqualification", uri,
-                getApiClient(log).privateDisqualificationResourceHandler()
+        DataMapHolder.get().resourceUri(uri);
+        return executeOp(getApiClient(contextId).privateDisqualificationResourceHandler()
                         .putDisqualification()
                         .upsert(uri, internalDisqualificationApi));
     }
 
     @Override
-    public ApiResponse<Void> putDisqualification(final String log, final String officerId,
+    public ApiResponse<Void> putCorporateDisqualification(final String contextId, final String officerId,
             InternalCorporateDisqualificationApi internalDisqualificationApi) {
         final String uri = String.format("/disqualified-officers/corporate/%s/internal", officerId);
-
-        Map<String, Object> logMap = createLogMap(officerId, "PUT", uri);
-        logger.infoContext(log, String.format("PUT %s", uri), logMap);
-
-        return executeOp(log, "putDisqualification", uri,
-                getApiClient(log).privateDisqualificationResourceHandler()
+        DataMapHolder.get().resourceUri(uri);
+        return executeOp(getApiClient(contextId).privateDisqualificationResourceHandler()
                         .putDisqualification()
                         .upsert(uri, internalDisqualificationApi));
     }
 
     @Override
-    public ApiResponse<Void> deleteDisqualification(
-            final String log,
-            final String officerId,
-            final String deltaAt,
-            DisqualificationType type) {
+    public ApiResponse<Void> deleteDisqualification(final String contextId, final String officerId,
+            final String deltaAt, DisqualificationType type) {
         final String uri = "/disqualified-officers/%s/%s/internal".formatted(type.getTypeAsString(), officerId);
-
-        Map<String, Object> logMap = createLogMap(officerId, "DELETE", uri);
-        logger.infoContext(log, String.format("DELETE %s", uri), logMap);
-
-        return executeOp(log, "deleteDisqualification", uri,
-                getApiClient(log).privateDisqualificationResourceHandler()
+        DataMapHolder.get().resourceUri(uri);
+        DataMapHolder.get().officerType(type.getTypeAsString());
+        return executeOp(
+                getApiClient(contextId).privateDisqualificationResourceHandler()
                         .deleteDisqualification(uri, deltaAt));
-    }
-
-    private Map<String, Object> createLogMap(String officerId, String method, String path) {
-        final Map<String, Object> logMap = new HashMap<>();
-        logMap.put("officer_id", officerId);
-        logMap.put("method", method);
-        logMap.put("path", path);
-        return logMap;
     }
 }

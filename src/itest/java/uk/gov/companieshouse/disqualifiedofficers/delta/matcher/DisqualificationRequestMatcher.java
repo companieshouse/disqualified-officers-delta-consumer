@@ -7,7 +7,6 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.ValueMatcher;
-import uk.gov.companieshouse.logging.Logger;
 
 /**
  *  Custom matcher class used to match requests made by the consumer to the
@@ -17,12 +16,10 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
 
     private final String expectedOutput;
     private final String type;
-    private final Logger logger;
 
-    public DisqualificationRequestMatcher(Logger logger, String type, String output) {
+    public DisqualificationRequestMatcher(String type, String output) {
         this.type = type;
         this.expectedOutput = output;
-        this.logger = logger;
     }
 
     @Override
@@ -38,7 +35,7 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
         MatchResult urlResult = MatchResult.of(expectedUrl.equals(actualUrl));
 
         if (! urlResult.isExactMatch()) {
-            logger.error("url does not match expected: <" + expectedUrl + "> actual: <" + actualUrl + ">");
+            System.out.println("url does not match expected: <" + expectedUrl + "> actual: <" + actualUrl + ">");
         }
 
         return urlResult;
@@ -50,7 +47,7 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
         MatchResult typeResult = MatchResult.of(expectedMethod.equals(actualMethod));
 
         if (! typeResult.isExactMatch()) {
-            logger.error("Method does not match expected: <" + expectedMethod + "> actual: <" + actualMethod + ">");
+            System.out.println("Method does not match expected: <" + expectedMethod + "> actual: <" + actualMethod + ">");
         }
 
         return typeResult;
@@ -65,7 +62,7 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
         try {
             expectedBody = mapper.readTree(expectedOutput);
         } catch (JsonProcessingException e) {
-            logger.error("Could not process expectedBody JSON: " + e);
+            System.out.println("Could not process expectedBody JSON: " + e);
             return MatchResult.of(false);
         }
 
@@ -73,14 +70,14 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
         try {
             actual = mapper.readTree(actualBody);
         } catch (JsonProcessingException e) {
-            logger.error("Could not process actualBody JSON: " + e);
+            System.out.println("Could not process actualBody JSON: " + e);
             return MatchResult.of(false);
         }
 
         bodyResult = MatchResult.of(expectedBody.equals(actual));
 
         if (! bodyResult.isExactMatch()) {
-            logger.error("Body does not match expected: <" + expectedBody + "> actual: <" + actualBody + ">");
+            System.out.println("Body does not match expected: <" + expectedBody + "> actual: <" + actualBody + ">");
         }
 
         return bodyResult;

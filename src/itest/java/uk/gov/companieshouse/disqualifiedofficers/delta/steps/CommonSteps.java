@@ -1,10 +1,22 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.steps;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.requestMadeFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -15,14 +27,9 @@ import org.springframework.kafka.test.utils.KafkaTestUtils;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.data.TestData;
 import uk.gov.companieshouse.disqualifiedofficers.delta.matcher.DisqualificationRequestMatcher;
-import uk.gov.companieshouse.logging.Logger;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommonSteps {
 
@@ -38,8 +45,6 @@ public class CommonSteps {
     private KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     public KafkaConsumer<String, Object> kafkaConsumer;
-    @Autowired
-    private Logger logger;
 
     private String type;
     private String output;
@@ -100,7 +105,7 @@ public class CommonSteps {
 
     @Then("a PUT request is sent to the disqualifications api with the transformed data")
     public void putRequestIsSentToTheDisqualificationsApi() {
-        verify(1, requestMadeFor(new DisqualificationRequestMatcher(logger, type, output)));
+        verify(1, requestMadeFor(new DisqualificationRequestMatcher(type, output)));
     }
 
     @Then("^the message should be moved to topic (.*)$")

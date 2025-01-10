@@ -17,19 +17,19 @@ public interface ApiClientService {
     /**
      * Submit disqualification.
      */
-    ApiResponse<Void> putDisqualification(
-            final String log,
+    ApiResponse<Void> putNaturalDisqualification(
+            final String contextId,
             final String officerId,
             final InternalNaturalDisqualificationApi internalDisqualificationApi);
 
-    ApiResponse<Void> putDisqualification(
-            final String log,
+    ApiResponse<Void> putCorporateDisqualification(
+            final String contextId,
             final String officerId,
             final InternalCorporateDisqualificationApi internalDisqualificationApi);
 
     /**
      * Delete disqualification.
      */
-    ApiResponse<Void> deleteDisqualification(final String log, final String officerId, final String deltaAt,
+    ApiResponse<Void> deleteDisqualification(final String contextId, final String officerId, final String deltaAt,
             DisqualificationType type);
 }

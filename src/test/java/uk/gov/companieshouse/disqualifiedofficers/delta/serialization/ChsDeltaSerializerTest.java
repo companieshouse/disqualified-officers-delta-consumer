@@ -1,27 +1,23 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.serialization;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
-import uk.gov.companieshouse.logging.Logger;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
-@ExtendWith(MockitoExtension.class)
-public class ChsDeltaSerializerTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 
-    @Mock
-    private Logger logger;
+@ExtendWith(MockitoExtension.class)
+class ChsDeltaSerializerTest {
+
     private ChsDeltaSerializer serializer;
 
     @BeforeEach
     public void init() {
-        serializer = new ChsDeltaSerializer(logger);
+        serializer = new ChsDeltaSerializer();
     }
 
     @Test

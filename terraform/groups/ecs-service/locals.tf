@@ -7,7 +7,7 @@ locals {
   container_port             = "8080"
   docker_repo                = "disqualified-officers-delta-consumer"
   kms_alias                  = "alias/${var.aws_profile}/environment-services-kms"
-  healthcheck_path           = "/disqualified-officers-delta-consumer/healthcheck" # healthcheck path for disqualified-officers-delta-consumer
+  healthcheck_path           = "/healthcheck"
   healthcheck_matcher        = "200"
   vpc_name                   = local.stack_secrets["vpc_name"]
   s3_config_bucket           = data.vault_generic_secret.shared_s3.data["config_bucket_name"]

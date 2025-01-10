@@ -1,15 +1,14 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.exception;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static uk.gov.companieshouse.disqualifiedofficers.delta.utils.TestHelper.createRecord;
+
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import uk.gov.companieshouse.disqualifiedofficers.delta.utils.TestHelper;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class RetryableTopicErrorInterceptorTest  {
+class RetryableTopicErrorInterceptorTest  {
 
     private RetryableTopicErrorInterceptor interceptor;
 
@@ -20,27 +19,24 @@ public class RetryableTopicErrorInterceptorTest  {
 
     @Test
     void when_correct_topic_is_sent_record_is_unchanged() {
-        TestHelper testHelper = new TestHelper();
-        ProducerRecord<String, Object> record = testHelper.createRecord("topic", "header");
-        ProducerRecord<String, Object> newRecord = interceptor.onSend(record);
+        ProducerRecord<String, Object> currentRecord = createRecord("topic", "header");
+        ProducerRecord<String, Object> newRecord = interceptor.onSend(currentRecord);
 
-        assertThat(newRecord).isEqualTo(record);
+        assertThat(newRecord).isEqualTo(currentRecord);
     }
 
     @Test
     void when_error_is_nonretryable_topic_is_set_to_invalid() {
-        TestHelper testHelper = new TestHelper();
-        ProducerRecord<String, Object> record = testHelper.createRecord("topic-error", NonRetryableErrorException.class.getName());
-        ProducerRecord<String, Object> newRecord = interceptor.onSend(record);
+        ProducerRecord<String, Object> currentRecord = createRecord("topic-error", NonRetryableErrorException.class.getName());
+        ProducerRecord<String, Object> newRecord = interceptor.onSend(currentRecord);
 
         assertThat(newRecord.topic()).isEqualTo("topic-invalid");
     }
 
     @Test
     void when_error_is_retryable_topic_is_unchanged() {
-        TestHelper testHelper = new TestHelper();
-        ProducerRecord<String, Object> record = testHelper.createRecord("topic-error", RetryableErrorException.class.getName());
-        ProducerRecord<String, Object> newRecord = interceptor.onSend(record);
+        ProducerRecord<String, Object> currentRecord = createRecord("topic-error", RetryableErrorException.class.getName());
+        ProducerRecord<String, Object> newRecord = interceptor.onSend(currentRecord);
 
         assertThat(newRecord.topic()).isEqualTo("topic-error");
     }

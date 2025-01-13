@@ -80,7 +80,7 @@ public interface DisqualificationMapper {
         String disqualificationReference = "article";
         if (sectionParts[0].equals("CDDA") || sectionParts[0].equals("SAMLA")) {
             disqualificationReference = "section";
-        } else if (sectionParts[0].equals("Ct-Regs")) {
+        } else if (sectionParts[0].equals("CT-Regs")) {
             disqualificationReference = "regulation";
         }
 

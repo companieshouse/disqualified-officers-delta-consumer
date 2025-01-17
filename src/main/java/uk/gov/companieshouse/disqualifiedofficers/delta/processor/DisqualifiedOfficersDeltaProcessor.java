@@ -63,6 +63,7 @@ public class DisqualifiedOfficersDeltaProcessor {
         DisqualificationOfficer disqualificationOfficer = disqualifiedOfficersDelta
                 .getDisqualifiedOfficer()
                 .getFirst();
+        DataMapHolder.get().officerIdRaw(disqualificationOfficer.getOfficerId());
         if (disqualificationOfficer.getCorporateInd() != null
                 && disqualificationOfficer.getCorporateInd().equals("1")) {
             InternalCorporateDisqualificationApi apiObject;
@@ -75,7 +76,6 @@ public class DisqualifiedOfficersDeltaProcessor {
                 throw new NonRetryableErrorException(
                         "Error transforming delta to Corporate disqualification request", ex);
             }
-            DataMapHolder.get().officerId(apiObject.getInternalData().getOfficerId());
             invokeDataApiForCorporateDisqualification(contextId, apiObject);
         } else {
             InternalNaturalDisqualificationApi apiObject;
@@ -88,7 +88,6 @@ public class DisqualifiedOfficersDeltaProcessor {
                 throw new NonRetryableErrorException(
                         "Error transforming delta to Natural disqualification request", ex);
             }
-            DataMapHolder.get().officerId(apiObject.getInternalData().getOfficerId());
             invokeDataApiForNaturalDisqualification(contextId, apiObject);
         }
     }
@@ -111,6 +110,7 @@ public class DisqualifiedOfficersDeltaProcessor {
                     "Error deserialising disqualified-officers delete delta", ex);
         }
 
+        DataMapHolder.get().officerId(disqualifiedOfficersDelete.getOfficerId());
         final String officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
         DataMapHolder.get().officerId(officerId);
         apiClientService.deleteDisqualification(

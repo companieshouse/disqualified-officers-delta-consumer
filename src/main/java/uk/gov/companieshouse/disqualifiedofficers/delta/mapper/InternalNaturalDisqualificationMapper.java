@@ -11,6 +11,7 @@ import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.InternalDisqualificationApiInternalData;
 import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificationApi;
 import uk.gov.companieshouse.api.disqualification.NaturalDisqualificationApi;
+import uk.gov.companieshouse.disqualifiedofficers.delta.logging.DataMapHolder;
 
 @Mapper(componentModel = "spring", uses = {DisqualificationMapper.class, 
         PermissionToActMapper.class})
@@ -43,6 +44,7 @@ public interface InternalNaturalDisqualificationMapper {
                                   DisqualificationOfficer sourceCase) {
         
         String encodedOfficerId = MapperUtils.encode(sourceCase.getOfficerId());
+        DataMapHolder.get().officerId(encodedOfficerId);
         String link = String.format("/disqualified-officers/natural/%s", encodedOfficerId);
         NaturalDisqualificationApi externalTarget = target.getExternalData();
         InternalDisqualificationApiInternalData internalData = target.getInternalData();

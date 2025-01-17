@@ -110,12 +110,12 @@ public class DisqualifiedOfficersDeltaProcessor {
                     "Error deserialising disqualified-officers delete delta", ex);
         }
 
-        DataMapHolder.get().officerId(disqualifiedOfficersDelete.getOfficerId());
-        final String officerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
-        DataMapHolder.get().officerId(officerId);
+        DataMapHolder.get().officerIdRaw(disqualifiedOfficersDelete.getOfficerId());
+        final String encodedOfficerId = MapperUtils.encode(disqualifiedOfficersDelete.getOfficerId());
+        DataMapHolder.get().officerId(encodedOfficerId);
         apiClientService.deleteDisqualification(
                 contextId,
-                officerId,
+                encodedOfficerId,
                 disqualifiedOfficersDelete.getDeltaAt(),
                 DisqualificationType.getTypeFromCorporateInd(disqualifiedOfficersDelete.getCorporateInd()));
     }

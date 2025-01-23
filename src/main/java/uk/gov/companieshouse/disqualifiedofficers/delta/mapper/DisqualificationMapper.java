@@ -78,13 +78,11 @@ public interface DisqualificationMapper {
         reason.put("description_identifier", descriptionIdentifier.get(sectionParts[2]));
 
         String disqualificationReference = "article";
-        if (sectionParts[0].equals("CDDA") || sectionParts[0].equals("SAMLA")) {
+        if (sectionParts[0].equals("CDDA") || sectionParts[0].equals("SAMLA") || sectionParts[0].equals("CT-Regs")) {
             disqualificationReference = "section";
-        } else if (sectionParts[0].equals("CT-Regs")) {
-            disqualificationReference = "regulation";
         }
 
-        if (disqualificationReference == "regulation"){
+        if (sectionParts[0].equals("CT-Regs")){
             reason.put(disqualificationReference, sectionParts[2].substring(0));
         } else {
             reason.put(disqualificationReference, sectionParts[2].substring(1));

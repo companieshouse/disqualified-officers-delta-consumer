@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring.boot.version>3.4.1</spring.boot.version>
+        <spring.boot.version>3.4.3</spring.boot.version>
         <map-struct.version>1.6.3</map-struct.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
@@ -26,7 +26,7 @@
         <!-- Companies house specific dependencies -->
         <ch-kafka.version>3.0.3</ch-kafka.version>
         <structured-logging.version>3.0.25</structured-logging.version>
-        <kafka-models.version>3.0.8</kafka-models.version>
+        <kafka-models.version>3.0.11</kafka-models.version>
         <private-api-sdk-java.version>4.0.258</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.6</api-sdk-manager-java-library.version>
 
@@ -113,8 +113,24 @@
             <version>${kafka-models.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-fileupload</groupId>
-                    <artifactId>commons-fileupload</artifactId>
+                    <groupId>org.eclipse.jetty.http2</groupId>
+                    <artifactId>http2-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.http2</groupId>
+                    <artifactId>http2-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-webapp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.minidev</groupId>
+                    <artifactId>json-smart</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

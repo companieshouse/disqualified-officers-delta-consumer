@@ -70,14 +70,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!--section to provide specific versions of transitive dependencies to avoid vulnerabilities, if any exist-->
-        <dependency>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro</artifactId>
-            <version>1.12.0</version>
-        </dependency>
-        <!--end transitive dependencies-->
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

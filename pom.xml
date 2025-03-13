@@ -26,7 +26,7 @@
         <!-- Companies house specific dependencies -->
         <ch-kafka.version>3.0.3</ch-kafka.version>
         <structured-logging.version>3.0.26</structured-logging.version>
-        <kafka-models.version>3.0.11</kafka-models.version>
+        <kafka-models.version>3.0.12</kafka-models.version>
         <private-api-sdk-java.version>4.0.280</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.6</api-sdk-manager-java-library.version>
 
@@ -115,22 +115,6 @@
                 <exclusion>
                     <groupId>org.eclipse.jetty.http2</groupId>
                     <artifactId>http2-common</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty.http2</groupId>
-                    <artifactId>http2-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-webapp</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.minidev</groupId>
-                    <artifactId>json-smart</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

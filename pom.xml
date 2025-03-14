@@ -43,6 +43,7 @@
         <assertj-core.version>3.27.3</assertj-core.version>
         <wiremock.version>3.12.1</wiremock.version>
         <testcontainers.version>1.20.6</testcontainers.version>
+        <avro.version>1.11.4</avro.version>
 
         <!--sonar configuration-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -70,6 +71,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -104,10 +110,6 @@
             <artifactId>kafka-models</artifactId>
             <version>${kafka-models.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>org.apache.avro</groupId>
-                    <artifactId>avro</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>org.eclipse.jetty.http2</groupId>
                     <artifactId>http2-server</artifactId>

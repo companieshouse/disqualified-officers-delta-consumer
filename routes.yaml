@@ -1,5 +1,0 @@
-app_name: disqualified-officers-delta-consumer
-group: api
-weight: 910
-routes:
-  1: ^/disqualified-officers-delta-consumer/healthcheck

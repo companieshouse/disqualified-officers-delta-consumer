@@ -12,7 +12,6 @@
     <version>unversioned</version>
     <name>disqualified-officers-delta-consumer</name>
     <description>Disqualified Officers Delta Consumer</description>
-    <!-- Temp change to test sbom changes-->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

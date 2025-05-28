@@ -1,8 +1,6 @@
 artifact_name       := disqualified-officers-delta-consumer
 version             := "unversioned"
 
-dependency_check_base_suppressions:=common_suppressions_spring_6.xml
-
 dependency_check_base_suppressions := common_suppressions_spring_6.xml
 dependency_check_minimum_cvss := 4
 dependency_check_assembly_analyzer_enabled := false

@@ -24,6 +24,7 @@
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
+        <tomcat-embed-core.version>11.0.7</tomcat-embed-core.version>
 
         <!-- Companies house specific dependencies -->
         <ch-kafka.version>3.0.3</ch-kafka.version>
@@ -92,6 +93,11 @@
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat-embed-core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

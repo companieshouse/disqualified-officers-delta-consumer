@@ -24,7 +24,7 @@
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <tomcat-embed-core.version>11.0.7</tomcat-embed-core.version>
+        <tomcat-embed-core.version>11.0.8</tomcat-embed-core.version>
         <kafka-clients.version>4.0.0</kafka-clients.version>
         <spring-web.version>6.2.8</spring-web.version>
 

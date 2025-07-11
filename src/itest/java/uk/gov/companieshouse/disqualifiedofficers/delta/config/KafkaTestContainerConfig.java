@@ -21,6 +21,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableTopicErrorInterceptor;
@@ -40,8 +41,8 @@ public class KafkaTestContainerConfig {
     }
 
     @Bean
-    public KafkaContainer kafkaContainer() {
-        KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
+    public ConfluentKafkaContainer kafkaContainer() {
+        ConfluentKafkaContainer kafkaContainer = new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
         kafkaContainer.start();
         return kafkaContainer;
     }
@@ -63,7 +64,7 @@ public class KafkaTestContainerConfig {
     }
 
     @Bean
-    public Map<String, Object> consumerConfigs(KafkaContainer kafkaContainer) {
+    public Map<String, Object> consumerConfigs(ConfluentKafkaContainer kafkaContainer) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
@@ -77,7 +78,7 @@ public class KafkaTestContainerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory(KafkaContainer kafkaContainer) {
+    public ProducerFactory<String, Object> producerFactory(ConfluentKafkaContainer kafkaContainer) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);

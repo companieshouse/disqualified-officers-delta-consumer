@@ -24,7 +24,7 @@
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <tomcat-embed-core.version>11.0.8</tomcat-embed-core.version>
+        <tomcat-embed-core.version>11.0.10</tomcat-embed-core.version>
         <kafka-clients.version>3.9.1</kafka-clients.version>
         <opentelemetry-instrumentation-bom.version>2.16.0</opentelemetry-instrumentation-bom.version>
 

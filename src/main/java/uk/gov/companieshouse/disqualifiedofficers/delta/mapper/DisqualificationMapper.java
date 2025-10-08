@@ -3,10 +3,13 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
 import uk.gov.companieshouse.api.delta.Disqualification;
 import uk.gov.companieshouse.api.disqualification.Address;
 import uk.gov.companieshouse.api.disqualification.LastVariation;
@@ -70,7 +73,7 @@ public interface DisqualificationMapper {
         disqualifyingLaw.put("SAMLA", "sanctions-anti-money-laundering-act-2018");
         disqualifyingLaw.put("CT-Regs", "sanctions-counter-terrorism-regulations-2019");
 
-        HashMap<String, String> descriptionIdentifier = MapperUtils.createIdentifierHashMap();
+        Map<String, String> descriptionIdentifier = MapperUtils.createIdentifierHashMap();
 
         String[] sectionParts = sourceDisq.getSectionOfTheAct().split(" ");
         HashMap<String, String> reason = new HashMap<>();
@@ -83,7 +86,7 @@ public interface DisqualificationMapper {
         }
 
         if (sectionParts[0].equals("CT-Regs")){
-            reason.put(disqualificationReference, sectionParts[2].substring(0));
+            reason.put(disqualificationReference, sectionParts[2]);
         } else {
             reason.put(disqualificationReference, sectionParts[2].substring(1));
         }
@@ -138,8 +141,7 @@ public interface DisqualificationMapper {
                 @MappingTarget uk.gov.companieshouse.api.disqualification.Disqualification target,
                 Disqualification sourceDisq) {
         Address address = target.getAddress();
-        if (sourceDisq.getAddress() != null) {
-            address.setPremises(sourceDisq.getAddress().getPremise());
-        }
+
+        address.setPremises(sourceDisq.getAddress().getPremise());
     }
 }

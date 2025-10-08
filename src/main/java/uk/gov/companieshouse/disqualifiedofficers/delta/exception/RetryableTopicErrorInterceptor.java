@@ -22,38 +22,41 @@ public class RetryableTopicErrorInterceptor implements ProducerInterceptor<Strin
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
     @Override
-    public ProducerRecord<String, Object> onSend(ProducerRecord<String, Object> record) {
-        String nextTopic = record.topic().contains("-error") ? getNextErrorTopic(record)
-                : record.topic();
+    public ProducerRecord<String, Object> onSend(ProducerRecord<String, Object> aRecord) {
+        String nextTopic = aRecord.topic().contains("-error") ? getNextErrorTopic(aRecord)
+                : aRecord.topic();
             LOGGER.info(format("Moving record into new topic: %s with value: %s",
-                    nextTopic, record.value()), DataMapHolder.getLogMap());
+                    nextTopic, aRecord.value()), DataMapHolder.getLogMap());
         if (nextTopic.contains("-invalid")) {
-            return new ProducerRecord<>(nextTopic, record.key(), record.value());
+            return new ProducerRecord<>(nextTopic, aRecord.key(), aRecord.value());
         }
 
-        return record;
+        return aRecord;
     }
 
     @Override
     public void onAcknowledgement(RecordMetadata recordMetadata, Exception ex) {
+        // nothing to do
     }
 
     @Override
     public void close() {
+        // nothing to do
     }
 
     @Override
     public void configure(Map<String, ?> map) {
+        // nothing to do
     }
 
-    private String getNextErrorTopic(ProducerRecord<String, Object> record) {
-        Header header1 = record.headers().lastHeader(EXCEPTION_CAUSE_FQCN);
-        Header header2 = record.headers().lastHeader(EXCEPTION_STACKTRACE);
+    private String getNextErrorTopic(ProducerRecord<String, Object> aRecord) {
+        Header header1 = aRecord.headers().lastHeader(EXCEPTION_CAUSE_FQCN);
+        Header header2 = aRecord.headers().lastHeader(EXCEPTION_STACKTRACE);
         return ((header1 != null
                 && new String(header1.value()).contains(NonRetryableErrorException.class.getName()))
                 || (header2 != null
                 && new String(header2.value()).contains(
                 NonRetryableErrorException.class.getName())))
-                ? record.topic().replace("-error", "-invalid") : record.topic();
+                ? aRecord.topic().replace("-error", "-invalid") : aRecord.topic();
     }
 }

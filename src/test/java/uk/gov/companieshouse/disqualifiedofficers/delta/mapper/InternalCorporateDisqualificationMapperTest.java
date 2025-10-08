@@ -46,7 +46,7 @@ class InternalCorporateDisqualificationMapperTest {
     InternalCorporateDisqualificationMapper disqualificationMapper;
 
     @BeforeEach
-    public void setUp() throws IOException {
+    void setUp() throws IOException {
         mapper = new ObjectMapper();
 
         String path = "disqualified-officers-corporate-example.json";
@@ -76,41 +76,41 @@ class InternalCorporateDisqualificationMapperTest {
 
         assertThat(disqualificationDelta).isNotNull();
         assertThat(disqualificationTarget).isNotNull();
-        assertEquals(externalDisqualificationTarget.getName(), "BOOMSHACK LTD.");
+        assertEquals("BOOMSHACK LTD.", externalDisqualificationTarget.getName());
         assertNull(internalDisqualificationTarget.getOfficerDetailId());
         assertNull(internalDisqualificationTarget.getOfficerDisqId());
-        assertEquals(internalDisqualificationTarget.getOfficerId(), "D7WbjxLxswJPHWaLzilZ98PoaZU");
-        assertEquals(internalDisqualificationTarget.getOfficerIdRaw(), "1234554321");
+        assertEquals("D7WbjxLxswJPHWaLzilZ98PoaZU", internalDisqualificationTarget.getOfficerId());
+        assertEquals("1234554321", internalDisqualificationTarget.getOfficerIdRaw());
         assertNull(externalDisqualificationTarget.getPersonNumber());
-        assertEquals(externalDisqualificationTarget.getPermissionsToAct().getFirst(), permissionToAct);
+        assertEquals(permissionToAct, externalDisqualificationTarget.getPermissionsToAct().getFirst());
         DisqualificationLinks links = new DisqualificationLinks();
         links.setSelf("/disqualified-officers/corporate/D7WbjxLxswJPHWaLzilZ98PoaZU");
-        assertEquals(externalDisqualificationTarget.getLinks(), links);
-        assertEquals(externalDisqualificationTarget.getCompanyNumber(), "0000000012");
-        assertEquals(externalDisqualificationTarget.getCountryOfRegistration(), "England");
+        assertEquals(links, externalDisqualificationTarget.getLinks());
+        assertEquals("0000000012", externalDisqualificationTarget.getCompanyNumber());
+        assertEquals("England", externalDisqualificationTarget.getCountryOfRegistration());
 
         Disqualification disqualification = externalDisqualificationTarget.getDisqualifications().getFirst();
-        assertEquals(disqualification.getCaseIdentifier(), "IME3707935");
+        assertEquals("IME3707935", disqualification.getCaseIdentifier());
         List<String> list = new ArrayList<>();
         list.add("TEEHEE LIMITED");
         list.add("HOOHAH LIMITED");
-        assertEquals(disqualification.getCompanyNames(), list);
-        assertEquals(disqualification.getCourtName(), "UNDERTAKING");
-        LastVariation var = new LastVariation();
-        var.setVariedOn(LocalDate.of(2015, 11, 17));
-        var.setCaseIdentifier("VARY DQ01 EFF DATE TO CURRENT");
-        var.setCourtName("CHDBALDWIN");
-        assertEquals(var, disqualification.getLastVariation());
-        assertEquals(disqualification.getDisqualificationType(), "court-order");
+        assertEquals(list, disqualification.getCompanyNames());
+        assertEquals("UNDERTAKING", disqualification.getCourtName());
+        LastVariation lastVar = new LastVariation();
+        lastVar.setVariedOn(LocalDate.of(2015, 11, 17));
+        lastVar.setCaseIdentifier("VARY DQ01 EFF DATE TO CURRENT");
+        lastVar.setCourtName("CHDBALDWIN");
+        assertEquals(lastVar, disqualification.getLastVariation());
+        assertEquals("court-order", disqualification.getDisqualificationType());
         HashMap<String, String> reason = new HashMap<>();
         reason.put("act", "company-directors-disqualification-northern-ireland-order-2002");
         reason.put("article", "4");
         reason.put("description_identifier", "fraud-etc-in-winding-up");
-        assertEquals(disqualification.getReason(), reason);
-        assertEquals(disqualification.getHeardOn(), LocalDate.of(2013, 1, 1));
+        assertEquals(reason, disqualification.getReason());
+        assertEquals(LocalDate.of(2013, 1, 1), disqualification.getHeardOn());
         assertNull(disqualification.getUndertakenOn());
-        assertEquals(disqualification.getDisqualifiedFrom(), LocalDate.of(2013, 6, 24));
-        assertEquals(disqualification.getDisqualifiedUntil(), LocalDate.of(2018, 6, 23));
-        assertEquals(disqualification.getAddress().getPremises(), "Companies House");
+        assertEquals(LocalDate.of(2013, 6, 24), disqualification.getDisqualifiedFrom());
+        assertEquals(LocalDate.of(2018, 6, 23), disqualification.getDisqualifiedUntil());
+        assertEquals("Companies House", disqualification.getAddress().getPremises());
     }
 }

@@ -65,10 +65,8 @@ public class KafkaConfig {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ChsDeltaSerializer.class);
         props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,
                 RetryableTopicErrorInterceptor.class.getName());
-        DefaultKafkaProducerFactory<String, Object> factory = new DefaultKafkaProducerFactory<>(
+        return new DefaultKafkaProducerFactory<>(
                 props, new StringSerializer(), chsDeltaSerializer);
-
-        return factory;
     }
 
     @Bean

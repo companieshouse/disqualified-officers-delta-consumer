@@ -16,7 +16,7 @@ class ChsDeltaSerializerTest {
     private ChsDeltaSerializer serializer;
 
     @BeforeEach
-    public void init() {
+    void init() {
         serializer = new ChsDeltaSerializer();
     }
 
@@ -32,8 +32,9 @@ class ChsDeltaSerializerTest {
 
     @Test
     void When_serialize_null_returns_null() {
+        byte[] emptyArray = new byte[0];
         byte[] serialize = serializer.serialize("", null);
-        assertThat(serialize).isNull();
+        assertThat(serialize).isEqualTo(emptyArray);
     }
 
     @Test

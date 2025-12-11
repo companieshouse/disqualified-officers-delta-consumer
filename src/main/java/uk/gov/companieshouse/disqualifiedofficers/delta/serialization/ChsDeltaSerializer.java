@@ -20,17 +20,19 @@ public class ChsDeltaSerializer implements Serializer<Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
 
+    private static final byte[] EMPTY_ARRAY = new byte[0];
+    
     @Override
     public byte[] serialize(String topic, Object payload) {
         LOGGER.trace("Payload serialised: " + payload, DataMapHolder.getLogMap());
 
         try {
             if (payload == null) {
-                return null;
+                return EMPTY_ARRAY;
             }
 
-            if (payload instanceof byte[]) {
-                return (byte[]) payload;
+            if (payload instanceof byte[] byteArray) {
+                return byteArray;
             }
 
             if (payload instanceof ChsDelta chsDelta) {

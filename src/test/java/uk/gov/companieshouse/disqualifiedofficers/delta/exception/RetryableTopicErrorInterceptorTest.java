@@ -13,7 +13,7 @@ class RetryableTopicErrorInterceptorTest  {
     private RetryableTopicErrorInterceptor interceptor;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         interceptor = new RetryableTopicErrorInterceptor();
     }
 

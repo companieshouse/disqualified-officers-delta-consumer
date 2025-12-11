@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class DisqualifiedOfficersApiTransformerTest {
+class DisqualifiedOfficersApiTransformerTest {
 
     @Mock
     private InternalNaturalDisqualificationMapper naturalMapper;
@@ -30,14 +30,14 @@ public class DisqualifiedOfficersApiTransformerTest {
     private DisqualifiedOfficersApiTransformer transformer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
          transformer = new DisqualifiedOfficersApiTransformer(
             corporateMapper, naturalMapper
         );
     }
 
     @Test
-    public void transformNaturalDeltaSuccessfully() {
+    void transformNaturalDeltaSuccessfully() {
         DisqualificationDelta input = new DisqualificationDelta();
         List<DisqualificationOfficer> disqualifiedOfficerList = new ArrayList<>();
         disqualifiedOfficerList.add(new DisqualificationOfficer());
@@ -55,7 +55,7 @@ public class DisqualifiedOfficersApiTransformerTest {
     }
 
     @Test
-    public void transformCorporateDeltaSuccessfully() {
+    void transformCorporateDeltaSuccessfully() {
         DisqualificationDelta input = new DisqualificationDelta();
         List<DisqualificationOfficer> disqualifiedOfficerList = new ArrayList<>();
         disqualifiedOfficerList.add(new DisqualificationOfficer());

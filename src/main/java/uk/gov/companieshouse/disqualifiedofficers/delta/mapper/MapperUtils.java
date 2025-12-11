@@ -2,6 +2,8 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
 
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 public final class MapperUtils {
@@ -23,7 +25,7 @@ public final class MapperUtils {
      * Create a map of values to lookup using description identifier.
      * @return the hashmap of description identifiers to descriptions
      */
-    public static HashMap<String, String> createIdentifierHashMap() {
+    public static Map<String, String> createIdentifierHashMap() {
 
         HashMap<String, String> descriptionIdentifier = new HashMap<>();
         descriptionIdentifier.put("A5", "conviction-of-offence-punishable-on-"

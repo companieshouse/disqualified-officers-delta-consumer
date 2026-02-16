@@ -53,6 +53,7 @@
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <logback.version>1.5.29</logback.version>
         <guava.version>33.5.0-android</guava.version>
+        <log4j-api.version>2.25.3</log4j-api.version>
 
         <!--sonar configuration-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -137,6 +138,13 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j-api.version}</version>
                 <scope>compile</scope>
             </dependency>
 

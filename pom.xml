@@ -49,6 +49,7 @@
         <wiremock.version>3.13.1</wiremock.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <avro.version>1.12.1</avro.version>
+        <commons-compress.version>1.28.0</commons-compress.version>
 
         <!--sonar configuration-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -101,6 +102,13 @@
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj-core.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+                <scope>compile</scope>
             </dependency>
 
         </dependencies>

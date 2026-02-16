@@ -50,6 +50,7 @@
         <testcontainers.version>1.21.4</testcontainers.version>
         <avro.version>1.12.1</avro.version>
         <commons-compress.version>1.28.0</commons-compress.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
 
         <!--sonar configuration-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -109,6 +110,12 @@
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
                 <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
 
         </dependencies>

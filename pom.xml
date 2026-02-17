@@ -17,23 +17,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-boot-starter.version>3.5.3</spring-boot-starter.version>
+        <spring-boot-starter.version>3.5.9</spring-boot-starter.version>
         <spring-context.version>6.2.8</spring-context.version>
         <map-struct.version>1.6.3</map-struct.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <tomcat-embed-core.version>11.0.8</tomcat-embed-core.version>
+        <tomcat-embed-core.version>11.0.18</tomcat-embed-core.version>
         <kafka-clients.version>3.9.1</kafka-clients.version>
         <opentelemetry-instrumentation-bom.version>2.16.0</opentelemetry-instrumentation-bom.version>
 
         <!-- Companies house specific dependencies -->
-        <ch-kafka.version>3.0.3</ch-kafka.version>
-        <structured-logging.version>3.0.34</structured-logging.version>
+        <ch-kafka.version>3.0.6</ch-kafka.version>
+        <structured-logging.version>3.0.49</structured-logging.version>
         <kafka-models.version>3.0.18</kafka-models.version>
         <private-api-sdk-java.version>4.0.280</private-api-sdk-java.version>
-        <api-sdk-manager-java-library.version>3.0.6</api-sdk-manager-java-library.version>
+        <api-sdk-manager-java-library.version>3.0.15</api-sdk-manager-java-library.version>
 
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -45,10 +45,15 @@
         <io-cucumber.version>7.9.0</io-cucumber.version>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
-        <assertj-core.version>3.27.3</assertj-core.version>
+        <assertj-core.version>3.27.7</assertj-core.version>
         <wiremock.version>3.13.1</wiremock.version>
-        <testcontainers.version>1.21.3</testcontainers.version>
-        <avro.version>1.12.0</avro.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
+        <avro.version>1.12.1</avro.version>
+        <commons-compress.version>1.28.0</commons-compress.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <logback.version>1.5.29</logback.version>
+        <guava.version>33.5.0-android</guava.version>
+        <log4j-api.version>2.25.3</log4j-api.version>
 
         <!--sonar configuration-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -96,6 +101,53 @@
                 <scope>import</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j-api.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -123,6 +175,12 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>${kafka-clients.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.lz4</groupId>
+                    <artifactId>lz4-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -185,6 +243,10 @@
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-webapp</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -192,6 +254,12 @@
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>ch-kafka</artifactId>
             <version>${ch-kafka.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -244,14 +312,19 @@
                     <groupId>org.pcollections</groupId>
                     <artifactId>pcollections</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.lz4</groupId>
+                    <artifactId>lz4-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bitbucket.b_c</groupId>
+                    <artifactId>jose4j</artifactId>
+                </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

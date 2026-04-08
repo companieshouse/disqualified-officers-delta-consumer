@@ -338,6 +338,10 @@
                     <groupId>org.bitbucket.b_c</groupId>
                     <artifactId>jose4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.dynatrace.hash4j</groupId>
+                    <artifactId>hash4j</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

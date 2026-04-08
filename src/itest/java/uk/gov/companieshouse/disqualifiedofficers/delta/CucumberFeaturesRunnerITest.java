@@ -1,13 +1,17 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
+import io.cucumber.junit.platform.engine.Constants;
 import io.cucumber.spring.CucumberContextConfiguration;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.ConfigurationParameter;
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectClasspathResource;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Cucumber.class)
-@CucumberOptions(features = "src/itest/resources/features",
-        plugin = {"pretty", "json:target/cucumber-report.json"})
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("features")
+@ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME,
+        value = "pretty, json:target/cucumber-report.json")
 @CucumberContextConfiguration
 public class CucumberFeaturesRunnerITest extends AbstractIntegrationTest {
 

@@ -71,6 +71,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
 
+        <jackson-core.version>2.21.2</jackson-core.version>
     </properties>
 
     <profiles>
@@ -146,6 +147,12 @@
                 <artifactId>log4j-api</artifactId>
                 <version>${log4j-api.version}</version>
                 <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson-core.version}</version>
             </dependency>
 
         </dependencies>

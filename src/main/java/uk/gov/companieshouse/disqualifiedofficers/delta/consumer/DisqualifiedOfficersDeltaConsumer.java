@@ -45,14 +45,17 @@ public class DisqualifiedOfficersDeltaConsumer {
     public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage,
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         try {
-            if (Boolean.TRUE.equals(chsDeltaMessage.getPayload().getIsDelete())) {
+            ChsDelta payload = chsDeltaMessage.getPayload();
+            if (payload == null) {
+                // Deserialization failure — already routed to DLT by ErrorHandlingDeserializer
+                return;
+            }
+            if (Boolean.TRUE.equals(payload.getIsDelete())) {
                 deltaProcessor.processDelete(chsDeltaMessage);
             } else {
                 deltaProcessor.processDelta(chsDeltaMessage);
             }
         } finally {
-            // Always fire event so the test latch is released,
-            // even if processing throws (NonRetryable etc.)
             eventPublisher.publishEvent(new MessageProcessedEvent(this));
         }
     }

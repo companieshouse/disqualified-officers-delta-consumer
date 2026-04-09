@@ -72,9 +72,10 @@ public class CommonSteps {
 
     @When("an invalid avro message is sent")
     public void invalidAvroMessageIsSent() throws Exception {
-        resetLatch();
         kafkaTemplate.send(mainTopic, "InvalidData");
-        countDown();
+        // No latch — deserialization failure bypasses the listener entirely.
+        // Give the interceptor time to route to -invalid topic.
+        Thread.sleep(3000);
     }
 
     @When("a message with invalid data is sent")

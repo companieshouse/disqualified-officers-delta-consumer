@@ -10,6 +10,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -20,10 +21,12 @@ import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.disqualifiedofficers.delta.consumer.MessageProcessedEvent;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableTopicErrorInterceptor;
 import uk.gov.companieshouse.disqualifiedofficers.delta.serialization.ChsDeltaDeserializer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.serialization.ChsDeltaSerializer;
@@ -64,11 +67,15 @@ public class KafkaTestContainerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ChsDelta> listenerContainerFactory(
-            ConfluentKafkaContainer kafkaContainer) {
+            ConfluentKafkaContainer kafkaContainer,
+            ApplicationEventPublisher eventPublisher) {
         ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(kafkaConsumerFactory(kafkaContainer));
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+        factory.setCommonErrorHandler(new DefaultErrorHandler((record, exception) ->
+                eventPublisher.publishEvent(
+                        new MessageProcessedEvent(record))));
         return factory;
     }
 

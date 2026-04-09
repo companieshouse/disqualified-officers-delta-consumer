@@ -24,7 +24,7 @@
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
         <tomcat-embed-core.version>11.0.18</tomcat-embed-core.version>
-        <kafka-clients.version>3.9.1</kafka-clients.version>
+        <kafka-clients.version>4.1.1</kafka-clients.version>
 
         <!-- Companies house specific dependencies -->
         <ch-kafka.version>3.0.6</ch-kafka.version>
@@ -150,6 +150,11 @@
                 <version>${zookeeper.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka-clients.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

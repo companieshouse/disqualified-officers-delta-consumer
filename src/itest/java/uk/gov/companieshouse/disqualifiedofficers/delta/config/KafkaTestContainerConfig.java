@@ -11,6 +11,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -32,6 +33,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.kafka.config.TopicBuilder;
 
 @TestConfiguration
+@EnableKafka
 public class KafkaTestContainerConfig {
 
     private final ChsDeltaDeserializer chsDeltaDeserializer;
@@ -147,7 +149,7 @@ public class KafkaTestContainerConfig {
                 kafkaContainer.getBootstrapServers());
         return new KafkaAdmin(props);
     }
-    
+
     // NOT a @Bean — plain private helper method
     private Map<String, Object> consumerConfigs(ConfluentKafkaContainer kafkaContainer) {
         Map<String, Object> props = new HashMap<>();

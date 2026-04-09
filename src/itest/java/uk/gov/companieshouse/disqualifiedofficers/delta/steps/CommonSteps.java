@@ -12,28 +12,25 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import io.cucumber.java.After;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import org.springframework.stereotype.Component;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import io.cucumber.java.After;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import uk.gov.companieshouse.delta.ChsDelta;
-import uk.gov.companieshouse.disqualifiedofficers.delta.consumer.MessageProcessedEvent;
 import uk.gov.companieshouse.disqualifiedofficers.delta.data.TestData;
 import uk.gov.companieshouse.disqualifiedofficers.delta.matcher.DisqualificationRequestMatcher;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 public class CommonSteps {
 

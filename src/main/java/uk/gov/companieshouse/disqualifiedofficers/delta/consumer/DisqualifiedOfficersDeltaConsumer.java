@@ -37,7 +37,7 @@ public class DisqualifiedOfficersDeltaConsumer {
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             dltTopicSuffix = "-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
-            autoCreateTopics = "false",
+            autoCreateTopics = "true",
             exclude = NonRetryableErrorException.class)
     @KafkaListener(topics = "${disqualified-officers.delta.topic}",
             groupId = "${disqualified-officers.delta.group-id}",

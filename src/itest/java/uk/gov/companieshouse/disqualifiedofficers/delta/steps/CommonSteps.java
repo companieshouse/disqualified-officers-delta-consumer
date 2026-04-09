@@ -35,7 +35,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
-@Component
 public class CommonSteps {
 
     @Value("${disqualified-officers.delta.topic}")
@@ -50,16 +49,11 @@ public class CommonSteps {
     private KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     public KafkaConsumer<String, Object> kafkaConsumer;
+    @Autowired
+    private MessageProcessedEventListener messageProcessedEventListener;
 
     private String type;
     private String output;
-
-    private CountDownLatch messageLatch = new CountDownLatch(1);
-
-    @EventListener
-    public void onMessageProcessed(MessageProcessedEvent event) {
-        messageLatch.countDown();
-    }
 
     @Given("the application is running")
     public void theApplicationRunning() {
@@ -180,11 +174,11 @@ public class CommonSteps {
     }
 
     private void resetLatch() {
-        messageLatch = new CountDownLatch(1);
+        messageProcessedEventListener.reset();
     }
 
     private void countDown() throws InterruptedException {
-        boolean received = messageLatch.await(10, TimeUnit.SECONDS);
+        boolean received = messageProcessedEventListener.getLatch().await(10, TimeUnit.SECONDS);
         assertThat(received)
                 .as("Timed out waiting for Kafka message to be processed")
                 .isTrue();

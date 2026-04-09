@@ -15,6 +15,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
@@ -25,6 +26,10 @@ import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableTopicErrorInterceptor;
 import uk.gov.companieshouse.disqualifiedofficers.delta.serialization.ChsDeltaDeserializer;
 import uk.gov.companieshouse.disqualifiedofficers.delta.serialization.ChsDeltaSerializer;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.kafka.config.TopicBuilder;
 
 @TestConfiguration
 public class KafkaTestContainerConfig {
@@ -103,6 +108,46 @@ public class KafkaTestContainerConfig {
         return consumer;
     }
 
+    @Bean
+    public AdminClient adminClient(ConfluentKafkaContainer kafkaContainer) {
+        Map<String, Object> props = new HashMap<>();
+        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
+                kafkaContainer.getBootstrapServers());
+        return AdminClient.create(props);
+    }
+
+    @Bean
+    public NewTopic mainTopic() {
+        return TopicBuilder.name("disqualified-officers-delta")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic retryTopic() {
+        return TopicBuilder.name("disqualified-officers-delta-retry")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic errorTopic() {
+        return TopicBuilder.name("disqualified-officers-delta-error")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public KafkaAdmin kafkaAdmin(ConfluentKafkaContainer kafkaContainer) {
+        Map<String, Object> props = new HashMap<>();
+        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
+                kafkaContainer.getBootstrapServers());
+        return new KafkaAdmin(props);
+    }
+    
     // NOT a @Bean — plain private helper method
     private Map<String, Object> consumerConfigs(ConfluentKafkaContainer kafkaContainer) {
         Map<String, Object> props = new HashMap<>();

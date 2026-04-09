@@ -31,12 +31,8 @@ public class KafkaConfig {
 
     private final ChsDeltaDeserializer chsDeltaDeserializer;
     private final ChsDeltaSerializer chsDeltaSerializer;
-
     private final String bootstrapServers;
 
-    /**
-     * Constructor.
-     */
     public KafkaConfig(ChsDeltaDeserializer chsDeltaDeserializer,
                        ChsDeltaSerializer chsDeltaSerializer,
                        @Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
@@ -45,18 +41,13 @@ public class KafkaConfig {
         this.bootstrapServers = bootstrapServers;
     }
 
-    /**
-     * Kafka Consumer Factory.
-     */
     @Bean
     public ConsumerFactory<String, ChsDelta> kafkaConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(),
+                new StringDeserializer(),
                 new ErrorHandlingDeserializer<>(chsDeltaDeserializer));
     }
 
-    /**
-     * Kafka Producer Factory.
-     */
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -74,22 +65,17 @@ public class KafkaConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    /**
-     * Kafka Listener Container Factory.
-     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ChsDelta> listenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory
-                = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(kafkaConsumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
-
         return factory;
     }
 
     private Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
-
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
@@ -98,7 +84,6 @@ public class KafkaConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
-
         return props;
     }
 }

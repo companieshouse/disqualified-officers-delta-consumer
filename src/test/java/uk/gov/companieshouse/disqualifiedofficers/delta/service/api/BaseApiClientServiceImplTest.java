@@ -1,23 +1,26 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.service.api;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpResponseException.Builder;
+import java.util.HashMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpResponseException.Builder;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.Executor;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.RetryableErrorException;
-import java.util.HashMap;
 
 @ExtendWith(MockitoExtension.class)
 class BaseApiClientServiceImplTest {
@@ -29,7 +32,8 @@ class BaseApiClientServiceImplTest {
 
     @BeforeEach
     void setup() {
-        service = new BaseApiClientServiceImpl() {};
+        service = new BaseApiClientServiceImpl() {
+        };
     }
 
     @Test
@@ -73,8 +77,8 @@ class BaseApiClientServiceImplTest {
 
         assertThat(thrown.getMessage()).isEqualTo("Non-retryable response 400 received from disqualified-officers-data-api");
     }
-    @Test
 
+    @Test
     void throwsNonRetryableErrorOn409() throws Exception {
         when(executor.execute()).thenThrow(
                 new ApiErrorResponseException(new Builder(409, "409", new HttpHeaders())));

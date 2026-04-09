@@ -22,15 +22,20 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.disqualifiedofficers.delta.consumer.MessageProcessedEvent;
 import uk.gov.companieshouse.disqualifiedofficers.delta.data.TestData;
 import uk.gov.companieshouse.disqualifiedofficers.delta.matcher.DisqualificationRequestMatcher;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
+@Component
 public class CommonSteps {
 
     @Value("${disqualified-officers.delta.topic}")
@@ -49,6 +54,13 @@ public class CommonSteps {
     private String type;
     private String output;
 
+    private CountDownLatch messageLatch = new CountDownLatch(1);
+
+    @EventListener
+    public void onMessageProcessed(MessageProcessedEvent event) {
+        messageLatch.countDown();
+    }
+
     @Given("the application is running")
     public void theApplicationRunning() {
         assertThat(kafkaTemplate).isNotNull();
@@ -62,35 +74,34 @@ public class CommonSteps {
         this.output = TestData.getOutputData(officerType, disqType);
 
         ChsDelta delta = new ChsDelta(TestData.getInputData(officerType, disqType), 1, "1", false);
+        resetLatch();
         kafkaTemplate.send(mainTopic, delta);
-
         countDown();
     }
 
     @When("an invalid avro message is sent")
     public void invalidAvroMessageIsSent() throws Exception {
+        resetLatch();
         kafkaTemplate.send(mainTopic, "InvalidData");
-
         countDown();
     }
 
     @When("a message with invalid data is sent")
     public void messageWithInvalidDataIsSent() throws Exception {
         ChsDelta delta = new ChsDelta("InvalidData", 1, "1", false);
+        resetLatch();
         kafkaTemplate.send(mainTopic, delta);
-
         countDown();
     }
 
     @When("^the consumer receives a message but the data api returns a (\\d*)$")
-    public void theConsumerReceivesMessageButDataApiReturns(int responseCode) throws Exception{
+    public void theConsumerReceivesMessageButDataApiReturns(int responseCode) throws Exception {
         configureWiremock();
         stubPutDisqualification("natural", responseCode);
-
         ChsDelta delta = new ChsDelta(
                 TestData.getInputData("natural", "undertaking"), 1, "1", false);
+        resetLatch();
         kafkaTemplate.send(mainTopic, delta);
-
         countDown();
     }
 
@@ -98,8 +109,8 @@ public class CommonSteps {
     public void theConsumerReceivesMessageThatCausesAnError() throws Exception {
         ChsDelta delta = new ChsDelta(
                 TestData.getInputData("natural", "error"), 1, "1", false);
+        resetLatch();
         kafkaTemplate.send(mainTopic, delta);
-
         countDown();
     }
 
@@ -111,15 +122,14 @@ public class CommonSteps {
     @Then("^the message should be moved to topic (.*)$")
     public void theMessageShouldBeMovedToTopic(String topic) {
         ConsumerRecord<String, Object> singleRecord = KafkaTestUtils.getSingleRecord(kafkaConsumer, topic);
-
         assertThat(singleRecord.value()).isNotNull();
     }
 
     @Then("^the message should retry (\\d*) times and then error$")
     public void theMessageShouldRetryAndError(int retries) {
         ConsumerRecords<String, Object> records = KafkaTestUtils.getRecords(kafkaConsumer);
-        Iterable<ConsumerRecord<String, Object>> retryRecords =  records.records("disqualified-officers-delta-retry");
-        Iterable<ConsumerRecord<String, Object>> errorRecords =  records.records("disqualified-officers-delta-error");
+        Iterable<ConsumerRecord<String, Object>> retryRecords = records.records("disqualified-officers-delta-retry");
+        Iterable<ConsumerRecord<String, Object>> errorRecords = records.records("disqualified-officers-delta-error");
 
         int actualRetries = (int) StreamSupport.stream(retryRecords.spliterator(), false).count();
         int errors = (int) StreamSupport.stream(errorRecords.spliterator(), false).count();
@@ -133,8 +143,8 @@ public class CommonSteps {
         configureWiremock();
         stubDeleteDisqualification(200);
         ChsDelta delta = new ChsDelta(TestData.getDeleteData(), 1, "1", true);
+        resetLatch();
         kafkaTemplate.send(mainTopic, delta);
-
         countDown();
     }
 
@@ -142,18 +152,18 @@ public class CommonSteps {
     public void theConsumerReceivesInvalidDelete() throws Exception {
         configureWiremock();
         ChsDelta delta = new ChsDelta("invalid", 1, "1", true);
+        resetLatch();
         kafkaTemplate.send(mainTopic, delta);
-
         countDown();
     }
 
     @When("^the consumer receives a delete message but the data api returns a (\\d*)$")
-    public void theConsumerReceivesDeleteMessageButDataApiReturns(int responseCode) throws Exception{
+    public void theConsumerReceivesDeleteMessageButDataApiReturns(int responseCode) throws Exception {
         configureWiremock();
         stubDeleteDisqualification(responseCode);
         ChsDelta delta = new ChsDelta(TestData.getDeleteData(), 1, "1", true);
+        resetLatch();
         kafkaTemplate.send(mainTopic, delta);
-
         countDown();
     }
 
@@ -164,9 +174,20 @@ public class CommonSteps {
     }
 
     @After
-    public void shutdownWiremock(){
+    public void shutdownWiremock() {
         if (wireMockServer != null)
             wireMockServer.stop();
+    }
+
+    private void resetLatch() {
+        messageLatch = new CountDownLatch(1);
+    }
+
+    private void countDown() throws InterruptedException {
+        boolean received = messageLatch.await(10, TimeUnit.SECONDS);
+        assertThat(received)
+                .as("Timed out waiting for Kafka message to be processed")
+                .isTrue();
     }
 
     private void configureWiremock() {
@@ -188,10 +209,4 @@ public class CommonSteps {
         stubFor(delete(urlEqualTo("/disqualified-officers/natural/1kETe9SJWIp9OlvZgO1xmjyt5_s/internal"))
                 .willReturn(aResponse().withStatus(responseCode)));
     }
-
-    private void countDown() throws Exception {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        countDownLatch.await(5, TimeUnit.SECONDS);
-    }
 }
-

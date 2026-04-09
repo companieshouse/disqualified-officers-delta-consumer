@@ -3,7 +3,6 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -34,50 +33,41 @@ public class KafkaTestContainerConfig {
     private final ChsDeltaSerializer chsDeltaSerializer;
 
     @Autowired
-    public KafkaTestContainerConfig(ChsDeltaDeserializer chsDeltaDeserializer, ChsDeltaSerializer chsDeltaSerializer) {
+    public KafkaTestContainerConfig(ChsDeltaDeserializer chsDeltaDeserializer,
+                                    ChsDeltaSerializer chsDeltaSerializer) {
         this.chsDeltaDeserializer = chsDeltaDeserializer;
         this.chsDeltaSerializer = chsDeltaSerializer;
     }
 
     @Bean
     public ConfluentKafkaContainer kafkaContainer() {
-        ConfluentKafkaContainer kafkaContainer = new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
-        kafkaContainer.start();
-        return kafkaContainer;
+        ConfluentKafkaContainer container = new ConfluentKafkaContainer(
+                DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
+        container.start();
+        return container;
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, ChsDelta> listenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(kafkaConsumerFactory());
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
-        return factory;
-    }
-
-    @Bean
-    public ConsumerFactory<String, ChsDelta> kafkaConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs(kafkaContainer()),
+    public ConsumerFactory<String, ChsDelta> kafkaConsumerFactory(
+            ConfluentKafkaContainer kafkaContainer) {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(kafkaContainer),
                 new StringDeserializer(),
                 new ErrorHandlingDeserializer<>(chsDeltaDeserializer));
     }
 
     @Bean
-    public Map<String, Object> consumerConfigs(ConfluentKafkaContainer kafkaContainer) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
-        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ChsDeltaDeserializer.class);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
-        return props;
+    public ConcurrentKafkaListenerContainerFactory<String, ChsDelta> listenerContainerFactory(
+            ConfluentKafkaContainer kafkaContainer) {
+        ConcurrentKafkaListenerContainerFactory<String, ChsDelta> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(kafkaConsumerFactory(kafkaContainer));
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+        return factory;
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory(ConfluentKafkaContainer kafkaContainer) {
+    public ProducerFactory<String, Object> producerFactory(
+            ConfluentKafkaContainer kafkaContainer) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -89,14 +79,16 @@ public class KafkaTestContainerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory(kafkaContainer()));
+    public KafkaTemplate<String, Object> kafkaTemplate(
+            ConfluentKafkaContainer kafkaContainer) {
+        return new KafkaTemplate<>(producerFactory(kafkaContainer));
     }
 
     @Bean
-    public KafkaConsumer<String, Object> invalidTopicConsumer() {
+    public KafkaConsumer<String, Object> invalidTopicConsumer(
+            ConfluentKafkaContainer kafkaContainer) {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer().getBootstrapServers());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "disqualified-officer-delta-consumer");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
@@ -104,12 +96,24 @@ public class KafkaTestContainerConfig {
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_uncommitted");
         KafkaConsumer<String, Object> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(List.of("disqualified-officers-delta-invalid",
                 "disqualified-officers-delta-error", "disqualified-officers-delta-retry"));
-
         return consumer;
     }
 
+    // NOT a @Bean — plain private helper method
+    private Map<String, Object> consumerConfigs(ConfluentKafkaContainer kafkaContainer) {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ChsDeltaDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+        return props;
+    }
 }

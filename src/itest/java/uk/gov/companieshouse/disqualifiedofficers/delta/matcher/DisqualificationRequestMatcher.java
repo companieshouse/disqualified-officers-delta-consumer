@@ -1,8 +1,8 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.matcher;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
@@ -61,7 +61,7 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
         JsonNode expectedBody;
         try {
             expectedBody = mapper.readTree(expectedOutput);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             System.out.println("Could not process expectedBody JSON: " + e);
             return MatchResult.of(false);
         }
@@ -69,7 +69,7 @@ public class DisqualificationRequestMatcher implements ValueMatcher<Request> {
         JsonNode actual;
         try {
             actual = mapper.readTree(actualBody);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             System.out.println("Could not process actualBody JSON: " + e);
             return MatchResult.of(false);
         }

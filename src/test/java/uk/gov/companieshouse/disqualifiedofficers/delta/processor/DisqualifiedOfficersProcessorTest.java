@@ -15,8 +15,8 @@ import static uk.gov.companieshouse.disqualifiedofficers.delta.utils.TestHelper.
 import static uk.gov.companieshouse.disqualifiedofficers.delta.utils.TestHelper.createInvalidChsDeltaMessage;
 import static uk.gov.companieshouse.disqualifiedofficers.delta.utils.TestHelper.createNaturalDisqualificationApi;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -162,17 +162,17 @@ class DisqualifiedOfficersProcessorTest {
     }
 
     @Test
-    void shouldThrowNonRetryableExceptionWhenUpsertDeserialisationFails() throws JsonProcessingException {
+    void shouldThrowNonRetryableExceptionWhenUpsertDeserialisationFails() {
         Message<ChsDelta> invalidDelta = createInvalidChsDeltaMessage();
-        when(objectMapper.readValue(invalidDelta.getPayload().getData(), DisqualificationDelta.class)).thenThrow(JsonProcessingException.class);
+        when(objectMapper.readValue(invalidDelta.getPayload().getData(), DisqualificationDelta.class)).thenThrow(JacksonException.class);
         assertThrows(NonRetryableErrorException.class, ()->deltaProcessor.processDelta(invalidDelta));
     }
 
     @Test
-    void shouldThrowNonRetryableExceptionWhenDeleteDeserialisationFails() throws JsonProcessingException {
+    void shouldThrowNonRetryableExceptionWhenDeleteDeserialisationFails() {
         // given
         when(objectMapper.readValue(anyString(), eq(DisqualificationDeleteDelta.class))).thenThrow(
-                JsonProcessingException.class);
+                JacksonException.class);
         Message<ChsDelta> mockChsDeltaMessage = createInvalidChsDeltaMessage();
 
         // when

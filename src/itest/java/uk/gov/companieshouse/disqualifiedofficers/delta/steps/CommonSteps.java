@@ -12,6 +12,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
@@ -119,15 +122,24 @@ public class CommonSteps {
 
     @Then("^the message should retry (\\d*) times and then error$")
     public void theMessageShouldRetryAndError(int retries) {
-        ConsumerRecords<String, Object> records = KafkaTestUtils.getRecords(kafkaConsumer);
-        Iterable<ConsumerRecord<String, Object>> retryRecords = records.records("disqualified-officers-delta-retry");
-        Iterable<ConsumerRecord<String, Object>> errorRecords = records.records("disqualified-officers-delta-error");
+        List<ConsumerRecord<String, Object>> retryRecords = new ArrayList<>();
+        List<ConsumerRecord<String, Object>> errorRecords = new ArrayList<>();
 
-        int actualRetries = (int) StreamSupport.stream(retryRecords.spliterator(), false).count();
-        int errors = (int) StreamSupport.stream(errorRecords.spliterator(), false).count();
+        long deadline = System.currentTimeMillis() + 30_000;
+        while (System.currentTimeMillis() < deadline) {
+            ConsumerRecords<String, Object> records = KafkaTestUtils.getRecords(
+                    kafkaConsumer, Duration.ofSeconds(2));
+            records.records("disqualified-officers-delta-retry")
+                    .forEach(retryRecords::add);
+            records.records("disqualified-officers-delta-error")
+                    .forEach(errorRecords::add);
+            if (retryRecords.size() >= retries && errorRecords.size() >= 1) {
+                break;
+            }
+        }
 
-        assertThat(actualRetries).isEqualTo(retries);
-        assertThat(errors).isEqualTo(1);
+        assertThat(retryRecords.size()).isEqualTo(retries);
+        assertThat(errorRecords.size()).isEqualTo(1);
     }
 
     @When("the consumer receives a delete payload")

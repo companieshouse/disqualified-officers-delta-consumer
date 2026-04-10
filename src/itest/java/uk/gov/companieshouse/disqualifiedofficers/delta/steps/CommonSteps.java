@@ -16,7 +16,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -26,12 +25,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
 import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import uk.gov.companieshouse.delta.ChsDelta;
+import uk.gov.companieshouse.disqualifiedofficers.delta.config.WiremockTestConfig;
 import uk.gov.companieshouse.disqualifiedofficers.delta.data.TestData;
 import uk.gov.companieshouse.disqualifiedofficers.delta.matcher.DisqualificationRequestMatcher;
 
@@ -42,8 +41,6 @@ public class CommonSteps {
 
     @Value("${wiremock.server.port}")
     private String port;
-
-    private static WireMockServer wireMockServer;
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
@@ -58,6 +55,8 @@ public class CommonSteps {
     @Given("the application is running")
     public void theApplicationRunning() {
         assertThat(kafkaTemplate).isNotNull();
+        WiremockTestConfig.setupWiremock();
+        port = String.valueOf(WiremockTestConfig.getPort());
     }
 
     @When("^the consumer receives a (natural|corporate) disqualification of (undertaking|court order)$")
@@ -179,8 +178,7 @@ public class CommonSteps {
 
     @After
     public void shutdownWiremock() {
-        if (wireMockServer != null)
-            wireMockServer.stop();
+        WiremockTestConfig.stopWiremock();
     }
 
     private void resetLatch() {
@@ -195,9 +193,8 @@ public class CommonSteps {
     }
 
     private void configureWiremock() {
-        wireMockServer = new WireMockServer(Integer.parseInt(port));
-        wireMockServer.start();
-        configureFor("localhost", Integer.parseInt(port));
+        WiremockTestConfig.setupWiremock();
+        port = String.valueOf(WiremockTestConfig.getPort());
     }
 
     private void stubPutDisqualification(String type) {

@@ -42,6 +42,8 @@ public class KafkaTestContainerConfig {
     private final ChsDeltaDeserializer chsDeltaDeserializer;
     private final ChsDeltaSerializer chsDeltaSerializer;
 
+    private static ConfluentKafkaContainer containerInstance;
+
     @Autowired
     public KafkaTestContainerConfig(ChsDeltaDeserializer chsDeltaDeserializer,
                                     ChsDeltaSerializer chsDeltaSerializer) {
@@ -51,10 +53,16 @@ public class KafkaTestContainerConfig {
 
     @Bean
     public ConfluentKafkaContainer kafkaContainer() {
-        ConfluentKafkaContainer container = new ConfluentKafkaContainer(
-                DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
-        container.start();
-        return container;
+        if (containerInstance == null) {
+            containerInstance = new ConfluentKafkaContainer(
+                    DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
+            containerInstance.start();
+        }
+        return containerInstance;
+    }
+
+    public static ConfluentKafkaContainer getContainerInstance() {
+        return containerInstance;
     }
 
     @Bean

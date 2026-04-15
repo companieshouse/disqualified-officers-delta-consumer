@@ -30,7 +30,7 @@
         <ch-kafka.version>3.0.6</ch-kafka.version>
         <structured-logging.version>3.0.49</structured-logging.version>
         <kafka-models.version>3.0.18</kafka-models.version>
-        <private-api-sdk-java.version>4.0.280</private-api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.493</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.15</api-sdk-manager-java-library.version>
 
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>

@@ -2,6 +2,15 @@
 The `disqualified-officers-delta-consumer` is responsible for transforming officer disqualification data from the 
 `disqualified-officers-delta` kafka topic as part of chips and chs data sync.
 
+## Upgrade to Spring Boot 4 overview
+
+- Upgraded to Spring Boot 4 and Java 21.
+- Modernized dependencies in `pom.xml`.
+- Integration tests now use Testcontainers for Kafka and Wiremock for API mocking.
+- Improved error handling and test reliability.
+
+See commit history for further details.
+
 ## Build tools
 
 - [Java 21](https://www.oracle.com/uk/java/technologies/downloads/#java21)
@@ -64,3 +73,29 @@ Application specific attributes | Value                                | Descrip
 ### Useful Links
 - [ECS service config dev repository](https://github.com/companieshouse/ecs-service-configs-dev)
 - [ECS service config production repository](https://github.com/companieshouse/ecs-service-configs-production)
+
+## Note on Surefire JVM Timeout Warning
+
+You may see the following message in Maven test output:
+
+```
+[ERROR] Surefire is going to kill self fork JVM. The exit has elapsed 30 seconds after System.exit(0).
+```
+
+### Why does this happen?
+- This warning occurs when the Maven Surefire plugin (which runs unit tests) detects that the test JVM did not exit promptly after tests completed. It waits for 30 seconds after `System.exit(0)` and then forcibly kills the JVM.
+- This is often caused by background threads or resources (such as embedded Kafka, Testcontainers, or Wiremock) that are still running or not fully cleaned up when the tests finish.
+
+### Attempts to Fix
+- Multiple approaches were tried, including:
+  - Ensuring all containers and servers are stopped at test shutdown.
+  - Adjusting Surefire and Failsafe plugin configurations.
+  - Reviewing for lingering threads or resources in test code.
+- Despite these efforts, the warning persists due to the nature of some test dependencies and their shutdown behavior.
+
+### Impact
+- This message is a warning, not a test failure.
+- All tests still run and pass as expected.
+- The warning does not affect build artifacts or application behavior.
+
+**You can safely ignore this warning.**

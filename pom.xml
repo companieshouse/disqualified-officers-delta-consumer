@@ -71,6 +71,7 @@
 
         <zookeeper.version>3.8.6</zookeeper.version>
         <jackson-databind.version>3.1.2</jackson-databind.version>
+        <log4j-core.version>2.25.4</log4j-core.version>
     </properties>
 
     <profiles>
@@ -137,6 +138,13 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
                 <version>${log4j-api.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j-core.version}</version>
                 <scope>compile</scope>
             </dependency>
 

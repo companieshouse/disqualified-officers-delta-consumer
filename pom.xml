@@ -23,7 +23,7 @@
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <tomcat-embed-core.version>11.0.18</tomcat-embed-core.version>
+        <tomcat-embed-core.version>11.0.21</tomcat-embed-core.version>
         <kafka-clients.version>4.1.2</kafka-clients.version>
 
         <!-- Companies house specific dependencies -->
@@ -156,7 +156,7 @@
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka-clients.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>tools.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>

@@ -176,6 +176,12 @@
                 <version>${kotlin-lib.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>${tomcat-embed-websocket.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -459,12 +465,6 @@
                     <artifactId>itu</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-websocket</artifactId>
-            <version>${tomcat-embed-websocket.version}</version>
         </dependency>
 
     </dependencies>

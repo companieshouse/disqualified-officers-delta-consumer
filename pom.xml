@@ -25,7 +25,7 @@
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
         <tomcat-embed-core.version>11.0.22</tomcat-embed-core.version>
         <tomcat-embed-websocket.version>11.0.22</tomcat-embed-websocket.version>
-        <kafka-clients.version>4.0.2</kafka-clients.version>
+        <kafka-clients.version>4.1.2</kafka-clients.version>
         <opentelemetry-instrumentation-bom.version>2.24.0</opentelemetry-instrumentation-bom.version>
         <kotlin-lib.version>2.2.21</kotlin-lib.version>
         <io.grpc.version>1.80.0</io.grpc.version>
@@ -192,11 +192,37 @@
                 <scope>import</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka-clients.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>${wiremock.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.conscrypt</groupId>
+                    <artifactId>conscrypt-openjdk-uber</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.javacrumbs.json-unit</groupId>
+                    <artifactId>json-unit-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.ethlo.time</groupId>
+                    <artifactId>itu</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -420,6 +446,14 @@
                     <groupId>org.bitbucket.b_c</groupId>
                     <artifactId>jose4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.dynatrace.hash4j</groupId>
+                    <artifactId>hash4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-clients</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -432,13 +466,6 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>${testcontainers.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
@@ -459,7 +486,7 @@
 
         <dependency>
             <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
             <version>${io-cucumber.version}</version>
             <scope>test</scope>
         </dependency>
@@ -475,27 +502,6 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>${wiremock.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.conscrypt</groupId>
-                    <artifactId>conscrypt-openjdk-uber</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.javacrumbs.json-unit</groupId>
-                    <artifactId>json-unit-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.ethlo.time</groupId>
-                    <artifactId>itu</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
     </dependencies>

@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -9,7 +10,7 @@ import org.springframework.kafka.retrytopic.SameIntervalTopicReuseStrategy;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.retry.annotation.Backoff;
+import org.springframework.kafka.annotation.BackOff;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.disqualifiedofficers.delta.exception.NonRetryableErrorException;
@@ -20,21 +21,25 @@ public class DisqualifiedOfficersDeltaConsumer {
 
     private final DisqualifiedOfficersDeltaProcessor deltaProcessor;
     public final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Default constructor.
      */
     @Autowired
-    public DisqualifiedOfficersDeltaConsumer(DisqualifiedOfficersDeltaProcessor deltaProcessor, KafkaTemplate<String, Object> kafkaTemplate) {
+    public DisqualifiedOfficersDeltaConsumer(DisqualifiedOfficersDeltaProcessor deltaProcessor,
+                                             KafkaTemplate<String, Object> kafkaTemplate,
+                                             ApplicationEventPublisher eventPublisher) {
         this.deltaProcessor = deltaProcessor;
         this.kafkaTemplate = kafkaTemplate;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
      * Receives Main topic messages.
      */
     @RetryableTopic(attempts = "${disqualified-officers.delta.retry-attempts}",
-            backoff = @Backoff(delayExpression = "${disqualified-officers.delta.backoff-delay}"),
+            backOff = @BackOff(delayString = "${disqualified-officers.delta.backoff-delay}"),
             sameIntervalTopicReuseStrategy = SameIntervalTopicReuseStrategy.SINGLE_TOPIC,
             dltTopicSuffix = "-error",
             dltStrategy = DltStrategy.FAIL_ON_ERROR,
@@ -45,10 +50,14 @@ public class DisqualifiedOfficersDeltaConsumer {
             containerFactory = "listenerContainerFactory")
     public void receiveMainMessages(Message<ChsDelta> chsDeltaMessage,
                                     @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        if (Boolean.TRUE.equals(chsDeltaMessage.getPayload().getIsDelete())) {
-            deltaProcessor.processDelete(chsDeltaMessage);
-        } else {
-            deltaProcessor.processDelta(chsDeltaMessage);
+        try{
+            if (Boolean.TRUE.equals(chsDeltaMessage.getPayload().getIsDelete())) {
+                deltaProcessor.processDelete(chsDeltaMessage);
+            } else {
+                deltaProcessor.processDelta(chsDeltaMessage);
+            }
+        } finally {
+            eventPublisher.publishEvent(new MessageProcessedEvent(this));
         }
     }
 }

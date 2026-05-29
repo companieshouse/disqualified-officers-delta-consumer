@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.steps;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
@@ -73,11 +72,10 @@ public class CommonSteps {
     }
 
     @When("an invalid avro message is sent")
-    public void invalidAvroMessageIsSent() throws Exception {
+    public void invalidAvroMessageIsSent() {
         kafkaTemplate.send(mainTopic, "InvalidData");
         // No latch — deserialization failure bypasses the listener entirely.
         // Give the interceptor time to route to -invalid topic.
-        Thread.sleep(3000);
     }
 
     @When("a message with invalid data is sent")
@@ -137,8 +135,8 @@ public class CommonSteps {
             }
         }
 
-        assertThat(retryRecords.size()).isEqualTo(retries);
-        assertThat(errorRecords.size()).isEqualTo(1);
+        assertThat(retryRecords).hasSize(retries);
+        assertThat(errorRecords).hasSize(1);
     }
 
     @When("the consumer receives a delete payload")

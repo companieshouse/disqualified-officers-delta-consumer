@@ -10,7 +10,6 @@ import org.springframework.test.context.TestPropertySource;
 import uk.gov.companieshouse.disqualifiedofficers.delta.config.KafkaTestContainerConfig;
 import uk.gov.companieshouse.disqualifiedofficers.delta.steps.MessageProcessedEventListener;
 import org.testcontainers.kafka.ConfluentKafkaContainer;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({KafkaTestContainerConfig.class, MessageProcessedEventListener.class})

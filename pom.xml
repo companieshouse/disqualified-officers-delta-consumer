@@ -5,7 +5,7 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>2.1.12</version>
+        <version>2.1.14</version>
     </parent>
 
     <artifactId>disqualified-officers-delta-consumer</artifactId>
@@ -14,20 +14,19 @@
     <description>Disqualified Officers Delta Consumer</description>
 
     <properties>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-boot-starter.version>3.5.14</spring-boot-starter.version>
-        <spring-context.version>6.2.18</spring-context.version>
+        <spring-boot-starter.version>4.1.1</spring-boot-starter.version>
         <map-struct.version>1.6.3</map-struct.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <tomcat-embed-core.version>11.0.22</tomcat-embed-core.version>
-        <tomcat-embed-websocket.version>11.0.22</tomcat-embed-websocket.version>
+        <tomcat-embed-core.version>11.0.25</tomcat-embed-core.version>
+        <tomcat-embed-websocket.version>11.0.25</tomcat-embed-websocket.version>
         <kafka-clients.version>4.0.2</kafka-clients.version>
-        <opentelemetry-instrumentation-bom.version>2.16.0</opentelemetry-instrumentation-bom.version>
         <kotlin-lib.version>2.2.21</kotlin-lib.version>
         <io.grpc.version>1.80.0</io.grpc.version>
 
@@ -41,7 +40,7 @@
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
 
         <!-- Tests -->
@@ -50,13 +49,20 @@
         <skip.unit.tests>false</skip.unit.tests>
         <assertj-core.version>3.27.7</assertj-core.version>
         <wiremock.version>3.13.1</wiremock.version>
-        <testcontainers.version>1.21.4</testcontainers.version>
         <avro.version>1.12.1</avro.version>
         <commons-compress.version>1.28.0</commons-compress.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <logback.version>1.5.29</logback.version>
         <guava.version>33.5.0-android</guava.version>
         <log4j-api.version>2.25.4</log4j-api.version>
+
+        <!-- OpenTelemetry Dependencies -->
+        <opentelemetry-instrumentation.version>2.28.1</opentelemetry-instrumentation.version>
+        <opentelemetry-semconv.version>1.42.0</opentelemetry-semconv.version>
+        <opentelemetry-semconv-incubating.version>1.42.0-alpha</opentelemetry-semconv-incubating.version>
+        <opentelemetry-logback.version>2.28.1-alpha</opentelemetry-logback.version>
+
+        <test-containers.version>1.21.4</test-containers.version>
 
         <!--sonar configuration-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -87,19 +93,48 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-starter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
+            <!-- OpenTelemetry Dependencies -->
+            <dependency>
+                <groupId>io.opentelemetry.semconv</groupId>
+                <artifactId>opentelemetry-semconv</artifactId>
+                <version>${opentelemetry-semconv.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.opentelemetry.semconv</groupId>
+                <artifactId>opentelemetry-semconv-incubating</artifactId>
+                <version>${opentelemetry-semconv-incubating.version}</version>
+                <scope>compile</scope>
+            </dependency>
 
             <dependency>
                 <groupId>io.opentelemetry.instrumentation</groupId>
                 <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>${opentelemetry-instrumentation-bom.version}</version>
+                <version>${opentelemetry-instrumentation.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-starter.version}</version>
+                <groupId>io.opentelemetry.instrumentation</groupId>
+                <artifactId>opentelemetry-logback-appender-1.0</artifactId>
+                <version>${opentelemetry-logback.version}</version>
+            </dependency>
+            <!-- End of OpenTelemetry Dependencies -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${test-containers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -186,11 +221,15 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring-context.version}</version>
         </dependency>
 
         <dependency>
@@ -208,7 +247,6 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka-clients.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.lz4</groupId>
@@ -236,13 +274,14 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
+            <version>4.0.8</version>
         </dependency>
 
         <dependency>
@@ -268,19 +307,20 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-kafka</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
+            <version>4.0.8</version>
         </dependency>
 
         <dependency>
@@ -316,6 +356,14 @@
                 <exclusion>
                     <groupId>org.apache.avro</groupId>
                     <artifactId>avro</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.ee9</groupId>
+                    <artifactId>jetty-ee9-webapp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.ee10</groupId>
+                    <artifactId>jetty-ee10-webapp</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -357,8 +405,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>3.1.7</version>
         </dependency>
 
         <dependency>
@@ -371,6 +420,12 @@
                     <artifactId>junit-jupiter-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <version>4.0.8</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -400,21 +455,18 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>kafka</artifactId>
-            <version>${testcontainers.version}</version>
+            <artifactId>testcontainers-kafka</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -488,7 +540,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>pre-unit-test</id>

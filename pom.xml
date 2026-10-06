@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-boot-starter.version>4.1.1</spring-boot-starter.version>
+        <spring-boot-dependencies.version>4.1.1</spring-boot-dependencies.version>
         <map-struct.version>1.6.3</map-struct.version>
         <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
@@ -47,7 +47,6 @@
         <io-cucumber.version>7.9.0</io-cucumber.version>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
-        <assertj-core.version>3.27.7</assertj-core.version>
         <wiremock.version>3.13.1</wiremock.version>
         <avro.version>1.12.1</avro.version>
         <commons-compress.version>1.28.0</commons-compress.version>
@@ -69,18 +68,28 @@
             <!-- Exclude test files and resources from SonarQube analysis -->
         </sonar.exclusions>
 
+        <ch-boms.version>0.1.27</ch-boms.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Import CH BOM first so CH-approved versions (CVE overrides) take precedence -->
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-starter.version}</version>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-dependency-bom</artifactId>
+                <version>${ch-boms.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
+            <!-- Optionally import test BOM for managed test dependency versions -->
+            <dependency>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-test-bom</artifactId>
+                <version>${ch-boms.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <!-- OpenTelemetry Dependencies -->
             <dependency>
@@ -111,6 +120,15 @@
                 <version>${opentelemetry-logback.version}</version>
             </dependency>
             <!-- End of OpenTelemetry Dependencies -->
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
@@ -119,13 +137,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj-core.version}</version>
-                <scope>test</scope>
-            </dependency>
-
+            <!-- SORT THE BELOW!!! -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
@@ -501,7 +513,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot-starter.version}</version>
+                <version>${spring-boot-dependencies.version}</version>
                 <executions>
                     <execution>
                         <goals>

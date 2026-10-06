@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -33,7 +32,6 @@ public class KafkaTestContainerConfig {
     private final ChsDeltaDeserializer chsDeltaDeserializer;
     private final ChsDeltaSerializer chsDeltaSerializer;
 
-    @Autowired
     public KafkaTestContainerConfig(ChsDeltaDeserializer chsDeltaDeserializer, ChsDeltaSerializer chsDeltaSerializer) {
         this.chsDeltaDeserializer = chsDeltaDeserializer;
         this.chsDeltaSerializer = chsDeltaSerializer;

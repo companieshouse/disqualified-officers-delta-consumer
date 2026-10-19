@@ -2,8 +2,7 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.processor;
 
 import static uk.gov.companieshouse.disqualifiedofficers.delta.DisqualifiedOfficersDeltaConsumerApplication.NAMESPACE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.delta.DisqualificationDeleteDelta;
@@ -34,7 +33,6 @@ public class DisqualifiedOfficersDeltaProcessor {
      * @param transformer      transforms the data from delta to api object through mapstruct
      * @param apiClientService handles PUT request to the disqualified data API
      */
-    @Autowired
     public DisqualifiedOfficersDeltaProcessor(DisqualifiedOfficersApiTransformer transformer,
                       ApiClientService apiClientService, ObjectMapper objectMapper) {
         this.transformer = transformer;

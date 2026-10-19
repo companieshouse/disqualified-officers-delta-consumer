@@ -3,7 +3,6 @@ package uk.gov.companieshouse.disqualifiedofficers.delta.transformer;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
 import uk.gov.companieshouse.api.delta.DisqualificationOfficer;
@@ -24,7 +23,6 @@ public class DisqualifiedOfficersApiTransformer {
      * @param corporateMapper returns the corporate disqualification api object.
      * @param naturalMapper returns the natural disqualification api object.
      */
-    @Autowired
     public DisqualifiedOfficersApiTransformer(
             InternalCorporateDisqualificationMapper corporateMapper, 
             InternalNaturalDisqualificationMapper naturalMapper

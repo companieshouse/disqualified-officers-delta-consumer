@@ -1,5 +1,5 @@
 package uk.gov.companieshouse.disqualifiedofficers.delta.mapper;
-
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
@@ -7,14 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.util.FileCopyUtils;
 
 import uk.gov.companieshouse.api.delta.DisqualificationDelta;
@@ -32,8 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {
+@SpringJUnitConfig(classes = {
         InternalNaturalDisqualificationMapperImpl.class,
         DisqualificationMapperImpl.class,
         PermissionToActMapperImpl.class})
@@ -48,7 +45,7 @@ class InternalNaturalDisqualificationMapperTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        mapper = new ObjectMapper();
+        mapper = new JsonMapper();
 
         String path = "disqualified-officers-natural-example.json";
         String input =

@@ -5,7 +5,7 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>2.1.12</version>
+        <version>2.1.14</version>
     </parent>
 
     <artifactId>disqualified-officers-delta-consumer</artifactId>
@@ -14,84 +14,64 @@
     <description>Disqualified Officers Delta Consumer</description>
 
     <properties>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>21</java.version>
-        <spring-boot-starter.version>3.5.14</spring-boot-starter.version>
-        <spring-context.version>6.2.18</spring-context.version>
+        <spring-boot-dependencies.version>4.1.1</spring-boot-dependencies.version>
         <map-struct.version>1.6.3</map-struct.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.6.0</maven-failsafe-plugin.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
-        <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <tomcat-embed-core.version>11.0.22</tomcat-embed-core.version>
-        <tomcat-embed-websocket.version>11.0.22</tomcat-embed-websocket.version>
         <kafka-clients.version>4.0.2</kafka-clients.version>
-        <opentelemetry-instrumentation-bom.version>2.16.0</opentelemetry-instrumentation-bom.version>
         <kotlin-lib.version>2.2.21</kotlin-lib.version>
         <io.grpc.version>1.80.0</io.grpc.version>
 
         <!-- Companies house specific dependencies -->
-        <ch-kafka.version>3.0.6</ch-kafka.version>
-        <structured-logging.version>3.0.49</structured-logging.version>
-        <kafka-models.version>3.0.18</kafka-models.version>
         <private-api-sdk-java.version>4.0.280</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.15</api-sdk-manager-java-library.version>
 
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
 
         <!-- Tests -->
         <io-cucumber.version>7.9.0</io-cucumber.version>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
-        <assertj-core.version>3.27.7</assertj-core.version>
         <wiremock.version>3.13.1</wiremock.version>
-        <testcontainers.version>1.21.4</testcontainers.version>
         <avro.version>1.12.1</avro.version>
         <commons-compress.version>1.28.0</commons-compress.version>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
-        <logback.version>1.5.29</logback.version>
         <guava.version>33.5.0-android</guava.version>
-        <log4j-api.version>2.25.4</log4j-api.version>
 
-        <!--sonar configuration-->
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
-        <sonar.login></sonar.login>
-        <sonar.password></sonar.password>
-        <sonar.projectName>disqualified-officers-delta-consumer</sonar.projectName>
-        <sonar.projectKey>uk.gov.companieshouse:disqualified-officers-delta-consumer</sonar.projectKey>
-        <sonar.sources>src/main</sonar.sources>
-        <sonar.tests>src/test</sonar.tests>
-        <sonar.verbose>true</sonar.verbose>
-        <sonar.coverage.jacoco.xmlReportPaths>
-            ${project.basedir}/target/site/jacoco/jacoco.xml,
-            ${project.basedir}/target/site/jacoco-it/jacoco.xml
-        </sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
+        <test-containers.version>1.21.4</test-containers.version>
 
+        <!-- Sonar Exclusions -->
+        <sonar.exclusions>
+            <!-- Exclude test files and resources from SonarQube analysis -->
+        </sonar.exclusions>
+
+        <ch-boms.version>0.1.27</ch-boms.version>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>sonar-pr-analysis</id>
-            <properties>
-                <sonar.pullrequest.base>main</sonar.pullrequest.base>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencyManagement>
         <dependencies>
-
+            <!-- Import CH BOM first so CH-approved versions (CVE overrides) take precedence -->
             <dependency>
-                <groupId>io.opentelemetry.instrumentation</groupId>
-                <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>${opentelemetry-instrumentation-bom.version}</version>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-dependency-bom</artifactId>
+                <version>${ch-boms.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Optionally import test BOM for managed test dependency versions -->
+            <dependency>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-test-bom</artifactId>
+                <version>${ch-boms.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -99,116 +79,41 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-starter.version}</version>
+                <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj-core.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-compress</artifactId>
-                <version>${commons-compress.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j-api.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- CVE-2026-33186 -->
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-context</artifactId>
-                <version>${io.grpc.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib</artifactId>
-                <version>${kotlin-lib.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-jdk7</artifactId>
-                <version>${kotlin-lib.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-jdk8</artifactId>
-                <version>${kotlin-lib.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat-embed-websocket.version}</version>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${test-containers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring-context.version}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>${commons-beanutils.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
-            <version>${tomcat-embed-core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka-clients.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.lz4</groupId>
@@ -236,7 +141,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
@@ -268,19 +173,20 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-kafka</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
+            <version>4.0.8</version>
         </dependency>
 
         <dependency>
@@ -297,13 +203,11 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${map-struct.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>kafka-models</artifactId>
-            <version>${kafka-models.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.eclipse.jetty.http2</groupId>
@@ -317,13 +221,20 @@
                     <groupId>org.apache.avro</groupId>
                     <artifactId>avro</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.ee9</groupId>
+                    <artifactId>jetty-ee9-webapp</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.ee10</groupId>
+                    <artifactId>jetty-ee10-webapp</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>ch-kafka</artifactId>
-            <version>${ch-kafka.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.avro</groupId>
@@ -335,7 +246,6 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
-            <version>${structured-logging.version}</version>
         </dependency>
 
         <dependency>
@@ -357,7 +267,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
@@ -371,6 +281,12 @@
                     <artifactId>junit-jupiter-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <version>4.0.8</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -400,21 +316,18 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>kafka</artifactId>
-            <version>${testcontainers.version}</version>
+            <artifactId>testcontainers-kafka</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -475,7 +388,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot-starter.version}</version>
+                <version>${spring-boot-dependencies.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -489,6 +402,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/Application.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>pre-unit-test</id>
@@ -496,21 +414,15 @@
                             <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
-                            <!-- Sets the path to the file which contains the execution model. -->
-                            <destFile>${sonar.jacoco.reports}/jacoco.exec</destFile>
                             <propertyName>surefireArgLine</propertyName>
                         </configuration>
                     </execution>
                     <execution>
                         <id>post-unit-test</id>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <dataFile>${sonar.jacoco.reports}/jacoco.exec</dataFile>
-                            <outputDirectory>${sonar.jacoco.reports}/jacoco</outputDirectory>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>pre-integration-test</id>
@@ -519,23 +431,15 @@
                             <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
-                            <!-- Sets the path to the file which contains the execution model. -->
-                            <destFile>${sonar.jacoco.reports}/jacoco-it.exec</destFile>
                             <propertyName>failsafeArgLine</propertyName>
                         </configuration>
                     </execution>
                     <execution>
                         <id>post-integration-test</id>
-                        <phase>post-integration-test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <dataFile>${sonar.jacoco.reports}/jacoco-it.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>${sonar.jacoco.reports}/jacoco-it</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

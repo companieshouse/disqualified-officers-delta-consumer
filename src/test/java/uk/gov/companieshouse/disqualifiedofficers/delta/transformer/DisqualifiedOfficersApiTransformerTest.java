@@ -14,7 +14,7 @@ import uk.gov.companieshouse.api.disqualification.InternalNaturalDisqualificatio
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.InternalCorporateDisqualificationMapper;
 import uk.gov.companieshouse.disqualifiedofficers.delta.mapper.InternalNaturalDisqualificationMapper;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;

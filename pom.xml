@@ -5,7 +5,7 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>2.1.14</version>
+        <version>3.0.0</version>
     </parent>
 
     <artifactId>disqualified-officers-delta-consumer</artifactId>
@@ -28,7 +28,7 @@
         <io.grpc.version>1.80.0</io.grpc.version>
 
         <!-- Companies house specific dependencies -->
-        <private-api-sdk-java.version>4.0.280</private-api-sdk-java.version>
+        <private-api-sdk-java.version>7.2.33</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.15</api-sdk-manager-java-library.version>
 
         <jib-maven-plugin.version>3.4.6</jib-maven-plugin.version>
@@ -53,7 +53,7 @@
             <!-- Exclude test files and resources from SonarQube analysis -->
         </sonar.exclusions>
 
-        <ch-boms.version>0.1.27</ch-boms.version>
+        <ch-boms.version>0.1.32</ch-boms.version>
     </properties>
 
     <dependencyManagement>
